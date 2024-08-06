@@ -1,37 +1,39 @@
+// Next Imports
 import { NextResponse } from 'next/server'
 
-import { createJWT, encryptData } from '@/utils/encrypts'
+import type { UserTable } from './users'
+
+type ResponseUser = Omit<UserTable, 'password'>
+
+// Mock data for demo purpose
+import { users } from './users'
 
 export async function POST(req: Request) {
-  try {
-    const { username, password } = await req.json()
+  // Vars
+  const { email, password } = await req.json()
+  const user = users.find(u => u.email === email && u.password === password)
+  let response: null | ResponseUser = null
 
-    const url = `${process.env.NEXT_PUBLIC_API_URL_USUARIO}/usuario/login?pus3rN4m3=${username}`
-    const encryptText = await encryptData(password)
-    const jwtData = await createJWT(username, encryptText.encryptedData)
+  if (user) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _, ...filteredUserData } = user
 
-    const headers = {
-      CSRFP466: encryptText.encryptedData,
-      CSRFIv: encryptText.iv,
-      CSRFC0d160j2vt: jwtData
+    response = {
+      ...filteredUserData
     }
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers
-    })
-
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`)
-    }
-
-    const response = await res.json()
-
-    return NextResponse.json(response.data)
-  } catch (error) {
+    return NextResponse.json(response)
+  } else {
+    // We return 401 status code and error message if user is not found
     return NextResponse.json(
-      { message: ['Email or Password is invalid'] },
-      { status: 401, statusText: 'Unauthorized Access' }
+      {
+        // We create object here to separate each error message for each field in case of multiple errors
+        message: ['Email or Password is invalid']
+      },
+      {
+        status: 401,
+        statusText: 'Unauthorized Access'
+      }
     )
   }
 }

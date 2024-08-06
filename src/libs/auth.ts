@@ -1,10 +1,16 @@
 // Third-party Imports
-import type { NextAuthOptions } from 'next-auth'
 import CredentialProvider from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
+import { PrismaAdapter } from '@auth/prisma-adapter'
+import { PrismaClient } from '@prisma/client'
+import type { NextAuthOptions } from 'next-auth'
+import type { Adapter } from 'next-auth/adapters'
 
-import { createJWT, encryptData } from '@/utils/encrypts'
+const prisma = new PrismaClient()
 
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma) as Adapter,
+
   // ** Configure one or more authentication providers
   // ** Please refer to https://next-auth.js.org/configuration/options#providers for more `providers` options
   providers: [
@@ -26,55 +32,67 @@ export const authOptions: NextAuthOptions = {
          * For e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
          * You can also use the `req` object to obtain additional parameters (i.e., the request IP address)
          */
-        const { username, password } = credentials as { username: string; password: string }
+        const { email, password } = credentials as { email: string; password: string }
 
         try {
-          const url = `${process.env.NEXT_PUBLIC_API_URL_USUARIO}/usuario/login?pus3rN4m3=${username}`
-          const encryptText = await encryptData(password)
-          const jwtData = await createJWT(username, encryptText.encryptedData)
-
-          const headers = {
-            CSRFP466: encryptText.encryptedData,
-            CSRFIv: encryptText.iv,
-            CSRFC0d160j2vt: jwtData
-          }
-
-          const res = await fetch(url, {
+          // ** Login API Call to match the user credentials and receive user data in response along with his role
+          const res = await fetch(`${process.env.API_URL}/login`, {
             method: 'POST',
-            headers
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
           })
 
-          if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`)
+          const data = await res.json()
+
+          if (res.status === 401) {
+            throw new Error(JSON.stringify(data))
           }
 
-          const {
-            data: { sesion, user }
-          } = await res.json()
-
-          const userData = {
-            id: sesion.idSesion,
-            profile: user.perfil,
-            userName: user.userName,
-            name: user.nombre,
-            token: sesion.token
+          if (res.status === 200) {
+            /*
+             * Please unset all the sensitive information of the user either from API response or before returning
+             * user data below. Below return statement will set the user object in the token and the same is set in
+             * the session which will be accessible all over the app.
+             */
+            return data
           }
 
-          return userData
+          return null
         } catch (e: any) {
           throw new Error(e.message)
         }
       }
+    }),
+
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
     })
+
+    // ** ...add more providers here
   ],
 
   // ** Please refer to https://next-auth.js.org/configuration/options#session for more `session` options
   session: {
+    /*
+     * Choose how you want to save the user session.
+     * The default is `jwt`, an encrypted JWT (JWE) stored in the session cookie.
+     * If you use an `adapter` however, NextAuth default it to `database` instead.
+     * You can still force a JWT session by explicitly defining `jwt`.
+     * When using `database`, the session cookie will only contain a `sessionToken` value,
+     * which is used to look up the session in the database.
+     * If you use a custom credentials provider, user accounts will not be persisted in a database by NextAuth.js (even if one is configured).
+     * The option to use JSON Web Tokens for session tokens must be enabled to use a custom credentials provider.
+     */
     strategy: 'jwt',
 
+    // ** Seconds - How long until an idle session expires and is no longer valid
     maxAge: 30 * 24 * 60 * 60 // ** 30 days
   },
 
+  // ** Please refer to https://next-auth.js.org/configuration/options#pages for more `pages` options
   pages: {
     signIn: '/login'
   },
@@ -92,17 +110,15 @@ export const authOptions: NextAuthOptions = {
          * For adding custom parameters to user in session, we first need to add those parameters
          * in token which then will be available in the `session()` callback
          */
-        token.id = user.id
         token.name = user.name
-        token.email = user.email
-        token.token = (user as any).token || ''
       }
 
       return token
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.token = (token.token as string) || ''
+        // ** Add custom params to user in session which are added in `jwt()` callback via `token` parameter
+        session.user.name = token.name
       }
 
       return session

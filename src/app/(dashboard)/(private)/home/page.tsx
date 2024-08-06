@@ -1,8 +1,4 @@
-// Component Imports
-import Pricing from '@views/pages/pricing'
-
-// Data Imports
-import { getPricingData } from '@/app/server/actions'
+import Home from '@/views/Home'
 
 /**
  * ! If you need data using an API call, uncomment the below API code, update the `process.env.API_URL` variable in the
@@ -22,11 +18,12 @@ import { getPricingData } from '@/app/server/actions'
   return res.json()
 } */
 
-const PricePage = async () => {
-  // Vars
-  const data = await getPricingData()
+const HomePage = async () => {
+  // const data = await getPricingData()
 
-  return <Pricing data={data} />
+  // console.log('data :', data)
+
+  return <Home />
 }
 
-export default PricePage
+export default HomePage

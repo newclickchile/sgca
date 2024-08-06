@@ -54,9 +54,9 @@ export type Config = {
 }
 
 const themeConfig: Config = {
-  templateName: 'Materio',
-  homePageUrl: '/dashboards/crm',
-  settingsCookieName: 'materio-mui-next-demo-6',
+  templateName: 'SGCA',
+  homePageUrl: '/home',
+  settingsCookieName: 'sgca',
   mode: 'light', // 'system', 'light', 'dark'
   skin: 'bordered', // 'default', 'bordered'
   semiDark: false, // true, false

@@ -1,4 +1,3 @@
-// Next Imports
 import { NextResponse } from 'next/server'
 
 import { createJWT, encryptData } from '@/utils/encrypts'
@@ -11,15 +10,11 @@ export async function POST(req: Request) {
     const encryptText = await encryptData(password)
     const jwtData = await createJWT(username, encryptText.encryptedData)
 
-    // Encabezados de la solicitud al backend externo
     const headers = {
       CSRFP466: encryptText.encryptedData,
       CSRFIv: encryptText.iv,
       CSRFC0d160j2vt: jwtData
     }
-
-    // Solicitud al backend externo
-    console.log('url :', url)
 
     const res = await fetch(url, {
       method: 'POST',
@@ -32,7 +27,6 @@ export async function POST(req: Request) {
 
     const response = await res.json()
 
-    // TODO: filtrar solo lo necesario
     return NextResponse.json(response.data)
   } catch (error) {
     return NextResponse.json(

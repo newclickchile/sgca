@@ -48,8 +48,11 @@ export const authOptions: NextAuthOptions = {
             throw new Error(`HTTP error! status: ${res.status}`)
           }
 
+          // const { data } = await res.json()
+          // const { sesion, user, pages } = data
+
           const {
-            data: { sesion, user }
+            data: { sesion, user, pages }
           } = await res.json()
 
           const userData = {
@@ -57,7 +60,8 @@ export const authOptions: NextAuthOptions = {
             profile: user.perfil,
             userName: user.userName,
             name: user.nombre,
-            token: sesion.token
+            token: sesion.token,
+            pages
           }
 
           return userData
@@ -92,17 +96,20 @@ export const authOptions: NextAuthOptions = {
          * For adding custom parameters to user in session, we first need to add those parameters
          * in token which then will be available in the `session()` callback
          */
-        token.id = user.id
         token.name = user.name
         token.email = user.email
         token.token = (user as any).token || ''
+        token.pages = (user as any).pages || []
       }
+
+      console.log('token :', token)
 
       return token
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.token = (token.token as string) || ''
+        session.user.pages = (token.pages as string[]) || []
       }
 
       return session

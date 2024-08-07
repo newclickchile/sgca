@@ -12,8 +12,8 @@ import useLayoutInit from '@core/hooks/useLayoutInit'
 
 type LayoutWrapperProps = {
   systemMode: SystemMode
-  verticalLayout: ReactElement
-  horizontalLayout: ReactElement
+  verticalLayout?: ReactElement
+  horizontalLayout?: ReactElement
 }
 
 const LayoutWrapper = (props: LayoutWrapperProps) => {

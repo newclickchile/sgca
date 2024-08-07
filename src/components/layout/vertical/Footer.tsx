@@ -1,11 +1,11 @@
 // Component Imports
 import LayoutFooter from '@layouts/components/vertical/Footer'
-import FooterContent from './FooterContent'
+import FooterNewclick from './FooterNewclick'
 
 const Footer = () => {
   return (
     <LayoutFooter>
-      <FooterContent />
+      <FooterNewclick />
     </LayoutFooter>
   )
 }

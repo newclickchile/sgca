@@ -78,12 +78,10 @@ const VerticalMenu = ({ scrollMenu }: Props) => {
   const { data } = useSession()
 
   const menuPages = useMemo(() => {
-    //const sessionUserPages = data?.user.pages || []
-    console.log('data?.user.pages :', data?.user.pages)
-    const sessionUserPages = ['residents-2']
+    const sessionUserPages = data?.user.menu_left || []
 
     return filterMenu(verticalMenuData(), sessionUserPages)
-  }, [data?.user.pages])
+  }, [data?.user.menu_left])
 
   const verticalNavOptions = useVerticalNav()
 

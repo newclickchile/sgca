@@ -7,7 +7,7 @@ declare module 'next-auth' {
     name?: string
     email?: string
     token?: string
-    pages?: string[]
+    menu_left?: string[]
   }
 
   interface Session {

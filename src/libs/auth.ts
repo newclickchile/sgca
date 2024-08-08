@@ -52,7 +52,7 @@ export const authOptions: NextAuthOptions = {
           // const { sesion, user, pages } = data
 
           const {
-            data: { sesion, user, pages }
+            data: { sesion, user, menu_left }
           } = await res.json()
 
           const userData = {
@@ -61,7 +61,7 @@ export const authOptions: NextAuthOptions = {
             userName: user.userName,
             name: user.nombre,
             token: sesion.token,
-            pages
+            menu_left
           }
 
           return userData
@@ -99,17 +99,15 @@ export const authOptions: NextAuthOptions = {
         token.name = user.name
         token.email = user.email
         token.token = (user as any).token || ''
-        token.pages = (user as any).pages || []
+        token.menu_left = (user as any).menu_left || []
       }
-
-      console.log('token :', token)
 
       return token
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.token = (token.token as string) || ''
-        session.user.pages = (token.pages as string[]) || []
+        session.user.menu_left = (token.menu_left as string[]) || []
       }
 
       return session

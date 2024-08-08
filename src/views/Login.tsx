@@ -12,6 +12,8 @@ import { signIn } from 'next-auth/react'
 import type { SubmitHandler } from 'react-hook-form'
 
 // Hook Imports
+import { toast } from 'react-toastify'
+
 import CustomForm from '@/components/forms/CustomForm'
 import AuthWrapper from './AuthWrapper'
 
@@ -40,22 +42,26 @@ const Login = () => {
   const searchParams = useSearchParams()
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
-    const res = await signIn('credentials', {
-      username: data.username,
-      password: data.password,
-      redirect: false
-    })
+    try {
+      const res = await signIn('credentials', {
+        username: data.username,
+        password: data.password,
+        redirect: false
+      })
 
-    if (res && res.ok && res.error === null) {
-      const redirectURL = searchParams.get('redirectTo') ?? '/'
+      if (res && res.ok && res.error === null) {
+        const redirectURL = searchParams.get('redirectTo') ?? '/'
 
-      router.replace(redirectURL)
-    } else {
-      if (res?.error) {
-        const error = JSON.parse(res.error)
+        router.replace(redirectURL)
+      } else {
+        if (res?.error) {
+          const error = JSON.parse(res.error)
 
-        console.log('error :', error)
+          console.log('error :', error)
+        }
       }
+    } catch (error) {
+      toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
     }
   }
 

@@ -3,84 +3,37 @@ import type { VerticalMenuDataType } from '@/types/menuTypes'
 const verticalMenuData = (): VerticalMenuDataType[] => [
   {
     label: 'Administrador',
-    icon: 'ri-file-copy-line',
+    icon: 'eos-icons-admin-outlined',
     children: [
       {
+        id: 'residents',
         label: 'Residentes',
-        children: [
-          {
-            id: 'residents-1',
-            label: 'Residentes 1',
-            icon: 'ri-file-copy-line',
-            href: '/apps/children/list'
-          },
-          {
-            id: 'residents-2',
-            label: 'Residentes 2',
-            icon: 'ri-file-copy-line',
-            href: '/apps/children/list2'
-          }
-        ]
+        icon: 'ri-group-line text-[20px]',
+        href: '/apps/children/list'
       }
     ]
   },
   {
     label: 'Gestión',
-    icon: 'ri-file-copy-line',
+    icon: 'mage-preview-circle-fill',
     children: [
       {
         id: 'reports',
         label: 'Informes',
-        icon: 'ri-file-copy-line',
-        href: '/apps/app1'
+        icon: 'ri-file-copy-2-line text-[20px]',
+        href: '/informes'
       }
     ]
   },
   {
-    label: 'Menú Ejemplo (sin children)',
-    id: 'childless',
-    icon: 'ri-file-copy-line',
-    href: '/apps/resumen'
-  },
-  {
     label: 'Actividades',
-    icon: 'ri-pantone-line',
+    icon: 'ri-apps-2-line',
     children: [
       {
         id: 'daily',
         label: 'Diarias',
         href: '/apps/revision',
-        icon: 'ph:calendar-dots'
-      },
-      {
-        id: 'weekly',
-        label: 'Semanales',
-        href: '/apps/revision',
-        icon: 'ph:calendar-dots'
-      },
-      {
-        label: 'Mensuales',
-        icon: 'ri-file-copy-line',
-        children: [
-          {
-            id: 'monthly-1',
-            label: 'Mensuales 1',
-            icon: 'ri-file-copy-line',
-            href: '/apps/children/list'
-          },
-          {
-            id: 'monthly-2',
-            label: 'Mensuales 2',
-            icon: 'ri-file-copy-line',
-            href: '/apps/children/list2'
-          },
-          {
-            id: 'monthly-3',
-            label: 'Mensuales 3',
-            icon: 'ri-file-copy-line',
-            href: '/apps/children/list3'
-          }
-        ]
+        icon: 'ri-calendar-event-line text-[20px]'
       }
     ]
   }

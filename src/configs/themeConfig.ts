@@ -55,7 +55,7 @@ export type Config = {
 
 const themeConfig: Config = {
   templateName: 'SGCA',
-  homePageUrl: '/home',
+  homePageUrl: '/',
   settingsCookieName: 'sgca',
   mode: 'light', // 'system', 'light', 'dark'
   skin: 'bordered', // 'default', 'bordered'

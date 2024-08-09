@@ -1,15 +1,15 @@
-import type { VerticalMenuDataType } from '@/types/menuTypes'
+const iconSize = 'text-[18px]'
 
-const verticalMenuData = (): VerticalMenuDataType[] => [
+const verticalMenuData = (): any[] => [
   {
     label: 'Administrador',
     icon: 'eos-icons-admin-outlined',
     children: [
       {
-        id: 'residents',
+        href: '/residentes',
+        permission: 'residents',
         label: 'Residentes',
-        icon: 'ri-group-line text-[20px]',
-        href: '/apps/children/list'
+        icon: `ri-group-line ${iconSize}`
       }
     ]
   },
@@ -18,9 +18,9 @@ const verticalMenuData = (): VerticalMenuDataType[] => [
     icon: 'mage-preview-circle-fill',
     children: [
       {
-        id: 'reports',
+        permission: 'reports',
         label: 'Informes',
-        icon: 'ri-file-copy-2-line text-[20px]',
+        icon: `ri-file-copy-2-line ${iconSize}`,
         href: '/informes'
       }
     ]
@@ -30,10 +30,10 @@ const verticalMenuData = (): VerticalMenuDataType[] => [
     icon: 'ri-apps-2-line',
     children: [
       {
-        id: 'daily',
+        permission: 'daily',
         label: 'Diarias',
         href: '/apps/revision',
-        icon: 'ri-calendar-event-line text-[20px]'
+        icon: `ri-calendar-event-line ${iconSize}`
       }
     ]
   }

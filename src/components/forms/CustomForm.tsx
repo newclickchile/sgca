@@ -1,5 +1,5 @@
-import { Button, Box } from '@mui/material'
-import type { FieldValues, SubmitHandler, DefaultValues } from 'react-hook-form'
+import { Button, Grid } from '@mui/material'
+import type { DefaultValues, FieldValues, SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 
 import { FormInput } from './FormInput'
@@ -10,6 +10,7 @@ interface FieldConfig {
   type?: string | undefined
   placeholder?: string
   rules?: any
+  width?: number
 }
 
 interface CustomFormProps<T extends FieldValues> {
@@ -33,22 +34,25 @@ const CustomForm = <T extends FieldValues>({
 
   return (
     <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
-      {fields.map((field, index) => {
-        const { name, type, placeholder, rules, label } = field
+      <Grid container spacing={5}>
+        {fields.map((field, index) => {
+          const { name, type, placeholder, rules, label, width = 6 } = field
 
-        return (
-          <Box key={`${label}${index}`}>
-            <FormInput
-              control={control}
-              errors={errors}
-              rules={rules}
-              placeholder={placeholder ?? label}
-              name={name}
-              type={type}
-            />
-          </Box>
-        )
-      })}
+          return (
+            <Grid key={`${label}${index}`} item xs={12} sm={width}>
+              <FormInput
+                control={control}
+                errors={errors}
+                rules={rules}
+                placeholder={placeholder ?? label}
+                name={name}
+                type={type}
+                label={label}
+              />
+            </Grid>
+          )
+        })}
+      </Grid>
       <Button fullWidth variant='contained' type='submit'>
         {submitButtonName}
       </Button>

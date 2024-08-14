@@ -6,6 +6,8 @@ const verticalMenuData = (): any[] => [
     icon: 'eos-icons-admin-outlined',
     children: [
       {
+        exactMatch: false,
+        activeUrl: '/residentes',
         href: '/residentes',
         permission: 'residents',
         label: 'Residentes',

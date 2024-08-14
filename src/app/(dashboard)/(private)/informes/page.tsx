@@ -1,4 +1,4 @@
-import Report from '@/views/Report'
+import Reports from '@/views/reports/Reports'
 
 /**
  * ! If you need data using an API call, uncomment the below API code, update the `process.env.API_URL` variable in the
@@ -23,7 +23,7 @@ const ReportPage = async () => {
 
   // console.log('data :', data)
 
-  return <Report />
+  return <Reports />
 }
 
 export default ReportPage

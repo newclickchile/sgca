@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { ErrorMessage } from '@hookform/error-message'
-import { TextField, Typography } from '@mui/material'
+import { FormControl, TextField, Typography } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
 import type { Control, DeepMap, FieldError, RegisterOptions } from 'react-hook-form'
@@ -43,59 +43,61 @@ export const FormInput: React.FC<{
 
   return (
     <>
-      <Controller
-        render={({ field: { value, onChange } }) => {
-          switch (props.type) {
-            case 'password':
-              return (
-                <TextField
-                  fullWidth
-                  value={value}
-                  placeholder={props.placeholder}
-                  label={props.label}
-                  error={Boolean(props.errors[props.name])}
-                  type={!showPassword ? 'text' : 'password'}
-                  onChange={onChange}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end'>
-                        <IconButton
-                          size='small'
-                          edge='end'
-                          onClick={() => setShowPassword(!showPassword)}
-                          onMouseDown={e => e.preventDefault()}
-                          aria-label='toggle password visibility'
-                        >
-                          <i className={!showPassword ? 'ri-eye-off-line' : 'ri-eye-line'} />
-                        </IconButton>
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              )
-            case 'hidden':
-              return <input type={'hidden'} id={props.name} value={value} onChange={onChange} />
-            default:
-              return (
-                <TextField
-                  fullWidth
-                  value={value}
-                  label={props.label}
-                  type={!props.type || props.type === 'number' ? 'text' : props.type}
-                  onChange={onChange}
-                  autoFocus={props.autoFocus}
-                  placeholder={props.placeholder}
-                  error={Boolean(props.errors[props.name])}
-                />
-              )
-          }
-        }}
-        control={props.control}
-        name={props.name}
-        rules={{
-          ...props.rules
-        }}
-      />
+      <FormControl fullWidth>
+        <Controller
+          render={({ field: { value, onChange } }) => {
+            switch (props.type) {
+              case 'password':
+                return (
+                  <TextField
+                    fullWidth
+                    value={value}
+                    placeholder={props.placeholder}
+                    label={props.label}
+                    error={Boolean(props.errors[props.name])}
+                    type={!showPassword ? 'text' : 'password'}
+                    onChange={onChange}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position='end'>
+                          <IconButton
+                            size='small'
+                            edge='end'
+                            onClick={() => setShowPassword(!showPassword)}
+                            onMouseDown={e => e.preventDefault()}
+                            aria-label='toggle password visibility'
+                          >
+                            <i className={!showPassword ? 'ri-eye-off-line' : 'ri-eye-line'} />
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                )
+              case 'hidden':
+                return <input type={'hidden'} id={props.name} value={value} onChange={onChange} />
+              default:
+                return (
+                  <TextField
+                    fullWidth
+                    value={value}
+                    label={props.label}
+                    type={!props.type || props.type === 'number' ? 'text' : props.type}
+                    onChange={onChange}
+                    autoFocus={props.autoFocus}
+                    placeholder={props.placeholder}
+                    error={Boolean(props.errors[props.name])}
+                  />
+                )
+            }
+          }}
+          control={props.control}
+          name={props.name}
+          rules={{
+            ...props.rules
+          }}
+        />
+      </FormControl>
 
       <ErrorMessage
         errors={props.errors}

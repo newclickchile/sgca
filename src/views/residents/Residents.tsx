@@ -1,0 +1,351 @@
+'use client'
+
+import { useEffect, useMemo, useState } from 'react'
+
+import Link from 'next/link'
+
+import { Button, CardContent, Chip, Grid, Typography } from '@mui/material'
+
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import Divider from '@mui/material/Divider'
+import { styled } from '@mui/material/styles'
+import type { TextFieldProps } from '@mui/material/TextField'
+import TextField from '@mui/material/TextField'
+import type { RankingInfo } from '@tanstack/match-sorter-utils'
+import { rankItem } from '@tanstack/match-sorter-utils'
+import type { ColumnDef, FilterFn } from '@tanstack/react-table'
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  getFilteredRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFacetedMinMaxValues,
+  getPaginationRowModel,
+  getSortedRowModel
+} from '@tanstack/react-table'
+
+import classnames from 'classnames'
+
+import FilterSelect from '@/components/forms/FilterSelect'
+import useFetchWithSession from '@/hooks/useFetchData'
+import type { AuxHousesType } from '@/types/aux'
+import type { ResidentType } from '@/types/resident'
+import tableStyles from '@core/styles/table.module.css'
+import type { ThemeColor } from '@core/types'
+
+declare module '@tanstack/table-core' {
+  interface FilterFns {
+    fuzzy: FilterFn<unknown>
+  }
+  interface FilterMeta {
+    itemRank: RankingInfo
+  }
+}
+
+type ResidentTypeWithAction = ResidentType & {
+  action?: string
+}
+
+type UserRoleType = {
+  [key: string]: { icon: string; color: string }
+}
+
+type UserStatusType = {
+  [key: string]: ThemeColor
+}
+
+// Styled Components
+const Icon = styled('i')({})
+
+const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  // Rank the item
+  const itemRank = rankItem(row.getValue(columnId), value)
+
+  // Store the itemRank info
+  addMeta({
+    itemRank
+  })
+
+  // Return if the item should be filtered in/out
+  return itemRank.passed
+}
+
+const DebouncedInput = ({
+  value: initialValue,
+  onChange,
+  debounce = 500,
+  ...props
+}: {
+  value: string | number
+  onChange: (value: string | number) => void
+  debounce?: number
+} & Omit<TextFieldProps, 'onChange'>) => {
+  // States
+  const [value, setValue] = useState(initialValue)
+
+  useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange(value)
+    }, debounce)
+
+    return () => clearTimeout(timeout)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
+
+  return <TextField {...props} value={value} onChange={e => setValue(e.target.value)} size='small' />
+}
+
+// Vars
+const userRoleObj: UserRoleType = {
+  admin: { icon: 'ri-vip-crown-line', color: 'error' },
+  author: { icon: 'ri-computer-line', color: 'warning' },
+  editor: { icon: 'ri-edit-box-line', color: 'info' },
+  maintainer: { icon: 'ri-pie-chart-2-line', color: 'success' },
+  subscriber: { icon: 'ri-user-3-line', color: 'primary' }
+}
+
+const userStatusObj: UserStatusType = {
+  active: 'success',
+  inactive: 'secondary'
+}
+
+// Column Definitions
+const columnHelper = createColumnHelper<ResidentTypeWithAction>()
+
+const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/obtener/bycasa`
+
+const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
+  // States
+  // const [addUserOpen, setAddUserOpen] = useState(false)
+  const [rowSelection, setRowSelection] = useState({})
+  const [globalFilter, setGlobalFilter] = useState('')
+  const [selectedHouse, setSelectedHouse] = useState<string>('')
+  const [residents, setResidents] = useState<any[]>([])
+
+  const columns = useMemo<ColumnDef<ResidentTypeWithAction, any>[]>(
+    () => [
+      columnHelper.accessor('codsis', {
+        size: 100,
+        header: 'SIS',
+        cell: ({ row }) => (
+          <Typography
+            component={Link}
+            // href={`/residentes/${row.original.id}`}
+            href={`/residentes/2`}
+            color='primary'
+          >{`${row.original.codsis}`}</Typography>
+        )
+      }),
+      columnHelper.accessor('nombre', {
+        header: 'Nombre',
+        cell: ({ row }) => (
+          <div className='flex items-center gap-4'>
+            <div className='flex flex-col'>
+              <Typography className='font-medium' color='text.primary'>
+                {row.original.nombre}
+              </Typography>
+              <Typography variant='body2'>{row.original.rut}</Typography>
+            </div>
+          </div>
+        )
+      }),
+      columnHelper.accessor('idCasa', {
+        header: 'Casa',
+        cell: ({ row }) => (
+          <Typography className='capitalize' color='text.primary'>
+            {houses.find(house => house.id === row.original.idCasa)?.casa}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('habilitado', {
+        size: 100,
+        header: 'Estado',
+        cell: ({ row }) => (
+          <div className='flex items-center gap-3'>
+            <Chip
+              variant='tonal'
+              label={row.original.habilitado ? 'Activo' : 'Inactivo'}
+              size='small'
+              color={row.original.habilitado ? 'success' : 'secondary'}
+              className='capitalize'
+            />
+          </div>
+        )
+      })
+    ],
+    [houses]
+  )
+
+  const table = useReactTable({
+    data: residents,
+    columns,
+    filterFns: {
+      fuzzy: fuzzyFilter
+    },
+    state: {
+      rowSelection,
+      globalFilter
+    },
+    initialState: {
+      pagination: {
+        pageSize: 10
+      }
+    },
+    enableRowSelection: true, //enable row selection for all rows
+    // enableRowSelection: row => row.original.age > 18, // or enable row selection conditionally per row
+    globalFilterFn: fuzzyFilter,
+    onRowSelectionChange: setRowSelection,
+    getCoreRowModel: getCoreRowModel(),
+    onGlobalFilterChange: setGlobalFilter,
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    getFacetedMinMaxValues: getFacetedMinMaxValues()
+  })
+
+  const {
+    data: residentData,
+    error,
+    loading
+  } = useFetchWithSession<ResidentType[]>({
+    endpoint: selectedHouse ? `${URL_RESIDENTS}?idCasa=${selectedHouse}` : '',
+    method: 'GET',
+    shouldFetch: selectedHouse !== ''
+  })
+
+  useEffect(() => {
+    if (selectedHouse === '') {
+      setResidents([])
+    } else if (residentData) {
+      setResidents(residentData)
+    }
+  }, [residentData, selectedHouse])
+
+  return (
+    <>
+      <Card>
+        <CardHeader title='Residentes' />
+        <CardContent>
+          <Grid container spacing={5}>
+            <Grid item xs={12} sm={4}>
+              <FilterSelect
+                options={houses.map(house => ({
+                  id: house.id.toString(),
+                  label: house.casa
+                }))}
+                value={selectedHouse}
+                onChange={setSelectedHouse}
+                label='Seleccionar Casa'
+                placeholder='Seleccionar Casa'
+              />
+            </Grid>
+          </Grid>
+        </CardContent>
+        <Divider />
+        <div className='flex justify-between p-5 gap-4 flex-col items-start sm:flex-row sm:items-center'>
+          <div className='flex items-center gap-x-4 is-full gap-4 flex-col sm:is-auto sm:flex-row'>
+            <DebouncedInput
+              value={globalFilter ?? ''}
+              onChange={value => setGlobalFilter(String(value))}
+              placeholder='Search User'
+              className='is-full sm:is-auto'
+            />
+            {/* <Button variant='contained' onClick={() => setAddUserOpen(!addUserOpen)} className='is-full sm:is-auto'>
+              Add New User
+            </Button> */}
+          </div>
+        </div>
+        <div className='overflow-x-auto'>
+          <table className={tableStyles.table}>
+            <thead>
+              {table.getHeaderGroups().map(headerGroup => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map(header => (
+                    <th key={header.id}>
+                      {header.isPlaceholder ? null : (
+                        <>
+                          <div
+                            className={classnames({
+                              'flex items-center': header.column.getIsSorted(),
+                              'cursor-pointer select-none': header.column.getCanSort()
+                            })}
+                            onClick={header.column.getToggleSortingHandler()}
+                          >
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {{
+                              asc: <i className='ri-arrow-up-s-line text-xl' />,
+                              desc: <i className='ri-arrow-down-s-line text-xl' />
+                            }[header.column.getIsSorted() as 'asc' | 'desc'] ?? null}
+                          </div>
+                        </>
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            {table.getFilteredRowModel().rows.length === 0 ? (
+              <tbody>
+                <tr>
+                  <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
+                    ¡No existe información!
+                  </td>
+                </tr>
+              </tbody>
+            ) : (
+              <tbody>
+                {table
+                  .getRowModel()
+                  .rows.slice(0, table.getState().pagination.pageSize)
+                  .map(row => {
+                    console.log('row :', row)
+
+                    return (
+                      <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
+                        {row.getVisibleCells().map(cell => (
+                          <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                        ))}
+                      </tr>
+                    )
+                  })}
+              </tbody>
+            )}
+          </table>
+        </div>
+        {/* <TablePagination
+          rowsPerPageOptions={[10, 25, 50]}
+          component='div'
+          className='border-bs'
+          count={table.getFilteredRowModel().rows.length}
+          rowsPerPage={table.getState().pagination.pageSize}
+          page={table.getState().pagination.pageIndex}
+          SelectProps={{
+            inputProps: { 'aria-label': 'rows per page' }
+          }}
+          onPageChange={(_, page) => {
+            table.setPageIndex(page)
+          }}
+          onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
+        /> */}
+      </Card>
+      {/* <AddUserDrawer
+        open={addUserOpen}
+        handleClose={() => setAddUserOpen(!addUserOpen)}
+        userData={data}
+        setData={setData}
+      /> */}
+    </>
+  )
+}
+
+export default Residents

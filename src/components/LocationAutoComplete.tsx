@@ -155,8 +155,6 @@ const LocationAutoComplete: FC<LocationAutoCompleteProps> = ({ handleAddressSele
 
           const formatValue = typeof newValue === 'string' ? placeValue : newValue
 
-          console.log('formatValue :', formatValue)
-
           setValue(formatValue)
 
           setOptions(formatValue ? [formatValue, ...options] : options)

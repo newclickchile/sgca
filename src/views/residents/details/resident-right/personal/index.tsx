@@ -8,6 +8,8 @@ import type { SubmitHandler } from 'react-hook-form'
 
 import { toast } from 'react-toastify'
 
+import { format } from 'date-fns'
+
 import type { FieldConfig } from '@/components/forms/CustomForm'
 import CustomForm from '@/components/forms/CustomForm'
 import type { PlaceType } from '@/components/LocationAutoComplete'
@@ -23,6 +25,7 @@ type FormData = {
   sisCode?: number
   houseId: number
   disability: string
+  hobbie: string
 }
 
 const fields: FieldConfig[] = [
@@ -86,7 +89,7 @@ const fields: FieldConfig[] = [
     isRequired: true
   },
   {
-    name: 'disability',
+    name: 'hobbie',
     label: 'Hobbie/Intereses',
     type: 'multiline',
     rows: 3,
@@ -98,7 +101,7 @@ const PersonalTab: React.FC<{ residentData: ResidentType; housesData: AuxHousesT
   residentData,
   housesData = []
 }) => {
-  const { nombre, fechaNacimiento, rut, flagRsh = true, direccion, codsis, idCasa } = residentData
+  const { nombre, fechaNacimiento, rut, flagRsh = true, direccion, codsis, idCasa, hobbie } = residentData
 
   const houseOptions = housesData.map(house => ({
     id: house.id.toString(),
@@ -118,7 +121,9 @@ const PersonalTab: React.FC<{ residentData: ResidentType; housesData: AuxHousesT
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
     try {
-      console.log('data :', data)
+      const birthDate = format(data.birthDate, 'yyyy/MM/dd')
+
+      console.log('data :', { ...data, birthDate })
     } catch (error) {
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
     }
@@ -139,7 +144,8 @@ const PersonalTab: React.FC<{ residentData: ResidentType; housesData: AuxHousesT
                 flagRsh,
                 direction: direccion,
                 sisCode: codsis,
-                houseId: idCasa
+                houseId: idCasa,
+                hobbie
               }}
               onSubmit={onSubmit}
             />

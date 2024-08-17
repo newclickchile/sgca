@@ -68,7 +68,15 @@ const sources: BundleScriptConfig = {
     },
     {
       filename: require.resolve('@iconify/json/json/mage.json'),
-      icons: ['preview-circle-fill']
+      icons: ['preview-circle-fill', 'heart-health']
+    },
+    {
+      filename: require.resolve('@iconify/json/json/fluent-mdl2.json'),
+      icons: ['family', 'education']
+    },
+    {
+      filename: require.resolve('@iconify/json/json/octicon.json'),
+      icons: ['law-24']
     }
 
     // Custom JSON file

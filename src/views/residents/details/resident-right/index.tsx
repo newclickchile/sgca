@@ -1,19 +1,34 @@
 'use client'
 
 // React Imports
+import type { ReactElement, SyntheticEvent } from 'react'
 import { useState } from 'react'
-import type { SyntheticEvent, ReactElement } from 'react'
 
 // MUI Imports
-import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
 import TabPanel from '@mui/lab/TabPanel'
 import Grid from '@mui/material/Grid'
+import Tab from '@mui/material/Tab'
 
 // Component Imports
+import { styled } from '@mui/material'
+
 import CustomTabList from '@core/components/mui/TabList'
 
-const ResidentRight = ({ tabContentList }: { tabContentList: { [key: string]: ReactElement } }) => {
+const CustomTab = styled(Tab)(({}) => ({
+  color: 'GrayText',
+  '& .MuiTab-wrapper': {
+    color: 'GrayText'
+  }
+}))
+
+const ResidentRight = ({
+  tabContentComponents
+}: {
+  tabContentComponents: { [key: string]: ReactElement }
+
+  // residentData: ResidentType
+}) => {
   // States
   const [activeTab, setActiveTab] = useState('personal')
 
@@ -27,7 +42,18 @@ const ResidentRight = ({ tabContentList }: { tabContentList: { [key: string]: Re
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <CustomTabList onChange={handleChange} variant='scrollable' pill='true'>
-              <Tab icon={<i className='ri-user-3-line' />} value='personal' label='Personal' iconPosition='start' />
+              <CustomTab
+                icon={<i className='ri-user-3-line text-2xl' />}
+                value='personal'
+                label='Personal'
+                iconPosition='start'
+              />
+              <CustomTab
+                icon={<i className='fluent-mdl2-family text-2xl' />}
+                value='family'
+                label='Grupo Familiar'
+                iconPosition='start'
+              />
               {/* <Tab icon={<i className='ri-lock-line' />} value='security' label='Security' iconPosition='start' />
               <Tab
                 icon={<i className='ri-map-pin-line' />}
@@ -45,7 +71,7 @@ const ResidentRight = ({ tabContentList }: { tabContentList: { [key: string]: Re
           </Grid>
           <Grid item xs={12}>
             <TabPanel value={activeTab} className='p-0'>
-              {tabContentList[activeTab]}
+              {tabContentComponents[activeTab]}
             </TabPanel>
           </Grid>
         </Grid>

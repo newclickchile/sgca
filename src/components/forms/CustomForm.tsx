@@ -2,15 +2,19 @@ import { Button, Grid } from '@mui/material'
 import type { DefaultValues, FieldValues, SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 
+import type { IKeyValueData } from './FormInput'
 import { FormInput } from './FormInput'
 
-interface FieldConfig {
+export interface FieldConfig {
   name: string
   label: string
   type?: string | undefined
   placeholder?: string
   rules?: any
   width?: number
+  isRequired?: boolean
+  listValues?: IKeyValueData[]
+  rows?: number
 }
 
 interface CustomFormProps<T extends FieldValues> {
@@ -36,7 +40,7 @@ const CustomForm = <T extends FieldValues>({
     <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
       <Grid container spacing={5}>
         {fields.map((field, index) => {
-          const { name, type, placeholder, rules, label, width = 6 } = field
+          const { name, isRequired, type, placeholder, rules, label, rows, listValues = [], width = 6 } = field
 
           return (
             <Grid key={`${label}${index}`} item xs={12} sm={width}>
@@ -48,6 +52,9 @@ const CustomForm = <T extends FieldValues>({
                 name={name}
                 type={type}
                 label={label}
+                isRequired={isRequired}
+                listValues={listValues}
+                rows={rows}
               />
             </Grid>
           )

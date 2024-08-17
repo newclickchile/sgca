@@ -14,7 +14,6 @@ import Providers from '@components/Providers'
 import VerticalFooter from '@components/layout/vertical/Footer'
 import Navbar from '@components/layout/vertical/Navbar'
 import Navigation from '@components/layout/vertical/Navigation'
-import Customizer from '@core/components/customizer'
 import ScrollToTop from '@core/components/scroll-to-top'
 
 // Util Imports
@@ -49,7 +48,6 @@ const Layout = async ({ children }: ChildrenType) => {
             <i className='ri-arrow-up-line' />
           </Button>
         </ScrollToTop>
-        <Customizer dir={direction} disableDirection />
       </AuthGuard>
     </Providers>
   )

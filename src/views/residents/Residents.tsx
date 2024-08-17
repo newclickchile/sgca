@@ -4,12 +4,11 @@ import { useEffect, useMemo, useState } from 'react'
 
 import Link from 'next/link'
 
-import { Button, CardContent, Chip, Grid, Typography } from '@mui/material'
+import { CardContent, Chip, CircularProgress, Grid, IconButton, Typography } from '@mui/material'
 
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Divider from '@mui/material/Divider'
-import { styled } from '@mui/material/styles'
 import type { TextFieldProps } from '@mui/material/TextField'
 import TextField from '@mui/material/TextField'
 import type { RankingInfo } from '@tanstack/match-sorter-utils'
@@ -19,13 +18,13 @@ import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  useReactTable,
-  getFilteredRowModel,
+  getFacetedMinMaxValues,
   getFacetedRowModel,
   getFacetedUniqueValues,
-  getFacetedMinMaxValues,
+  getFilteredRowModel,
   getPaginationRowModel,
-  getSortedRowModel
+  getSortedRowModel,
+  useReactTable
 } from '@tanstack/react-table'
 
 import classnames from 'classnames'
@@ -35,7 +34,6 @@ import useFetchWithSession from '@/hooks/useFetchData'
 import type { AuxHousesType } from '@/types/aux'
 import type { ResidentType } from '@/types/resident'
 import tableStyles from '@core/styles/table.module.css'
-import type { ThemeColor } from '@core/types'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -50,27 +48,13 @@ type ResidentTypeWithAction = ResidentType & {
   action?: string
 }
 
-type UserRoleType = {
-  [key: string]: { icon: string; color: string }
-}
-
-type UserStatusType = {
-  [key: string]: ThemeColor
-}
-
-// Styled Components
-const Icon = styled('i')({})
-
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-  // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value)
 
-  // Store the itemRank info
   addMeta({
     itemRank
   })
 
-  // Return if the item should be filtered in/out
   return itemRank.passed
 }
 
@@ -103,20 +87,6 @@ const DebouncedInput = ({
   return <TextField {...props} value={value} onChange={e => setValue(e.target.value)} size='small' />
 }
 
-// Vars
-const userRoleObj: UserRoleType = {
-  admin: { icon: 'ri-vip-crown-line', color: 'error' },
-  author: { icon: 'ri-computer-line', color: 'warning' },
-  editor: { icon: 'ri-edit-box-line', color: 'info' },
-  maintainer: { icon: 'ri-pie-chart-2-line', color: 'success' },
-  subscriber: { icon: 'ri-user-3-line', color: 'primary' }
-}
-
-const userStatusObj: UserStatusType = {
-  active: 'success',
-  inactive: 'secondary'
-}
-
 // Column Definitions
 const columnHelper = createColumnHelper<ResidentTypeWithAction>()
 
@@ -138,8 +108,7 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
         cell: ({ row }) => (
           <Typography
             component={Link}
-            // href={`/residentes/${row.original.id}`}
-            href={`/residentes/2`}
+            href={`/residentes/${row.original.id}`}
             color='primary'
           >{`${row.original.codsis}`}</Typography>
         )
@@ -179,6 +148,19 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
             />
           </div>
         )
+      }),
+      columnHelper.accessor('action', {
+        header: 'Acciones',
+        cell: ({ row }) => (
+          <div className='flex items-center'>
+            <IconButton>
+              <Link href={`/residentes/${row.original.id}`} className='flex'>
+                <i className='ri-eye-line' />
+              </Link>
+            </IconButton>
+          </div>
+        ),
+        enableSorting: false
       })
     ],
     [houses]
@@ -257,15 +239,17 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
             <DebouncedInput
               value={globalFilter ?? ''}
               onChange={value => setGlobalFilter(String(value))}
-              placeholder='Search User'
+              placeholder='Buscar Usuario'
               className='is-full sm:is-auto'
             />
             {/* <Button variant='contained' onClick={() => setAddUserOpen(!addUserOpen)} className='is-full sm:is-auto'>
-              Add New User
+              Agregar nueevo Residente
             </Button> */}
           </div>
         </div>
         <div className='overflow-x-auto'>
+          {error && <div>Ha ocurrido un error al obtener los residentes</div>}
+
           <table className={tableStyles.table}>
             <thead>
               {table.getHeaderGroups().map(headerGroup => (
@@ -294,7 +278,17 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
                 </tr>
               ))}
             </thead>
-            {table.getFilteredRowModel().rows.length === 0 ? (
+            {loading ? (
+              <tbody>
+                <tr>
+                  <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
+                    <Grid item container alignItems={'center'} justifyContent={'center'}>
+                      <CircularProgress size={20} color='primary' />
+                    </Grid>
+                  </td>
+                </tr>
+              </tbody>
+            ) : table.getFilteredRowModel().rows.length === 0 ? (
               <tbody>
                 <tr>
                   <td colSpan={table.getVisibleFlatColumns().length} className='text-center'>
@@ -308,8 +302,6 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
                   .getRowModel()
                   .rows.slice(0, table.getState().pagination.pageSize)
                   .map(row => {
-                    console.log('row :', row)
-
                     return (
                       <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
                         {row.getVisibleCells().map(cell => (

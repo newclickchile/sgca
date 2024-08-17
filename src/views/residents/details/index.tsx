@@ -4,14 +4,18 @@ import Link from 'next/link'
 
 import dynamic from 'next/dynamic'
 
-import Grid from '@mui/material/Grid'
 import { Typography } from '@mui/material'
+import Grid from '@mui/material/Grid'
 
 import type { ResidentType } from '@/types/resident'
 import ResidentLeftOverview from './resident-left-overview'
 import ResidentRight from './resident-right'
+import { fetchData } from '@/utils/fetch'
+import { useSession } from '@/hooks/useSession'
+import type { AuxHousesType } from '@/types/aux'
 
 const PersonalTab = dynamic(() => import('@/views/residents/details/resident-right/personal'))
+const FamilyTab = dynamic(() => import('@/views/residents/details/resident-right/familia'))
 
 // const SecurityTab = dynamic(() => import('@views/apps/ecommerce/customers/details/customer-right/security'))
 // const NotificationsTab = dynamic(() => import('@views/apps/ecommerce/customers/details/customer-right/notification'))
@@ -20,16 +24,26 @@ const PersonalTab = dynamic(() => import('@/views/residents/details/resident-rig
 //   () => import('@views/apps/ecommerce/customers/details/customer-right/address-billing')
 // )
 
-// Vars
-const tabContentList = (): { [key: string]: ReactElement } => ({
-  personal: <PersonalTab />
+interface AuxDataType {
+  housesData: AuxHousesType[]
+}
 
-  // security: <SecurityTab />,
-  // addressBilling: <AddressBillingTab />,
-  // notifications: <NotificationsTab />
+const generateTabContentComponents = (
+  residentData: ResidentType,
+  auxData: AuxDataType
+): { [key: string]: ReactElement } => ({
+  personal: <PersonalTab residentData={residentData} housesData={auxData.housesData} />,
+  family: <FamilyTab residentData={residentData} />
 })
 
-const ResidentDetails = ({ residentData }: { residentData: ResidentType }) => {
+const URL_HOUSES = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/casas/obtener?idInstitucion`
+
+const ResidentDetails = async ({ residentData }: { residentData: ResidentType }) => {
+  const session = await useSession()
+  const { data: housesData } = await fetchData(`${URL_HOUSES}=${session?.user.institutionId}`)
+
+  const tabContentComponents = generateTabContentComponents(residentData, { housesData })
+
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
@@ -46,7 +60,7 @@ const ResidentDetails = ({ residentData }: { residentData: ResidentType }) => {
         <ResidentLeftOverview residentData={residentData} />
       </Grid>
       <Grid item xs={12} md={8}>
-        <ResidentRight tabContentList={tabContentList()} />
+        <ResidentRight tabContentComponents={tabContentComponents} />
       </Grid>
     </Grid>
   )

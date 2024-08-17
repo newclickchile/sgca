@@ -26,13 +26,15 @@ const fields = [
   {
     name: 'username',
     label: 'Usuario',
-    rules: { required: 'Usuario es requerido' }
+    isRequired: true,
+    width: 12
   },
   {
     name: 'password',
     label: 'Contraseña',
     type: 'password',
-    rules: { required: 'Contraseña es requerida' }
+    isRequired: true,
+    width: 12
   }
 ]
 

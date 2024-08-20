@@ -95,6 +95,7 @@ export const FormInput: React.FC<{
             case 'autocomplete':
               return (
                 <LocationAutoComplete
+                  error={Boolean(props.errors[props.name])}
                   initValue={
                     value
                       ? { description: value, structured_formatting: { main_text: value, secondary_text: '' } }
@@ -112,7 +113,7 @@ export const FormInput: React.FC<{
               )
             case 'select':
               return (
-                <FormControl fullWidth>
+                <FormControl error={Boolean(props.errors[props.name])} fullWidth>
                   <InputLabel id='select-outlined-label'>{props.label}</InputLabel>
                   <Select
                     value={value}
@@ -141,7 +142,7 @@ export const FormInput: React.FC<{
                   showYearDropdown
                   onChange={(date: Date) => onChange(date)}
                   placeholderText={props.placeholder}
-                  customInput={<TextField label={props.label} />}
+                  customInput={<TextField error={Boolean(props.errors[props.name])} label={props.label} />}
                 />
               )
 

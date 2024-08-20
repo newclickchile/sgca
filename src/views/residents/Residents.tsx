@@ -4,7 +4,16 @@ import { useEffect, useMemo, useState } from 'react'
 
 import Link from 'next/link'
 
-import { CardContent, Chip, CircularProgress, Grid, IconButton, Typography } from '@mui/material'
+import {
+  Button,
+  CardContent,
+  Chip,
+  CircularProgress,
+  Grid,
+  IconButton,
+  InputAdornment,
+  Typography
+} from '@mui/material'
 
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
@@ -29,10 +38,15 @@ import {
 
 import classnames from 'classnames'
 
+import type { SubmitHandler } from 'react-hook-form'
+
+import { toast } from 'react-toastify'
+
 import FilterSelect from '@/components/forms/FilterSelect'
+import ResidentDrawer from '@/components/residents/ResidentDrawer'
 import useFetchWithSession from '@/hooks/useFetchData'
 import type { AuxHousesType } from '@/types/aux'
-import type { ResidentType } from '@/types/resident'
+import type { NewResidentType, ResidentType } from '@/types/resident'
 import tableStyles from '@core/styles/table.module.css'
 
 declare module '@tanstack/table-core' {
@@ -93,12 +107,12 @@ const columnHelper = createColumnHelper<ResidentTypeWithAction>()
 const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/obtener/bycasa`
 
 const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
-  // States
-  // const [addUserOpen, setAddUserOpen] = useState(false)
+  const [addUserOpen, setAddUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [globalFilter, setGlobalFilter] = useState('')
   const [selectedHouse, setSelectedHouse] = useState<string>('')
   const [residents, setResidents] = useState<any[]>([])
+  const [resetDrawerForm, setResetDrawerForm] = useState<boolean>(false)
 
   const columns = useMemo<ColumnDef<ResidentTypeWithAction, any>[]>(
     () => [
@@ -213,6 +227,35 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
     }
   }, [residentData, selectedHouse])
 
+  const handleDrawerOpen = () => {
+    if (!selectedHouse) return
+
+    // Al abrir el Drawer se setea el reset en false para que se pueda cerrar sin borrar la data
+    // esto es porque al hacer Submit del form se deja setResetDrawerForm en true
+    setResetDrawerForm(false)
+    setAddUserOpen(true)
+  }
+
+  const handleDrawerClose = () => {
+    setAddUserOpen(false)
+  }
+
+  const handleCancel = () => {
+    handleDrawerClose()
+  }
+
+  const onSubmit: SubmitHandler<NewResidentType> = async (data: NewResidentType) => {
+    try {
+      console.log('data :', data)
+
+      handleCancel()
+      setResetDrawerForm(true)
+      toast.success('Se ha creado el nuevo residente')
+    } catch (error) {
+      toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
+    }
+  }
+
   return (
     <>
       <Card>
@@ -235,18 +278,31 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
         </CardContent>
         <Divider />
         <div className='flex justify-between p-5 gap-4 flex-col items-start sm:flex-row sm:items-center'>
+          <Button
+            variant='contained'
+            onClick={handleDrawerOpen}
+            disabled={!selectedHouse}
+            className='is-full sm:is-auto'
+          >
+            Agregar nuevo Residente
+          </Button>
           <div className='flex items-center gap-x-4 is-full gap-4 flex-col sm:is-auto sm:flex-row'>
             <DebouncedInput
               value={globalFilter ?? ''}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='start'>
+                    <i className='ri-search-line text-[15px] text-textPrimary' />
+                  </InputAdornment>
+                )
+              }}
               onChange={value => setGlobalFilter(String(value))}
               placeholder='Buscar Usuario'
               className='is-full sm:is-auto'
             />
-            {/* <Button variant='contained' onClick={() => setAddUserOpen(!addUserOpen)} className='is-full sm:is-auto'>
-              Agregar nueevo Residente
-            </Button> */}
           </div>
         </div>
+
         <div className='overflow-x-auto'>
           {error && <div>Ha ocurrido un error al obtener los residentes</div>}
 
@@ -330,12 +386,13 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
           onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
         /> */}
       </Card>
-      {/* <AddUserDrawer
+      <ResidentDrawer
+        handleCancel={handleCancel}
         open={addUserOpen}
-        handleClose={() => setAddUserOpen(!addUserOpen)}
-        userData={data}
-        setData={setData}
-      /> */}
+        handleClose={handleDrawerClose}
+        onSubmit={onSubmit}
+        resetForm={resetDrawerForm}
+      />
     </>
   )
 }

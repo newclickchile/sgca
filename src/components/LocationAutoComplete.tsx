@@ -41,11 +41,12 @@ export interface PlaceType {
 interface LocationAutoCompleteProps {
   handleAddressSelect: (value: PlaceType | null) => void
   initValue: PlaceType | null
+  error?: boolean
 }
 
 const filter = createFilterOptions<PlaceType>()
 
-const LocationAutoComplete: FC<LocationAutoCompleteProps> = ({ handleAddressSelect, initValue }) => {
+const LocationAutoComplete: FC<LocationAutoCompleteProps> = ({ handleAddressSelect, initValue, error }) => {
   const [value, setValue] = useState<PlaceType | null>(initValue)
   const [inputValue, setInputValue] = useState(initValue?.description || '')
   const [options, setOptions] = useState<readonly PlaceType[]>([])
@@ -165,7 +166,7 @@ const LocationAutoComplete: FC<LocationAutoCompleteProps> = ({ handleAddressSele
           setInputValue(newInputValue)
         }}
         renderInput={params => (
-          <TextField {...params} inputRef={textFieldRef} label='Dirección' fullWidth value={inputValue} />
+          <TextField {...params} error={error} inputRef={textFieldRef} label='Dirección' fullWidth value={inputValue} />
         )}
         renderOption={(props, option) => {
           const { id, ...optionProps } = props
@@ -176,8 +177,6 @@ const LocationAutoComplete: FC<LocationAutoCompleteProps> = ({ handleAddressSele
             matches.map((match: any) => [match.offset, match.offset + match.length])
           )
 
-          // TODO: si le usuario escribe una direccion que no existe y no la selecciona,
-          // hay que indicarle que debe seleccionarla, en caso congtrario pensraá que soloal escribirla quedará actualizada
           return (
             <li {...optionProps} key={id}>
               <Grid container sx={{ alignItems: 'center' }}>

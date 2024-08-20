@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { Button, Grid } from '@mui/material'
 import type { DefaultValues, FieldValues, SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
@@ -21,20 +23,39 @@ interface CustomFormProps<T extends FieldValues> {
   fields: FieldConfig[]
   defaultValues?: DefaultValues<T>
   onSubmit: SubmitHandler<T>
+  onCancel?: () => void
   submitButtonName?: string
+  resetForm?: boolean
 }
 
 const CustomForm = <T extends FieldValues>({
   fields,
   defaultValues,
   onSubmit,
+  onCancel,
+  resetForm,
   submitButtonName = 'Enviar'
 }: CustomFormProps<T>) => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm<T>({ defaultValues })
+
+  const handleCancel = () => {
+    reset()
+
+    if (onCancel) {
+      onCancel()
+    }
+  }
+
+  useEffect(() => {
+    if (resetForm) {
+      reset()
+    }
+  }, [reset, resetForm])
 
   return (
     <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
@@ -60,9 +81,17 @@ const CustomForm = <T extends FieldValues>({
           )
         })}
       </Grid>
-      <Button fullWidth variant='contained' type='submit'>
-        {submitButtonName}
-      </Button>
+      <Grid container gap={2}>
+        <Button fullWidth variant='contained' type='submit'>
+          {submitButtonName}
+        </Button>
+
+        {onCancel && (
+          <Button type='reset' fullWidth variant='outlined' onClick={handleCancel}>
+            Cancelar
+          </Button>
+        )}
+      </Grid>
     </form>
   )
 }

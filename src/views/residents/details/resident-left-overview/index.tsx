@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid'
 
-import type { ResidentType } from '@/types/resident'
 import ResidentDetails from './ResidentDetails'
+import type { ResidentType } from '@/types/residents/service'
 
 const ResidentLeftOverview = ({ residentData }: { residentData?: ResidentType }) => {
   return (

@@ -142,7 +142,9 @@ export const FormInput: React.FC<{
                   showYearDropdown
                   onChange={(date: Date) => onChange(date)}
                   placeholderText={props.placeholder}
-                  customInput={<TextField error={Boolean(props.errors[props.name])} label={props.label} />}
+                  customInput={
+                    <TextField sx={{ width: '100%' }} error={Boolean(props.errors[props.name])} label={props.label} />
+                  }
                 />
               )
 

@@ -5,8 +5,8 @@ import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 
 import CustomAvatar from '@core/components/mui/Avatar'
-import type { ResidentType } from '@/types/resident'
 import { getInitials } from '@/utils/getInitials'
+import type { ResidentType } from '@/types/residents/service'
 
 const InfoText = (props: { label: string; value: string | undefined }) => {
   const { label, value } = props
@@ -50,7 +50,7 @@ const ResidentDetails = ({ residentData }: { residentData?: ResidentType }) => {
           <div className='flex flex-col gap-2'>
             <InfoText label='Nombre' value={residentData?.nombre} />
             <InfoText label='Fecha Nacimiento' value={residentData?.fechaNacimiento} />
-            <InfoText label='Género' value={residentData?.idGenero === 1 ? 'MAsculino' : 'Femenino'} />
+            <InfoText label='Género' value={residentData?.idGenero === 1 ? 'Masculino' : 'Femenino'} />
             <InfoText label='Estado' value={residentData?.habilitado ? 'Activo' : 'Inactivo'} />
             <InfoText label='Fecha ingreso' value={residentData?.fechaIngreso} />
             <InfoText label='Fecha egreso' value={residentData?.fechaIngreso} />

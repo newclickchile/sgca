@@ -4,6 +4,9 @@ import { useEffect, useMemo, useState } from 'react'
 
 import Link from 'next/link'
 
+import { useRouter } from 'next/navigation'
+import './Residents.css'
+
 import {
   Button,
   CardContent,
@@ -42,12 +45,14 @@ import type { SubmitHandler } from 'react-hook-form'
 
 import { toast } from 'react-toastify'
 
+import { useLocalStorage } from 'react-use'
+
 import FilterSelect from '@/components/forms/FilterSelect'
 import ResidentDrawer from '@/components/residents/ResidentDrawer'
 import useFetchWithSession from '@/hooks/useFetchData'
 import type { AuxHousesType } from '@/types/aux'
-import type { NewResidentType, ResidentType } from '@/types/resident'
 import tableStyles from '@core/styles/table.module.css'
+import type { NewResidentType, ResidentType } from '@/types/residents/service'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -110,22 +115,17 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
   const [addUserOpen, setAddUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [globalFilter, setGlobalFilter] = useState('')
-  const [selectedHouse, setSelectedHouse] = useState<string>('')
+  const [selectedHouse, setSelectedHouse] = useLocalStorage('homeId', '')
   const [residents, setResidents] = useState<any[]>([])
   const [resetDrawerForm, setResetDrawerForm] = useState<boolean>(false)
+  const router = useRouter()
 
   const columns = useMemo<ColumnDef<ResidentTypeWithAction, any>[]>(
     () => [
       columnHelper.accessor('codsis', {
         size: 100,
         header: 'SIS',
-        cell: ({ row }) => (
-          <Typography
-            component={Link}
-            href={`/residentes/${row.original.id}`}
-            color='primary'
-          >{`${row.original.codsis}`}</Typography>
-        )
+        cell: ({ row }) => <Typography color='primary'>{`${row.original.codsis}`}</Typography>
       }),
       columnHelper.accessor('nombre', {
         header: 'Nombre',
@@ -268,7 +268,7 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
                   id: house.id.toString(),
                   label: house.casa
                 }))}
-                value={selectedHouse}
+                value={selectedHouse || ''}
                 onChange={setSelectedHouse}
                 label='Seleccionar Casa'
                 placeholder='Seleccionar Casa'
@@ -359,7 +359,11 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
                   .rows.slice(0, table.getState().pagination.pageSize)
                   .map(row => {
                     return (
-                      <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
+                      <tr
+                        onClick={() => router.replace(`/residentes/${row.original.id}`)}
+                        key={row.id}
+                        className={classnames('clickable-row', { selected: row.getIsSelected() })}
+                      >
                         {row.getVisibleCells().map(cell => (
                           <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
                         ))}

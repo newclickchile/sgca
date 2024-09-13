@@ -7,12 +7,12 @@ import dynamic from 'next/dynamic'
 import { Typography } from '@mui/material'
 import Grid from '@mui/material/Grid'
 
-import type { ResidentType } from '@/types/resident'
 import ResidentLeftOverview from './resident-left-overview'
 import ResidentRight from './resident-right'
 import { fetchData } from '@/utils/fetch'
 import { useSession } from '@/hooks/useSession'
 import type { AuxHousesType } from '@/types/aux'
+import type { ResidentType } from '@/types/residents/service'
 
 const PersonalTab = dynamic(() => import('@/views/residents/details/resident-right/personal'))
 const FamilyTab = dynamic(() => import('@/views/residents/details/resident-right/familia'))

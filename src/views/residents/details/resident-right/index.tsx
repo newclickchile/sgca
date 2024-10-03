@@ -54,6 +54,12 @@ const ResidentRight = ({
                 label='Grupo Familiar'
                 iconPosition='start'
               />
+              <CustomTab
+                icon={<i className='mage-heart-health text-2xl' />}
+                value='health'
+                label='Salud'
+                iconPosition='start'
+              />
               {/* <Tab icon={<i className='ri-lock-line' />} value='security' label='Security' iconPosition='start' />
               <Tab
                 icon={<i className='ri-map-pin-line' />}

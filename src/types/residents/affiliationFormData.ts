@@ -1,9 +1,14 @@
 import type { PlaceType } from '@/components/LocationAutoComplete'
 
 export type AffiliationFormData = {
-  name?: string
-  birthDate?: string
-  occupation?: string
-  direction?: PlaceType | null | string
-  condition?: string
+  nombrePadre?: string
+  ocupacionPadre?: string
+  fechaNacPadre?: string
+  direccionPadre?: PlaceType | null | string
+  condicionPadre?: string
+  nombreMadre?: string
+  ocupacionMadre?: string
+  fechaNacMadre?: string
+  direccionMadre?: PlaceType | null | string
+  condicionMadre?: string
 }

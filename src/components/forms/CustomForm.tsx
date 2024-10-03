@@ -64,7 +64,7 @@ const CustomForm = <T extends FieldValues>({
           const { name, isRequired, type, placeholder, rules, label, rows, listValues = [], width = 6 } = field
 
           return (
-            <Grid key={`${label}${index}`} item xs={12} sm={width}>
+            <Grid key={`${label}${index}`} item xs={12} sm={width} alignItems={'center'}>
               <FormInput
                 control={control}
                 errors={errors}

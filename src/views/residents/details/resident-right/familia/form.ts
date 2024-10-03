@@ -1,14 +1,14 @@
 import type { FieldConfig } from '@/components/forms/CustomForm'
 
-export const fields: FieldConfig[] = [
+export const fieldsMother: FieldConfig[] = [
   {
-    name: 'name',
+    name: 'nombreMadre',
     label: 'Nombre',
     isRequired: true,
     width: 9
   },
   {
-    name: 'birthDate',
+    name: 'fechaNacMadre',
     label: 'Fecha Nacimiento',
     width: 3,
 
@@ -16,21 +16,60 @@ export const fields: FieldConfig[] = [
     type: 'datepicker'
   },
   {
-    name: 'ocupation',
+    name: 'ocupacionMadre',
     label: 'Ocupación',
     width: 6
 
     // isRequired: true
   },
   {
-    name: 'condition',
+    name: 'condicionMadre',
     label: 'Condición / Estado',
     width: 6
 
     // isRequired: true
   },
   {
-    name: 'direction',
+    name: 'direccionMadre',
+    label: 'Dirección',
+    type: 'autocomplete',
+    width: 12
+
+    // isRequired: true
+  }
+]
+
+export const fieldsFather: FieldConfig[] = [
+  {
+    name: 'nombrePadre',
+    label: 'Nombre',
+    isRequired: true,
+    width: 9
+  },
+  {
+    name: 'fechaNacPadre',
+    label: 'Fecha Nacimiento',
+    width: 3,
+
+    // isRequired: true,
+    type: 'datepicker'
+  },
+  {
+    name: 'ocupacionPadre',
+    label: 'Ocupación',
+    width: 6
+
+    // isRequired: true
+  },
+  {
+    name: 'condicionPadre',
+    label: 'Condición / Estado',
+    width: 6
+
+    // isRequired: true
+  },
+  {
+    name: 'direccionPadre',
     label: 'Dirección',
     type: 'autocomplete',
     width: 12

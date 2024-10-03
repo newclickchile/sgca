@@ -1,8 +1,8 @@
 import { genderOptions } from '@/constants/genderOptions'
-import type { NewResidentType } from '@/types/resident'
 import CustomDrawer from '../CustomDrawer'
 import type { FieldConfig } from '../forms/CustomForm'
 import CustomForm from '../forms/CustomForm'
+import type { NewResidentType } from '@/types/residents/service'
 
 type Props = {
   open: boolean
@@ -20,35 +20,52 @@ const fields: FieldConfig[] = [
     isRequired: true
   },
   {
-    name: 'name',
+    name: 'nombre',
     label: 'Nombre',
     isRequired: true,
     width: 12
   },
   {
-    name: 'birthDate',
+    name: 'fechaNacimiento',
     label: 'Fecha Nacimiento',
     width: 12,
     isRequired: true,
     type: 'datepicker'
   },
   {
-    name: 'sisCode',
-    label: 'Código SIS',
-    width: 12,
-    isRequired: true
-  },
-  {
-    name: 'genderId',
+    name: 'genero',
     label: 'Género',
     type: 'select',
     listValues: genderOptions,
     width: 12,
     isRequired: true
+  },
+  {
+    name: 'casa',
+    label: 'Casa/Residencia',
+    type: 'select',
+    width: 12,
+    listValues: [],
+    isRequired: true
+  },
+  {
+    name: 'programa',
+    label: 'Programa',
+    type: 'select',
+    width: 12,
+    listValues: [],
+    isRequired: true
+  },
+  {
+    name: 'flagRsh',
+    label: 'Registro Social de Hogares',
+    width: 12,
+    type: 'checkbox',
+    isRequired: true
   }
 ]
 
-const ResidentDrawer = (props: Props) => {
+const ResidentDrawer = async (props: Props) => {
   const { open, handleClose, onSubmit, handleCancel, resetForm } = props
 
   return (

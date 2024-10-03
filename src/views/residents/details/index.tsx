@@ -7,15 +7,15 @@ import dynamic from 'next/dynamic'
 import { Typography } from '@mui/material'
 import Grid from '@mui/material/Grid'
 
+import type { AuxProgramType } from '@/types/aux'
+import type { ResidentType } from '@/types/residents/service'
+import { fetchData } from '@/utils/fetch'
 import ResidentLeftOverview from './resident-left-overview'
 import ResidentRight from './resident-right'
-import { fetchData } from '@/utils/fetch'
-import { useSession } from '@/hooks/useSession'
-import type { AuxHousesType } from '@/types/aux'
-import type { ResidentType } from '@/types/residents/service'
 
 const PersonalTab = dynamic(() => import('@/views/residents/details/resident-right/personal'))
 const FamilyTab = dynamic(() => import('@/views/residents/details/resident-right/familia'))
+const HealthTab = dynamic(() => import('@/views/residents/details/resident-right/salud'))
 
 // const SecurityTab = dynamic(() => import('@views/apps/ecommerce/customers/details/customer-right/security'))
 // const NotificationsTab = dynamic(() => import('@views/apps/ecommerce/customers/details/customer-right/notification'))
@@ -25,24 +25,27 @@ const FamilyTab = dynamic(() => import('@/views/residents/details/resident-right
 // )
 
 interface AuxDataType {
-  housesData: AuxHousesType[]
+  programsData: AuxProgramType[]
 }
 
 const generateTabContentComponents = (
   residentData: ResidentType,
   auxData: AuxDataType
 ): { [key: string]: ReactElement } => ({
-  personal: <PersonalTab residentData={residentData} housesData={auxData.housesData} />,
-  family: <FamilyTab residentData={residentData} />
+  personal: <PersonalTab residentData={residentData} programsData={auxData.programsData} />,
+  family: <FamilyTab residentData={residentData} />,
+  health: <HealthTab />
 })
 
-const URL_HOUSES = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/casas/obtener?idInstitucion`
+// const URL_HOUSES = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/casas/obtener?idInstitucion`
+const URL_PROGRAMS = `${process.env.NEXT_PUBLIC_API_URL_AUXILIARES}/programa`
 
 const ResidentDetails = async ({ residentData }: { residentData: ResidentType }) => {
-  const session = await useSession()
-  const { data: housesData } = await fetchData(`${URL_HOUSES}=${session?.user.institutionId}`)
+  // const session = await useSession()
+  // const { data: housesData } = await fetchData(`${URL_HOUSES}=${session?.user.institutionId}`)
+  const { data: programsData } = await fetchData(URL_PROGRAMS)
 
-  const tabContentComponents = generateTabContentComponents(residentData, { housesData })
+  const tabContentComponents = generateTabContentComponents(residentData, { programsData })
 
   return (
     <Grid container spacing={6}>

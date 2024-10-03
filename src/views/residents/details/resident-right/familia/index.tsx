@@ -26,7 +26,7 @@ import type { ResidentType } from '@/types/residents/service'
 
 // import type { ChildrensType } from 'src/types/apps/userTypes'
 
-const ChildrenTabFamilyData: React.FC<{ residentData: ResidentType }> = ({ residentData }) => {
+const FamilyTab: React.FC<{ residentData: ResidentType }> = ({ residentData }) => {
   // const IsUserData = Boolean(window.localStorage.getItem('userSelectedData'))
 
   // const data: ChildrensType | null = IsUserData ? JSON.parse(window.localStorage.getItem('userSelectedData')!) : null
@@ -372,4 +372,4 @@ const ChildrenTabFamilyData: React.FC<{ residentData: ResidentType }> = ({ resid
   )
 }
 
-export default ChildrenTabFamilyData
+export default FamilyTab

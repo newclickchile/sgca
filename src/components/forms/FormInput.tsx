@@ -16,6 +16,8 @@ import InputAdornment from '@mui/material/InputAdornment'
 import type { Control, DeepMap, FieldError, RegisterOptions } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
 
+import { format } from 'date-fns'
+
 import type { PlaceType } from '../LocationAutoComplete'
 import LocationAutoComplete from '../LocationAutoComplete'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
@@ -29,7 +31,7 @@ export const PASSWORD_RULES = [
 ]
 
 export interface IKeyValueData {
-  id: string
+  id: string | number
   nombre: string
   descripcion?: string
 }
@@ -138,9 +140,11 @@ export const FormInput: React.FC<{
                 <AppReactDatepicker
                   selected={value}
                   id='basic-input'
-                  dateFormat='dd/MM/yyyy'
+                  dateFormat='yyyy/MM/dd'
                   showYearDropdown
-                  onChange={(date: Date) => onChange(date)}
+                  onChange={(date: Date) => {
+                    return onChange(format(date, 'yyyy/MM/dd'))
+                  }}
                   placeholderText={props.placeholder}
                   customInput={
                     <TextField sx={{ width: '100%' }} error={Boolean(props.errors[props.name])} label={props.label} />

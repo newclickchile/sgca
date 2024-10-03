@@ -9,60 +9,67 @@ export const fields: FieldConfig[] = [
     isRequired: true
   },
   {
-    name: 'name',
+    name: 'nombre',
     label: 'Nombre',
     isRequired: true,
-    width: 9
+    width: 6
 
     // rules: {
     //   pattern: { value: /^.{8,16}$/, message: 'Debe ingresar entre 8 y 16 caracteres' }
     // }
   },
   {
-    name: 'birthDate',
+    name: 'fechaNacimiento',
     label: 'Fecha Nacimiento',
     width: 3,
     isRequired: true,
     type: 'datepicker'
   },
   {
-    name: 'sisCode',
+    name: 'codigosis',
     label: 'Código SIS',
-    width: 4.5,
+    width: 4,
     isRequired: true
   },
   {
-    name: 'genderId',
+    name: 'genero',
     label: 'Género',
     type: 'select',
     listValues: genderOptions,
-    width: 4.5,
-    isRequired: true
-  },
-  {
-    name: 'houseId',
-    label: 'Casa/Residencia',
-    type: 'select',
-    width: 6,
-
-    listValues: [],
+    width: 4,
     isRequired: true
   },
   {
     name: 'flagRsh',
     label: 'Registro Social de Hogares',
-    width: 6,
+    width: 4,
     type: 'checkbox'
   },
   {
-    name: 'direction',
+    name: 'casa',
+    label: 'Casa/Residencia',
+    type: 'select',
+    width: 6,
+    listValues: [],
+    isRequired: true
+  },
+  {
+    name: 'programa',
+    label: 'Programa',
+    type: 'select',
+    width: 6,
+    listValues: [],
+    isRequired: true
+  },
+  {
+    name: 'direccion',
     label: 'Dirección',
     type: 'autocomplete',
     width: 12,
     isRequired: true
   },
   {
-    name: 'disability',
+    name: 'discapacidad',
     label: 'Discapacidad',
     type: 'multiline',
     rows: 3

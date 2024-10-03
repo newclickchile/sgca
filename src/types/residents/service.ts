@@ -1,9 +1,23 @@
 export interface NewResidentType {
-  nombre: string
   rut: string
+  nombre: string
   fechaNacimiento: string
   codsis: number
   idGenero: number
+}
+
+export interface IUpdateResident {
+  rut: string
+  nombre: string
+  fechaNacimiento: string
+  codigosis: number
+  genero: number
+  flagRsh: boolean
+  direccion: string
+  casa: number
+  programa: number
+  discapacidad: string
+  hobbie: string
 }
 
 export interface ResidentType {

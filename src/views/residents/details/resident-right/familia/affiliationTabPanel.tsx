@@ -1,15 +1,23 @@
 import React from 'react'
 
 import { TabPanel } from '@mui/lab'
-import type { SubmitHandler } from 'react-hook-form'
 
-import CardActionCollapse from '@/components/residents/CardActionCollapse'
-import type { ResidentType } from '@/types/residents/service'
+import { toast } from 'react-toastify'
+
+import { useSession } from 'next-auth/react'
+
 import CustomForm from '@/components/forms/CustomForm'
+import CardActionCollapse from '@/components/residents/CardActionCollapse'
 import type { AffiliationFormData } from '@/types/residents/affiliationFormData'
-import { fields } from './form'
+import type { ResidentType } from '@/types/residents/service'
+import { fetchClientData } from '@/utils/fetch'
+import { fieldsFather, fieldsMother } from './form'
+
+const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente`
 
 const AffiliationTabPanel: React.FC<{ residentData: ResidentType }> = ({ residentData }) => {
+  const { data: session } = useSession()
+
   const {
     nombreMadre,
     ocupacionMadre,
@@ -23,44 +31,53 @@ const AffiliationTabPanel: React.FC<{ residentData: ResidentType }> = ({ residen
     condicionPadre
   } = residentData
 
-  const onSubmitMother: SubmitHandler<AffiliationFormData> = async data => {
-    await onSubmit(data, 'mother')
-  }
-
-  const onSubmitFather: SubmitHandler<AffiliationFormData> = async data => {
-    await onSubmit(data, 'father')
-  }
-
   const onSubmit = async (data: AffiliationFormData, formType: 'mother' | 'father') => {
     console.log('data :', data, formType)
+
+    // const queryParams = new URLSearchParams(data as unknown as Record<string, string>).toString()
+
+    // console.log('queryParams :', queryParams)
+
+    //nombreMadre=xxxx&fechaNacMadre=2024-08-10&ocupacionMadre=aaa&condicionMadre=aaaa&direccionMadre=aaaa
+
+    const response = await fetchClientData({
+      endpoint: `${URL_RESIDENTS}/padres/actualizar?idResidente=${residentData.id}`,
+      session,
+      method: 'POST',
+      data
+    })
+
+    console.log('response :', response)
+
+    toast.success('Datos actualizados correctamente')
   }
 
   return (
     <TabPanel value='1'>
-      <CardActionCollapse title='Filiación Madre' collapse={false}>
+      <CardActionCollapse title='Filiación Madre'>
         <CustomForm<AffiliationFormData>
-          fields={fields}
+          fields={fieldsMother}
           defaultValues={{
-            name: nombreMadre,
-            birthDate: fechaNacimientoMadre,
-            occupation: ocupacionMadre,
-            condition: condicionMadre,
-            direction: direccionMadre
+            nombreMadre,
+            fechaNacMadre: fechaNacimientoMadre,
+            ocupacionMadre,
+            condicionMadre,
+            direccionMadre
           }}
-          onSubmit={onSubmitMother}
+          onSubmit={data => onSubmit(data, 'mother')}
         />
       </CardActionCollapse>
       <CardActionCollapse title='Filiación Padre'>
         <CustomForm<AffiliationFormData>
-          fields={fields}
+          fields={fieldsFather}
           defaultValues={{
-            name: nombrePadre,
-            birthDate: fechaNacimientoPadre,
-            occupation: ocupacionPadre,
-            condition: condicionPadre,
-            direction: direccionPadre
+            nombrePadre,
+            fechaNacPadre: fechaNacimientoPadre,
+            ocupacionPadre,
+            condicionPadre,
+            direccionPadre
           }}
-          onSubmit={onSubmitFather}
+          onSubmit={data => onSubmit(data, 'father')}
         />
       </CardActionCollapse>
     </TabPanel>

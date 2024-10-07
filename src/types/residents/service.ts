@@ -1,4 +1,4 @@
-export interface NewResidentType {
+export interface INewResident {
   rut: string
   nombre: string
   fechaNacimiento: string
@@ -20,7 +20,7 @@ export interface IUpdateResident {
   hobbie: string
 }
 
-export interface ResidentType {
+export interface IResident {
   id: number
   nombre: string
   habilitado: boolean

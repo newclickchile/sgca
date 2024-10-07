@@ -1,14 +1,28 @@
-import { useSession } from '@/hooks/useSession'
+import { authOptions } from '@/libs/auth'
 import { fetchData } from '@/utils/fetch'
 import Residents from '@/views/residents/Residents'
+import { getServerSession } from 'next-auth'
 
 const URL_HOUSES = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/casas/obtener?idInstitucion`
+const URL_PROGRAMS = `${process.env.NEXT_PUBLIC_API_URL_AUXILIARES}/programa`
 
-const ResidentsPage: React.FC = async () => {
-  const session = await useSession()
-  const { data: housesData } = await fetchData(`${URL_HOUSES}=${session?.user.institutionId}`)
+const getReportData = async () => {
+  const session = await getServerSession(authOptions)
 
-  return <Residents houses={housesData} />
+  if (!session) {
+    throw new Error('User is not authenticated')
+  }
+
+  const { data: housesData } = await fetchData(session, `${URL_HOUSES}=${session?.user.institutionId}`)
+  const { data: programsData } = await fetchData(session, URL_PROGRAMS)
+
+  return { housesData, programsData }
 }
 
-export default ResidentsPage
+const ResidentPage = async () => {
+  const { housesData, programsData } = await getReportData()
+
+  return <Residents houses={housesData} programs={programsData} />
+}
+
+export default ResidentPage

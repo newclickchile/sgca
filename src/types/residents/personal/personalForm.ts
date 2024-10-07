@@ -1,6 +1,6 @@
 import type { PlaceType } from '@/components/LocationAutoComplete'
 
-export type PersonalFormData = {
+export type IPersonalForm = {
   rut: string
   name: string
   birthDate: string

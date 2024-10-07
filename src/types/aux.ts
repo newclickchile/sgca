@@ -10,3 +10,9 @@ export type AuxHousesType = {
   idInstitucion: number
   habilitado: boolean
 }
+
+export type AuxParentsType = {
+  id: number
+  parentesco: string
+  habilitado: boolean
+}

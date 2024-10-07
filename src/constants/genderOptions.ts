@@ -1,5 +1,5 @@
 import { Gender } from '@/enums'
-import type { GenderOption } from '@/types/residents/commons'
+import type { GenderOption } from '@/types/commons'
 
 export const genderOptions: GenderOption[] = [
   {

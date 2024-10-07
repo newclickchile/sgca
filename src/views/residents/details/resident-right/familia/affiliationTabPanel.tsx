@@ -8,76 +8,79 @@ import { useSession } from 'next-auth/react'
 
 import CustomForm from '@/components/forms/CustomForm'
 import CardActionCollapse from '@/components/residents/CardActionCollapse'
-import type { AffiliationFormData } from '@/types/residents/affiliationFormData'
-import type { ResidentType } from '@/types/residents/service'
 import { fetchClientData } from '@/utils/fetch'
 import { fieldsFather, fieldsMother } from './form'
+import type { IResident } from '@/types/residents/service'
+import type { IAffiliationForm } from '@/types/residents/familyGroup/affiliationTab'
 
 const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente`
 
-const AffiliationTabPanel: React.FC<{ residentData: ResidentType }> = ({ residentData }) => {
+const AffiliationTabPanel: React.FC<{ residentData: IResident }> = ({ residentData }) => {
+  console.log('residentData :', residentData)
   const { data: session } = useSession()
 
-  const {
-    nombreMadre,
-    ocupacionMadre,
-    fechaNacimientoMadre,
-    direccionMadre,
-    condicionMadre,
-    nombrePadre,
-    ocupacionPadre,
-    fechaNacimientoPadre,
-    direccionPadre,
-    condicionPadre
-  } = residentData
+  const affiliationData = {
+    nombreMadre: residentData.nombreMadre,
+    ocupacionMadre: residentData.ocupacionMadre,
+    fechaNacimientoMadre: residentData.fechaNacimientoMadre,
+    direccionMadre: residentData.direccionMadre,
+    condicionMadre: residentData.condicionMadre,
+    nombrePadre: residentData.nombrePadre,
+    ocupacionPadre: residentData.ocupacionPadre,
+    fechaNacimientoPadre: residentData.fechaNacimientoPadre,
+    direccionPadre: residentData.direccionPadre,
+    condicionPadre: residentData.condicionPadre
+  }
 
-  const onSubmit = async (data: AffiliationFormData, formType: 'mother' | 'father') => {
-    console.log('data :', data, formType)
+  const onSubmit = async (data: IAffiliationForm) => {
+    try {
+      const queryParams = new URLSearchParams({ ...affiliationData, ...data } as unknown as Record<
+        string,
+        string
+      >).toString()
 
-    // const queryParams = new URLSearchParams(data as unknown as Record<string, string>).toString()
+      console.log('queryParams :', queryParams)
 
-    // console.log('queryParams :', queryParams)
+      const response = await fetchClientData({
+        endpoint: `${URL_RESIDENTS}/padres/actualizar?idResidente=${residentData.id}&${queryParams}`,
+        session,
+        method: 'POST'
+      })
 
-    //nombreMadre=xxxx&fechaNacMadre=2024-08-10&ocupacionMadre=aaa&condicionMadre=aaaa&direccionMadre=aaaa
+      console.log('response :', response)
 
-    const response = await fetchClientData({
-      endpoint: `${URL_RESIDENTS}/padres/actualizar?idResidente=${residentData.id}`,
-      session,
-      method: 'POST',
-      data
-    })
-
-    console.log('response :', response)
-
-    toast.success('Datos actualizados correctamente')
+      toast.success('Datos actualizados correctamente')
+    } catch (error) {
+      toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
+    }
   }
 
   return (
     <TabPanel value='1'>
       <CardActionCollapse title='Filiación Madre'>
-        <CustomForm<AffiliationFormData>
+        <CustomForm<IAffiliationForm>
           fields={fieldsMother}
           defaultValues={{
-            nombreMadre,
-            fechaNacMadre: fechaNacimientoMadre,
-            ocupacionMadre,
-            condicionMadre,
-            direccionMadre
+            nombreMadre: affiliationData.nombreMadre,
+            fechaNacMadre: affiliationData.fechaNacimientoMadre,
+            ocupacionMadre: affiliationData.ocupacionMadre,
+            condicionMadre: affiliationData.condicionMadre,
+            direccionMadre: affiliationData.direccionMadre
           }}
-          onSubmit={data => onSubmit(data, 'mother')}
+          onSubmit={data => onSubmit(data)}
         />
       </CardActionCollapse>
       <CardActionCollapse title='Filiación Padre'>
-        <CustomForm<AffiliationFormData>
+        <CustomForm<IAffiliationForm>
           fields={fieldsFather}
           defaultValues={{
-            nombrePadre,
-            fechaNacPadre: fechaNacimientoPadre,
-            ocupacionPadre,
-            condicionPadre,
-            direccionPadre
+            nombrePadre: affiliationData.nombrePadre,
+            fechaNacPadre: affiliationData.fechaNacimientoPadre,
+            ocupacionPadre: affiliationData.ocupacionPadre,
+            condicionPadre: affiliationData.condicionPadre,
+            direccionPadre: affiliationData.direccionPadre
           }}
-          onSubmit={data => onSubmit(data, 'father')}
+          onSubmit={data => onSubmit(data)}
         />
       </CardActionCollapse>
     </TabPanel>

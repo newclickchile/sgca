@@ -1,4 +1,3 @@
-// hooks/useFetchWithSession.ts
 import { useState, useEffect } from 'react'
 
 import { useSession } from 'next-auth/react'
@@ -9,7 +8,7 @@ type FetchOptions = {
   body?: any
 }
 
-const useFetchWithSession = <T>({
+const useFetchData = <T>({
   endpoint,
   method = 'GET',
   body,
@@ -58,4 +57,4 @@ const useFetchWithSession = <T>({
   return { data, error, loading }
 }
 
-export default useFetchWithSession
+export default useFetchData

@@ -1,5 +1,5 @@
-const Home = () => {
-  return <>home page</>
+const Home = ({ data }: { data?: string }) => {
+  return <div>{JSON.stringify(data)}</div>
 }
 
 export default Home

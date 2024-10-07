@@ -1,6 +1,6 @@
 import type { PlaceType } from '@/components/LocationAutoComplete'
 
-export type AffiliationFormData = {
+export type IParentForm = {
   nombrePadre?: string
   ocupacionPadre?: string
   fechaNacPadre?: string

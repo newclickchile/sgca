@@ -2,12 +2,12 @@ import { genderOptions } from '@/constants/genderOptions'
 import CustomDrawer from '../CustomDrawer'
 import type { FieldConfig } from '../forms/CustomForm'
 import CustomForm from '../forms/CustomForm'
-import type { NewResidentType } from '@/types/residents/service'
+import type { INewResident } from '@/types/residents/service'
 
 type Props = {
   open: boolean
   handleClose: () => void
-  onSubmit: (data: NewResidentType) => void
+  onSubmit: (data: INewResident) => void
   resetForm?: boolean
   handleCancel: () => void
 }
@@ -65,12 +65,12 @@ const fields: FieldConfig[] = [
   }
 ]
 
-const ResidentDrawer = async (props: Props) => {
+const ResidentDrawer = (props: Props) => {
   const { open, handleClose, onSubmit, handleCancel, resetForm } = props
 
   return (
     <CustomDrawer open={open} handleClose={handleClose} title='Agregar nuevo Residente'>
-      <CustomForm<NewResidentType> fields={fields} onSubmit={onSubmit} onCancel={handleCancel} resetForm={resetForm} />
+      <CustomForm<INewResident> fields={fields} onSubmit={onSubmit} onCancel={handleCancel} resetForm={resetForm} />
     </CustomDrawer>
   )
 }

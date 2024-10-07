@@ -20,21 +20,15 @@ import CustomForm from '@/components/forms/CustomForm'
 // import type { AuxHousesType, AuxProgramType } from '@/types/aux'
 import type { IUpdateResident, ResidentType } from '@/types/residents/service'
 import { fields } from './form'
-import useHouseStore from '@/store/store'
-import type { AuxProgramType } from '@/types/aux'
+import type { AuxHousesType, AuxProgramType } from '@/types/aux'
 
 const PersonalTab: React.FC<{
   residentData: ResidentType
-
-  // housesData: AuxHousesType[]
+  housesData: AuxHousesType[]
   programsData: AuxProgramType[]
-}> = ({ residentData, programsData }) => {
+}> = ({ residentData, programsData, housesData }) => {
   const { data: session } = useSession()
   const { nombre, fechaNacimiento, rut, flagRsh = true, direccion, codsis, idCasa, hobbie, idGenero } = residentData
-
-  const housesData = useHouseStore(state => state.houses)
-
-  console.log('houses :', housesData)
 
   const houseOptions = housesData.map(house => ({
     id: house.id.toString(),

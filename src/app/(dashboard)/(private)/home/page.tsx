@@ -7,23 +7,33 @@ import Home from '@/views/Home'
  * ! because we've used the server action for getting our static data.
  */
 
-/* const getPricingData = async () => {
+const getPricingData = async () => {
   // Vars
-  const res = await fetch(`${process.env.API_URL}/pages/pricing`)
+  const url = `${process.env.NEXT_PUBLIC_API_URL}houses`
+
+  console.log('url :', url)
+  const res = await fetch(url)
 
   if (!res.ok) {
     throw new Error('Failed to fetch data')
   }
 
-  return res.json()
-} */
+  const response = await res.json()
+
+  console.log('response :', response)
+
+  return response
+}
 
 const HomePage = async () => {
-  // const data = await getPricingData()
+  const data = await getPricingData()
 
-  // console.log('data :', data)
-
-  return <Home />
+  return (
+    <div>
+      {JSON.stringify(data)}
+      <Home data={data} />
+    </div>
+  )
 }
 
 export default HomePage

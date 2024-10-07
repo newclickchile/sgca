@@ -118,88 +118,86 @@ const LocationAutoComplete: FC<LocationAutoCompleteProps> = ({ handleAddressSele
   }, [value, inputValue, fetch])
 
   return (
-    <>
-      <Autocomplete
-        id='autocomplete'
-        freeSolo
-        getOptionLabel={option => (typeof option === 'string' ? option : option.description)}
-        filterOptions={(options, params) => {
-          const filtered = filter(options, params)
+    <Autocomplete
+      id='autocomplete'
+      freeSolo
+      getOptionLabel={option => (typeof option === 'string' ? option : option.description)}
+      filterOptions={(options, params) => {
+        const filtered = filter(options, params)
 
-          const { inputValue } = params
+        const { inputValue } = params
 
-          const isExisting = options.some(option => inputValue === option.description)
+        const isExisting = options.some(option => inputValue === option.description)
 
-          if (inputValue !== '' && !isExisting) {
-            filtered.push({
-              structured_formatting: { main_text: inputValue, secondary_text: '' },
-              description: inputValue
-            })
-          }
+        if (inputValue !== '' && !isExisting) {
+          filtered.push({
+            structured_formatting: { main_text: inputValue, secondary_text: '' },
+            description: inputValue
+          })
+        }
 
-          return filtered
-        }}
-        options={options}
-        autoComplete
-        includeInputInList
-        filterSelectedOptions
-        clearOnBlur
-        value={value}
-        noOptionsText='Sin direcciones encontradas'
-        onChange={(_, newValue) => {
-          const newStringValue = typeof newValue === 'string' ? newValue : newValue?.description || ''
+        return filtered
+      }}
+      options={options}
+      autoComplete
+      includeInputInList
+      filterSelectedOptions
+      clearOnBlur
+      value={value}
+      noOptionsText='Sin direcciones encontradas'
+      onChange={(_, newValue) => {
+        const newStringValue = typeof newValue === 'string' ? newValue : newValue?.description || ''
 
-          const placeValue: PlaceType = {
-            description: newStringValue,
-            structured_formatting: { main_text: newStringValue, secondary_text: '' }
-          }
+        const placeValue: PlaceType = {
+          description: newStringValue,
+          structured_formatting: { main_text: newStringValue, secondary_text: '' }
+        }
 
-          const formatValue = typeof newValue === 'string' ? placeValue : newValue
+        const formatValue = typeof newValue === 'string' ? placeValue : newValue
 
-          setValue(formatValue)
+        setValue(formatValue)
 
-          setOptions(formatValue ? [formatValue, ...options] : options)
-          handleAddressSelect(formatValue)
-          textFieldRef?.current?.blur()
-        }}
-        onInputChange={(_, newInputValue) => {
-          setInputValue(newInputValue)
-        }}
-        renderInput={params => (
-          <TextField {...params} error={error} inputRef={textFieldRef} label='Dirección' fullWidth value={inputValue} />
-        )}
-        renderOption={(props, option) => {
-          const { id, ...optionProps } = props
-          const matches = option.structured_formatting.main_text_matched_substrings || []
+        setOptions(formatValue ? [formatValue, ...options] : options)
+        handleAddressSelect(formatValue)
+        textFieldRef?.current?.blur()
+      }}
+      onInputChange={(_, newInputValue) => {
+        setInputValue(newInputValue)
+      }}
+      renderInput={params => (
+        <TextField {...params} error={error} inputRef={textFieldRef} label='Dirección' fullWidth value={inputValue} />
+      )}
+      renderOption={(props, option) => {
+        const { id, ...optionProps } = props
+        const matches = option.structured_formatting.main_text_matched_substrings || []
 
-          const parts = parse(
-            option.structured_formatting.main_text,
-            matches.map((match: any) => [match.offset, match.offset + match.length])
-          )
+        const parts = parse(
+          option.structured_formatting.main_text,
+          matches.map((match: any) => [match.offset, match.offset + match.length])
+        )
 
-          return (
-            <li {...optionProps} key={id}>
-              <Grid container sx={{ alignItems: 'center' }}>
-                <Grid item sx={{ display: 'flex', width: 44 }}>
-                  <i className='ri-road-map-line text-actionActive' />
-                </Grid>
-
-                <Grid item sx={{ width: 'calc(100% - 44px)', wordWrap: 'break-word' }}>
-                  {parts.map((part, index) => (
-                    <Box key={index} component='span' sx={{ fontWeight: part.highlight ? 'bold' : 'regular' }}>
-                      {part.text}
-                    </Box>
-                  ))}
-                  <Typography variant='body2' color='text.secondary'>
-                    {option.structured_formatting.secondary_text}
-                  </Typography>
-                </Grid>
+        return (
+          <li {...optionProps} key={id}>
+            <Grid container sx={{ alignItems: 'center' }}>
+              <Grid item sx={{ display: 'flex', width: 44 }}>
+                <i className='ri-road-map-line text-actionActive' />
               </Grid>
-            </li>
-          )
-        }}
-      />
-    </>
+
+              <Grid item sx={{ width: 'calc(100% - 44px)', wordWrap: 'break-word' }}>
+                {parts.map((part, index) => (
+                  <Box key={index} component='span' sx={{ fontWeight: part.highlight ? 'bold' : 'regular' }}>
+                    {part.text}
+                  </Box>
+                ))}
+                <Typography variant='body2' color='text.secondary'>
+                  {option.structured_formatting.secondary_text}
+                </Typography>
+              </Grid>
+            </Grid>
+          </li>
+        )
+      }}
+    />
   )
 }
 

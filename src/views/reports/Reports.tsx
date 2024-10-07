@@ -1,7 +1,7 @@
-'use client'
+import { Grid } from '@mui/material'
 
 const Reports = () => {
-  return <> Report component</>
+  return <Grid> Report component</Grid>
 }
 
 export default Reports

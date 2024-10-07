@@ -49,10 +49,10 @@ import { useLocalStorage } from 'react-use'
 
 import FilterSelect from '@/components/forms/FilterSelect'
 import ResidentDrawer from '@/components/residents/ResidentDrawer'
-import useFetchWithSession from '@/hooks/useFetchData'
-import type { AuxHousesType } from '@/types/aux'
+import useFetchData from '@/hooks/useFetchData'
+import type { AuxHousesType, AuxProgramType } from '@/types/aux'
 import tableStyles from '@core/styles/table.module.css'
-import type { NewResidentType, ResidentType } from '@/types/residents/service'
+import type { INewResident, ResidentType } from '@/types/residents/service'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -111,7 +111,7 @@ const columnHelper = createColumnHelper<ResidentTypeWithAction>()
 
 const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/obtener/bycasa`
 
-const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
+const Residents = ({ houses }: { houses: AuxHousesType[]; programs: AuxProgramType[] }) => {
   const [addUserOpen, setAddUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [globalFilter, setGlobalFilter] = useState('')
@@ -213,7 +213,7 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
     data: residentData,
     error,
     loading
-  } = useFetchWithSession<ResidentType[]>({
+  } = useFetchData<ResidentType[]>({
     endpoint: selectedHouse ? `${URL_RESIDENTS}?idCasa=${selectedHouse}` : '',
     method: 'GET',
     shouldFetch: selectedHouse !== ''
@@ -244,7 +244,7 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
     handleDrawerClose()
   }
 
-  const onSubmit: SubmitHandler<NewResidentType> = async (data: NewResidentType) => {
+  const onSubmit: SubmitHandler<INewResident> = async (data: INewResident) => {
     try {
       console.log('data :', data)
 
@@ -257,7 +257,7 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
   }
 
   return (
-    <>
+    <Grid>
       <Card>
         <CardHeader title='Residentes' />
         <CardContent>
@@ -313,7 +313,7 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
                   {headerGroup.headers.map(header => (
                     <th key={header.id}>
                       {header.isPlaceholder ? null : (
-                        <>
+                        <Grid>
                           <div
                             className={classnames({
                               'flex items-center': header.column.getIsSorted(),
@@ -327,7 +327,7 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
                               desc: <i className='ri-arrow-down-s-line text-xl' />
                             }[header.column.getIsSorted() as 'asc' | 'desc'] ?? null}
                           </div>
-                        </>
+                        </Grid>
                       )}
                     </th>
                   ))}
@@ -397,7 +397,7 @@ const Residents = ({ houses }: { houses: AuxHousesType[] }) => {
         onSubmit={onSubmit}
         resetForm={resetDrawerForm}
       />
-    </>
+    </Grid>
   )
 }
 

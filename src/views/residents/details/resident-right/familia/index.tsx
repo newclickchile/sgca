@@ -9,9 +9,6 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import Grid from '@mui/material/Grid'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
 
 // ** Third Party Imports
@@ -21,16 +18,11 @@ import { Controller, useForm } from 'react-hook-form'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { Box, Checkbox, FormControlLabel, Tab, Typography } from '@mui/material'
 
+import type { AuxParentsType } from '@/types/aux'
 import AffiliationTabPanel from './affiliationTabPanel'
-import type { ResidentType } from '@/types/residents/service'
+import type { IResident } from '@/types/residents/service'
 
-// import type { ChildrensType } from 'src/types/apps/userTypes'
-
-const FamilyTab: React.FC<{ residentData: ResidentType }> = ({ residentData }) => {
-  // const IsUserData = Boolean(window.localStorage.getItem('userSelectedData'))
-
-  // const data: ChildrensType | null = IsUserData ? JSON.parse(window.localStorage.getItem('userSelectedData')!) : null
-
+const FamilyTab: React.FC<{ residentData: IResident; parents: AuxParentsType[] }> = ({ residentData, parents }) => {
   const [brothersCount, setBrothersCount] = useState(1)
   const [value, setValue] = useState<string>('1')
 
@@ -174,7 +166,14 @@ const FamilyTab: React.FC<{ residentData: ResidentType }> = ({ residentData }) =
                     </Typography>
                   </Grid>
 
-                  <Grid container alignItems={'center'} gap={5}>
+                  {/* <CustomForm<NewParentType>
+                    fields={fields}
+                    onSubmit={onSubmit}
+                    onCancel={handleCancel}
+                    resetForm={resetForm}
+                  /> */}
+
+                  {/* <Grid container alignItems={'center'} gap={5}>
                     <Grid item xs={3}>
                       <FormControl fullWidth>
                         <InputLabel>Parentesco</InputLabel>
@@ -269,7 +268,7 @@ const FamilyTab: React.FC<{ residentData: ResidentType }> = ({ residentData }) =
                         </Button>
                       )}
                     </Grid>
-                  </Grid>
+                  </Grid> */}
                 </Box>
               ))}
               <Grid item xs={12} pt={4}>

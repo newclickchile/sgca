@@ -5,7 +5,6 @@ import type { Metadata } from 'next'
 import ForgotPassword from '@views/ForgotPassword'
 
 // Server Action Imports
-import { getServerMode } from '@core/utils/serverHelpers'
 
 export const metadata: Metadata = {
   title: 'Forgot Password',
@@ -13,10 +12,7 @@ export const metadata: Metadata = {
 }
 
 const ForgotPasswordPage = () => {
-  // Vars
-  const mode = getServerMode()
-
-  return <ForgotPassword mode={mode} />
+  return <ForgotPassword />
 }
 
 export default ForgotPasswordPage

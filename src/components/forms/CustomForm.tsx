@@ -25,6 +25,7 @@ interface CustomFormProps<T extends FieldValues> {
   onSubmit: SubmitHandler<T>
   onCancel?: () => void
   submitButtonName?: string
+  useDirty?: boolean
   resetForm?: boolean
 }
 
@@ -34,13 +35,14 @@ const CustomForm = <T extends FieldValues>({
   onSubmit,
   onCancel,
   resetForm,
-  submitButtonName = 'Enviar'
+  submitButtonName = 'Enviar',
+  useDirty = true
 }: CustomFormProps<T>) => {
   const {
     control,
     handleSubmit,
     reset,
-    formState: { errors }
+    formState: { errors, isDirty }
   } = useForm<T>({ defaultValues })
 
   const handleCancel = () => {
@@ -61,7 +63,7 @@ const CustomForm = <T extends FieldValues>({
     <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
       <Grid container spacing={5}>
         {fields.map((field, index) => {
-          const { name, isRequired, type, placeholder, rules, label, rows, listValues = [], width = 6 } = field
+          const { name, isRequired = false, type, placeholder, rules, label, rows, listValues = [], width = 6 } = field
 
           return (
             <Grid key={`${label}${index}`} item xs={12} sm={width} alignItems={'center'}>
@@ -82,10 +84,9 @@ const CustomForm = <T extends FieldValues>({
         })}
       </Grid>
       <Grid container gap={2}>
-        <Button fullWidth variant='contained' type='submit'>
+        <Button fullWidth variant='contained' type='submit' disabled={useDirty && !isDirty}>
           {submitButtonName}
         </Button>
-
         {onCancel && (
           <Button type='reset' fullWidth variant='outlined' onClick={handleCancel}>
             Cancelar

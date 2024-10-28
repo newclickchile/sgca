@@ -13,7 +13,7 @@ const ResidentsDetailsPage = async ({ params }: { params: { id: string } }) => {
     throw new Error('User is not authenticated')
   }
 
-  const { data: residentData } = await fetchData(session, `${URL_RESIDENT}=${params.id}`)
+  const { data: residentData } = await fetchData({ session, endpoint: `${URL_RESIDENT}=${params.id}` })
 
   return <ResidentDetails residentData={residentData} />
 }

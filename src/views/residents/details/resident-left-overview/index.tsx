@@ -1,13 +1,12 @@
 import Grid from '@mui/material/Grid'
 
 import ResidentDetails from './ResidentDetails'
-import type { ResidentType } from '@/types/residents/service'
 
-const ResidentLeftOverview = ({ residentData }: { residentData?: ResidentType }) => {
+const ResidentLeftOverview = () => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
-        <ResidentDetails residentData={residentData} />
+        <ResidentDetails />
       </Grid>
     </Grid>
   )

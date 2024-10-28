@@ -30,8 +30,14 @@ export const authOptions: NextAuthOptions = {
 
         try {
           const url = `${process.env.NEXT_PUBLIC_API_URL_USUARIO}/usuario/login?pus3rN4m3=${username}`
+
+          console.log('url :', url)
           const encryptText = await encryptData(password)
+
+          console.log('encryptText :', encryptText)
           const jwtData = await createJWT(username, encryptText.encryptedData)
+
+          console.log('jwtData :', jwtData)
 
           const headers = {
             CSRFP466: encryptText.encryptedData,
@@ -39,10 +45,15 @@ export const authOptions: NextAuthOptions = {
             CSRFC0d160j2vt: jwtData
           }
 
+          console.log('headers :', headers)
+
           const res = await fetch(url, {
             method: 'POST',
             headers
           })
+
+          console.log('res.status :', res.status)
+          console.log('res :', res)
 
           if (!res.ok) {
             throw new Error(`HTTP error! status: ${res.status}`)

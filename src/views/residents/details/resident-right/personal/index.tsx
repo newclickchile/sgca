@@ -12,23 +12,37 @@ import { toast } from 'react-toastify'
 
 import { useSession } from 'next-auth/react'
 
-import { format } from 'date-fns'
-
 import type { FieldConfig } from '@/components/forms/CustomForm'
 import CustomForm from '@/components/forms/CustomForm'
-
-// import type { AuxHousesType, AuxProgramType } from '@/types/aux'
-import type { IUpdateResident, ResidentType } from '@/types/residents/service'
-import { fields } from './form'
+import { useResident } from '@/contexts/residentContext'
 import type { AuxHousesType, AuxProgramType } from '@/types/aux'
+import type { IUpdateResident } from '@/types/residents/service'
+import { fetchData } from '@/utils/fetch'
+import { fields } from './form'
+
+const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente`
 
 const PersonalTab: React.FC<{
-  residentData: ResidentType
   housesData: AuxHousesType[]
   programsData: AuxProgramType[]
-}> = ({ residentData, programsData, housesData }) => {
+}> = ({ programsData, housesData }) => {
+  const { resident, updateResident } = useResident()
   const { data: session } = useSession()
-  const { nombre, fechaNacimiento, rut, flagRsh = true, direccion, codsis, idCasa, hobbie, idGenero } = residentData
+
+  const {
+    id,
+    nombre,
+    fechaNacimiento,
+    rut,
+    flagRsh = true,
+    direccion,
+    codsis,
+    idCasa,
+    hobbie,
+    idGenero,
+    idPrograma,
+    discapacidad
+  } = resident
 
   const houseOptions = housesData.map(house => ({
     id: house.id.toString(),
@@ -41,7 +55,7 @@ const PersonalTab: React.FC<{
   }))
 
   const onSubmit: SubmitHandler<IUpdateResident> = async (updateResidentData: IUpdateResident) => {
-    // const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente`
+    console.log('updateResidentData :', updateResidentData)
 
     try {
       if (!session?.user) {
@@ -50,29 +64,18 @@ const PersonalTab: React.FC<{
         return
       }
 
-      const fechaNacimientoFormat = format(updateResidentData.fechaNacimiento, 'dd/MM/yyyy')
+      const queryParams = new URLSearchParams(updateResidentData as unknown as Record<string, string>).toString()
 
-      console.log('fechaNacimientoFormat :', fechaNacimientoFormat)
+      const response = await fetchData({
+        endpoint: `${URL_RESIDENTS}/editar?idResidente=${id}&${queryParams}`,
+        session,
+        method: 'PUT'
+      })
 
-      console.log('residentData :', updateResidentData)
+      console.log('response :', response)
+      updateResident(updateResidentData)
 
-      const queryParams = new URLSearchParams({
-        ...updateResidentData
-
-        // fechaNacimiento: fechaNacimientoFormat
-      } as unknown as Record<string, string>).toString()
-
-      console.log('queryParams :', queryParams)
-
-      // const response = await fetchClientData(
-      //   `${URL_RESIDENTS}/editar?idResidente=${residentData.id}&${queryParams}`,
-      //   session,
-      //   'PUT'
-      // )
-
-      // console.log('response :', response)
-
-      toast.success('Se ha creado el nuevo residente')
+      toast.success('Se han actualizado los datos correctamente')
     } catch (error) {
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
     }
@@ -80,14 +83,14 @@ const PersonalTab: React.FC<{
 
   const updatedFields: FieldConfig[] = useMemo(() => {
     return fields.map(field => {
-      if (field.name === 'casa') {
+      if (field.name === 'idCasa') {
         return {
           ...field,
           listValues: houseOptions
         }
       }
 
-      if (field.name === 'programa') {
+      if (field.name === 'idPrograma') {
         return {
           ...field,
           listValues: programOptions
@@ -110,13 +113,14 @@ const PersonalTab: React.FC<{
                 nombre,
                 fechaNacimiento,
                 rut,
-                genero: idGenero,
+                idGenero,
                 flagRsh,
                 direccion,
-                codigosis: codsis,
-                casa: idCasa,
+                codsis,
+                idCasa,
                 hobbie,
-                discapacidad: ''
+                idPrograma,
+                discapacidad
               }}
               onSubmit={onSubmit}
             />

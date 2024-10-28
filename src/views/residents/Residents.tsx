@@ -47,12 +47,15 @@ import { toast } from 'react-toastify'
 
 import { useLocalStorage } from 'react-use'
 
+import { useSession } from 'next-auth/react'
+
 import FilterSelect from '@/components/forms/FilterSelect'
 import ResidentDrawer from '@/components/residents/ResidentDrawer'
 import useFetchData from '@/hooks/useFetchData'
 import type { AuxHousesType, AuxProgramType } from '@/types/aux'
+import type { INewResident, IResident } from '@/types/residents/service'
 import tableStyles from '@core/styles/table.module.css'
-import type { INewResident, ResidentType } from '@/types/residents/service'
+import { fetchData } from '@/utils/fetch'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -63,7 +66,7 @@ declare module '@tanstack/table-core' {
   }
 }
 
-type ResidentTypeWithAction = ResidentType & {
+type ResidentTypeWithAction = IResident & {
   action?: string
 }
 
@@ -111,14 +114,16 @@ const columnHelper = createColumnHelper<ResidentTypeWithAction>()
 
 const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/obtener/bycasa`
 
-const Residents = ({ houses }: { houses: AuxHousesType[]; programs: AuxProgramType[] }) => {
+const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: AuxProgramType[] }) => {
+  const { data: session } = useSession()
   const [addUserOpen, setAddUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [globalFilter, setGlobalFilter] = useState('')
-  const [selectedHouse, setSelectedHouse] = useLocalStorage('homeId', '')
+
   const [residents, setResidents] = useState<any[]>([])
   const [resetDrawerForm, setResetDrawerForm] = useState<boolean>(false)
   const router = useRouter()
+  const [selectedHouse, setSelectedHouse] = useLocalStorage('homeId', '')
 
   const columns = useMemo<ColumnDef<ResidentTypeWithAction, any>[]>(
     () => [
@@ -213,8 +218,8 @@ const Residents = ({ houses }: { houses: AuxHousesType[]; programs: AuxProgramTy
     data: residentData,
     error,
     loading
-  } = useFetchData<ResidentType[]>({
-    endpoint: selectedHouse ? `${URL_RESIDENTS}?idCasa=${selectedHouse}` : '',
+  } = useFetchData<IResident[]>({
+    endpoint: `${URL_RESIDENTS}?idCasa=${selectedHouse}`,
     method: 'GET',
     shouldFetch: selectedHouse !== ''
   })
@@ -244,16 +249,48 @@ const Residents = ({ houses }: { houses: AuxHousesType[]; programs: AuxProgramTy
     handleDrawerClose()
   }
 
-  const onSubmit: SubmitHandler<INewResident> = async (data: INewResident) => {
-    try {
-      console.log('data :', data)
+  const onSubmit: SubmitHandler<INewResident> = async (newResident: INewResident) => {
+    console.log('newResident :', newResident)
 
-      handleCancel()
-      setResetDrawerForm(true)
-      toast.success('Se ha creado el nuevo residente')
+    try {
+      if (!session?.user) {
+        toast.error('¡Sesión no válida!')
+
+        return
+      }
+
+      const queryParams = new URLSearchParams(newResident as unknown as Record<string, string>).toString()
+
+      console.log('queryParams :', queryParams)
+
+      const response = await fetchData({
+        endpoint: `${URL_RESIDENTS}/crear?${queryParams}`,
+        session,
+        method: 'POST'
+      })
+
+      console.log('response :', response)
+
+      toast.success('Se han actualizado los datos correctamente')
     } catch (error) {
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
     }
+  }
+
+  // const onSubmit: SubmitHandler<INewResident> = async (data: INewResident) => {
+  //   try {
+  //     console.log('data :', data)
+
+  //     handleCancel()
+  //     setResetDrawerForm(true)
+  //     toast.success('Se ha creado el nuevo residente')
+  //   } catch (error) {
+  //     toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
+  //   }
+  // }
+
+  const handleNavigation = (id: string) => {
+    router.push(`/residentes/${id}`)
   }
 
   return (
@@ -360,7 +397,7 @@ const Residents = ({ houses }: { houses: AuxHousesType[]; programs: AuxProgramTy
                   .map(row => {
                     return (
                       <tr
-                        onClick={() => router.replace(`/residentes/${row.original.id}`)}
+                        onClick={() => handleNavigation(row.original.id)}
                         key={row.id}
                         className={classnames('clickable-row', { selected: row.getIsSelected() })}
                       >
@@ -374,23 +411,10 @@ const Residents = ({ houses }: { houses: AuxHousesType[]; programs: AuxProgramTy
             )}
           </table>
         </div>
-        {/* <TablePagination
-          rowsPerPageOptions={[10, 25, 50]}
-          component='div'
-          className='border-bs'
-          count={table.getFilteredRowModel().rows.length}
-          rowsPerPage={table.getState().pagination.pageSize}
-          page={table.getState().pagination.pageIndex}
-          SelectProps={{
-            inputProps: { 'aria-label': 'rows per page' }
-          }}
-          onPageChange={(_, page) => {
-            table.setPageIndex(page)
-          }}
-          onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
-        /> */}
       </Card>
       <ResidentDrawer
+        houses={houses}
+        programs={programs}
         handleCancel={handleCancel}
         open={addUserOpen}
         handleClose={handleDrawerClose}

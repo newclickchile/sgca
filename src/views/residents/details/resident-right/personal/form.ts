@@ -21,18 +21,20 @@ export const fields: FieldConfig[] = [
   {
     name: 'fechaNacimiento',
     label: 'Fecha Nacimiento',
+    placeholder: '01-01-2000',
     width: 3,
     isRequired: true,
     type: 'datepicker'
   },
   {
-    name: 'codigosis',
+    name: 'codsis',
     label: 'Código SIS',
     width: 4,
+    type: 'number',
     isRequired: true
   },
   {
-    name: 'genero',
+    name: 'idGenero',
     label: 'Género',
     type: 'select',
     listValues: genderOptions,
@@ -46,7 +48,7 @@ export const fields: FieldConfig[] = [
     type: 'checkbox'
   },
   {
-    name: 'casa',
+    name: 'idCasa',
     label: 'Casa/Residencia',
     type: 'select',
     width: 6,
@@ -54,7 +56,7 @@ export const fields: FieldConfig[] = [
     isRequired: true
   },
   {
-    name: 'programa',
+    name: 'idPrograma',
     label: 'Programa',
     type: 'select',
     width: 6,

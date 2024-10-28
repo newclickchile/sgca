@@ -1,21 +1,23 @@
 export interface INewResident {
-  rut: string
+  rut?: string
   nombre: string
   fechaNacimiento: string
-  codsis: number
   idGenero: number
+  flagRsh: boolean
+  idCasa: number
+  idPrograma: number
 }
 
 export interface IUpdateResident {
   rut: string
   nombre: string
   fechaNacimiento: string
-  codigosis: number
-  genero: number
+  codsis: number
+  idGenero: number
   flagRsh: boolean
   direccion: string
-  casa: number
-  programa: number
+  idCasa: number
+  idPrograma: number
   discapacidad: string
   hobbie: string
 }
@@ -32,7 +34,7 @@ export interface IResident {
   direccion: string
   idCasa: number
   idPrograma: number
-  discapicidad: string
+  discapacidad: string
   hobbie: string
   fechaIngreso: string
   fechaEgreso: string

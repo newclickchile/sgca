@@ -1,14 +1,12 @@
-import type { PlaceType } from '@/components/LocationAutoComplete'
-
 export type IAffiliationForm = {
   nombrePadre?: string
   ocupacionPadre?: string
-  fechaNacPadre?: string
-  direccionPadre?: PlaceType | null | string
+  fechaNacimientoPadre?: string
+  direccionPadre?: string
   condicionPadre?: string
   nombreMadre?: string
   ocupacionMadre?: string
-  fechaNacMadre?: string
-  direccionMadre?: PlaceType | null | string
+  fechaNacimientoMadre?: string
+  direccionMadre?: string
   condicionMadre?: string
 }

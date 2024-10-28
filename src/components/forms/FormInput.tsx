@@ -16,11 +16,10 @@ import InputAdornment from '@mui/material/InputAdornment'
 import type { Control, DeepMap, FieldError, RegisterOptions } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
 
-import { format } from 'date-fns'
-
+import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
+import { formatDateForBackend, toZonedDate } from '@/utils/date'
 import type { PlaceType } from '../LocationAutoComplete'
 import LocationAutoComplete from '../LocationAutoComplete'
-import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 
 export const PASSWORD_RULES = [
   { re: /^.{8,16}$/, label: 'Debe ingresar entre 8 y 16 caracteres' },
@@ -59,6 +58,12 @@ export const FormInput: React.FC<{
   rows?: number
 }> = props => {
   const [showPassword, setShowPassword] = useState<boolean>(false)
+
+  const numberValidation = {
+    validate: {
+      isNumber: (value: string) => !isNaN(Number(value)) || 'Debe ingresar solo números'
+    }
+  }
 
   return (
     <>
@@ -137,19 +142,21 @@ export const FormInput: React.FC<{
               )
             case 'datepicker':
               return (
-                <AppReactDatepicker
-                  selected={value}
-                  id='basic-input'
-                  dateFormat='yyyy/MM/dd'
-                  showYearDropdown
-                  onChange={(date: Date) => {
-                    return onChange(format(date, 'yyyy/MM/dd'))
-                  }}
-                  placeholderText={props.placeholder}
-                  customInput={
-                    <TextField sx={{ width: '100%' }} error={Boolean(props.errors[props.name])} label={props.label} />
-                  }
-                />
+                <>
+                  <AppReactDatepicker
+                    selected={value ? toZonedDate(value) : null}
+                    id='basic-input'
+                    showYearDropdown
+                    dateFormat='dd-MM-yyyy'
+                    onChange={(date: Date) => {
+                      return date && onChange(formatDateForBackend(date))
+                    }}
+                    placeholderText={props.placeholder}
+                    customInput={
+                      <TextField sx={{ width: '100%' }} error={Boolean(props.errors[props.name])} label={props.label} />
+                    }
+                  />
+                </>
               )
 
             default:
@@ -172,7 +179,11 @@ export const FormInput: React.FC<{
         defaultValue={props.defaultValue || ''}
         control={props.control}
         name={props.name}
-        rules={{ ...props.rules, ...(props.isRequired && { required: `Debe ingresar "${props.label}"` }) }}
+        rules={{
+          ...props.rules,
+          ...(props.type === 'number' ? numberValidation : {}),
+          ...(props.isRequired && { required: `Debe ingresar "${props.label}"` })
+        }}
       />
 
       <ErrorMessage

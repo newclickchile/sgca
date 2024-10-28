@@ -22,17 +22,10 @@ const CustomTab = styled(Tab)(({}) => ({
   }
 }))
 
-const ResidentRight = ({
-  tabContentComponents
-}: {
-  tabContentComponents: { [key: string]: ReactElement }
-
-  // residentData: ResidentType
-}) => {
-  // States
+const ResidentRight = ({ tabContentComponents }: { tabContentComponents: { [key: string]: ReactElement } }) => {
   const [activeTab, setActiveTab] = useState('personal')
 
-  const handleChange = (event: SyntheticEvent, value: string) => {
+  const handleChange = (_: SyntheticEvent, value: string) => {
     setActiveTab(value)
   }
 

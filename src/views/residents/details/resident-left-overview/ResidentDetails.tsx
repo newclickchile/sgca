@@ -1,12 +1,15 @@
-// MUI Imports
+'use client'
+
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 
-import CustomAvatar from '@core/components/mui/Avatar'
+import { useResident } from '@/contexts/residentContext'
+
+import { formatDate } from '@/utils/date'
 import { getInitials } from '@/utils/getInitials'
-import type { ResidentType } from '@/types/residents/service'
+import CustomAvatar from '@core/components/mui/Avatar'
 
 const InfoText = (props: { label: string; value: string | undefined }) => {
   const { label, value } = props
@@ -21,7 +24,9 @@ const InfoText = (props: { label: string; value: string | undefined }) => {
   )
 }
 
-const ResidentDetails = ({ residentData }: { residentData?: ResidentType }) => {
+const ResidentDetails = () => {
+  const { resident } = useResident()
+
   return (
     <Card>
       <CardContent className='flex flex-col pbs-12 gap-6'>
@@ -36,11 +41,11 @@ const ResidentDetails = ({ residentData }: { residentData?: ResidentType }) => {
                 fontSize: '3rem'
               }}
             >
-              {getInitials(residentData!.nombre)}
+              {getInitials(resident.nombre)}
             </CustomAvatar>
             <div className='flex flex-col items-center'>
-              <Typography variant='h5'>{residentData?.nombre}</Typography>
-              <Typography>{residentData?.rut}</Typography>
+              <Typography variant='h5'>{resident.nombre}</Typography>
+              <Typography>{resident.rut}</Typography>
             </div>
           </div>
         </div>
@@ -48,12 +53,12 @@ const ResidentDetails = ({ residentData }: { residentData?: ResidentType }) => {
           <Typography variant='h5'>Información</Typography>
           <Divider />
           <div className='flex flex-col gap-2'>
-            <InfoText label='Nombre' value={residentData?.nombre} />
-            <InfoText label='Fecha Nacimiento' value={residentData?.fechaNacimiento} />
-            <InfoText label='Género' value={residentData?.idGenero === 1 ? 'Masculino' : 'Femenino'} />
-            <InfoText label='Estado' value={residentData?.habilitado ? 'Activo' : 'Inactivo'} />
-            <InfoText label='Fecha ingreso' value={residentData?.fechaIngreso} />
-            <InfoText label='Fecha egreso' value={residentData?.fechaIngreso} />
+            <InfoText label='Nombre' value={resident.nombre} />
+            <InfoText label='Fecha Nacimiento' value={formatDate(resident.fechaNacimiento)} />
+            <InfoText label='Género' value={resident.idGenero === 1 ? 'Masculino' : 'Femenino'} />
+            <InfoText label='Estado' value={resident.habilitado ? 'Activo' : 'Inactivo'} />
+            <InfoText label='Fecha ingreso' value={formatDate(resident.fechaIngreso)} />
+            <InfoText label='Fecha egreso' value={formatDate(resident.fechaIngreso)} />
           </div>
         </div>
       </CardContent>

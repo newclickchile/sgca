@@ -1,99 +1,103 @@
 'use client'
 
 // Next Imports
-import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 // MUI Imports
 import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
 
 // Third-party Imports
-import classnames from 'classnames'
-
-// Type Imports
-import type { Mode } from '@core/types'
-
-// Component Imports
-import Logo from '@components/layout/shared/Logo'
-import Illustrations from '@components/Illustrations'
+import { signIn } from 'next-auth/react'
+import type { SubmitHandler } from 'react-hook-form'
 
 // Hook Imports
-import { useImageVariant } from '@core/hooks/useImageVariant'
-import { useSettings } from '@core/hooks/useSettings'
+import { toast } from 'react-toastify'
 
-const ForgotPasswordV2 = ({ mode }: { mode: Mode }) => {
-  // Vars
-  const darkImg = '/images/pages/auth-v2-mask-dark.png'
-  const lightImg = '/images/pages/auth-v2-mask-light.png'
-  const darkIllustration = '/images/illustrations/auth/v2-forgot-password-dark.png'
-  const lightIllustration = '/images/illustrations/auth/v2-forgot-password-light.png'
-  const borderedDarkIllustration = '/images/illustrations/auth/v2-forgot-password-dark-border.png'
-  const borderedLightIllustration = '/images/illustrations/auth/v2-forgot-password-light-border.png'
+import { Box, Button } from '@mui/material'
 
+import CustomForm from '@/components/forms/CustomForm'
+import AuthWrapper from './AuthWrapper'
+
+type FormData = {
+  username: string
+  password: string
+}
+
+const fields = [
+  {
+    name: 'username',
+    label: 'Usuario',
+    isRequired: true,
+    width: 12
+  }
+]
+
+const ForgotPassword = () => {
   // Hooks
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
-  const authBackground = useImageVariant(mode, lightImg, darkImg)
-  const { settings } = useSettings()
+  const handleBack = () => {
+    router.replace('/login')
+  }
 
-  const characterIllustration = useImageVariant(
-    mode,
-    lightIllustration,
-    darkIllustration,
-    borderedLightIllustration,
-    borderedDarkIllustration
-  )
+  const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
+    try {
+      const res = await signIn('credentials', {
+        username: data.username,
+        password: data.password,
+        redirect: false
+      })
+
+      if (res?.error) {
+        console.error('Error during sign in:', res.error)
+      } else {
+        console.log('User signed in successfully:', res)
+      }
+
+      if (res && res.ok && res.error === null) {
+        const redirectURL = searchParams.get('redirectTo') ?? '/'
+
+        router.replace(redirectURL)
+      } else {
+        if (res?.error) {
+          const error = JSON.parse(res.error)
+
+          console.log('error :', error)
+        }
+      }
+    } catch (error) {
+      toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
+    }
+  }
 
   return (
-    <div className='flex bs-full justify-center'>
-      <div
-        className={classnames(
-          'flex bs-full items-center justify-center flex-1 min-bs-[100dvh] relative p-6 max-md:hidden',
-          {
-            'border-ie': settings.skin === 'bordered'
-          }
-        )}
-      >
-        <div className='plb-12 pis-12'>
-          <img
-            src={characterIllustration}
-            alt='character-illustration'
-            className='max-bs-[500px] max-is-full bs-auto'
-          />
-        </div>
-        <Illustrations
-          image1={{ src: '/images/illustrations/objects/tree-2.png' }}
-          image2={null}
-          maskImg={{ src: authBackground }}
-        />
-      </div>
-      <div className='flex justify-center items-center bs-full bg-backgroundPaper !min-is-full p-6 md:!min-is-[unset] md:p-12 md:is-[480px]'>
-        <Link href={'/'} className='absolute block-start-5 sm:block-start-[38px] inline-start-6 sm:inline-start-[38px]'>
-          <Logo />
-        </Link>
-        <div className='flex flex-col gap-5 is-full sm:is-auto md:is-full sm:max-is-[400px] md:max-is-[unset]'>
-          <div>
-            <Typography variant='h4'>Forgot Password 🔒</Typography>
-            <Typography className='mbs-1'>
-              Enter your email and we&#39;ll send you instructions to reset your password
-            </Typography>
-          </div>
-          <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()} className='flex flex-col gap-5'>
-            <TextField autoFocus fullWidth label='Email' />
-            <Button fullWidth variant='contained' type='submit'>
-              Send reset link
-            </Button>
-            <Typography className='flex justify-center items-center' color='primary'>
-              <Link href='/login' className='flex items-center'>
-                <i className='ri-arrow-left-s-line' />
-                <span>Back to Login</span>
-              </Link>
-            </Typography>
-          </form>
-        </div>
-      </div>
-    </div>
+    <AuthWrapper
+      title={
+        <Box sx={{ mb: 6 }}>
+          <Typography variant='h5' sx={{ fontWeight: 600, mb: 1.5 }}>
+            ¿Olvidaste tu contraseña? 🔒
+          </Typography>
+        </Box>
+      }
+      subtitle={
+        <Typography variant='body2' sx={{ maxWidth: 400 }}>
+          Ingresa tu nombre de usuario y te enviaremos un enlace con las instrucciones para restablecer la contraseña.
+        </Typography>
+      }
+    >
+      <CustomForm<FormData>
+        useDirty={false}
+        fields={fields}
+        defaultValues={{ username: 'admin@sgca.cl', password: 'Stiplus.2023' }}
+        onSubmit={onSubmit}
+        submitButtonName='Verificar mi cuenta'
+      />
+      <Button onClick={handleBack} fullWidth>
+        Volver
+      </Button>
+    </AuthWrapper>
   )
 }
 
-export default ForgotPasswordV2
+export default ForgotPassword

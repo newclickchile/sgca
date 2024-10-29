@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import './Residents.css'
 
 import {
+  Alert,
   Button,
   CardContent,
   Chip,
@@ -341,7 +342,7 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
         </div>
 
         <div className='overflow-x-auto'>
-          {error && <div>Ha ocurrido un error al obtener los residentes</div>}
+          {error && <Alert severity='error'>Ha ocurrido un error al obtener los residentes</Alert>}
 
           <table className={tableStyles.table}>
             <thead>

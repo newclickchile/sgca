@@ -1,4 +1,3 @@
-// Third-party Imports
 import type { NextAuthOptions } from 'next-auth'
 import CredentialProvider from 'next-auth/providers/credentials'
 
@@ -30,8 +29,14 @@ export const authOptions: NextAuthOptions = {
 
         try {
           const url = `${process.env.NEXT_PUBLIC_API_URL_USUARIO}/usuario/login?pus3rN4m3=${username}`
+
+          console.log('url :', url)
           const encryptText = await encryptData(password)
+
+          console.log('encryptText :', encryptText)
           const jwtData = await createJWT(username, encryptText.encryptedData)
+
+          console.log('jwtData :', jwtData)
 
           const headers = {
             CSRFP466: encryptText.encryptedData,
@@ -39,24 +44,30 @@ export const authOptions: NextAuthOptions = {
             CSRFC0d160j2vt: jwtData
           }
 
+          console.log('headers :', headers)
+
           const res = await fetch(url, {
             method: 'POST',
             headers
           })
+
+          console.log('res.status :', res.status)
+          console.log('res :', res)
 
           if (!res.ok) {
             throw new Error(`HTTP error! status: ${res.status}`)
           }
 
           // const { data } = await res.json()
+          // console.log('data :', data)
           // const { sesion, user, pages } = data
-
           const {
             data: { sesion, user, menu_left }
           } = await res.json()
 
           const userData = {
             id: sesion.idSesion,
+            institutionId: user.idInstitucion,
             profile: user.perfil,
             userName: user.userName,
             name: user.nombre,
@@ -75,10 +86,8 @@ export const authOptions: NextAuthOptions = {
   // ** Please refer to https://next-auth.js.org/configuration/options#session for more `session` options
   session: {
     strategy: 'jwt',
-
     maxAge: 30 * 24 * 60 * 60 // ** 30 days
   },
-
   pages: {
     signIn: '/login'
   },
@@ -96,7 +105,8 @@ export const authOptions: NextAuthOptions = {
          * For adding custom parameters to user in session, we first need to add those parameters
          * in token which then will be available in the `session()` callback
          */
-        token.name = user.name
+        token.userName = user.userName
+        token.institutionId = user.institutionId
         token.email = user.email
         token.token = (user as any).token || ''
         token.menu_left = (user as any).menu_left || []
@@ -106,8 +116,10 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
+        session.user.userName = token.userName as string
         session.user.token = (token.token as string) || ''
         session.user.menu_left = (token.menu_left as string[]) || []
+        session.user.institutionId = token.institutionId as number
       }
 
       return session

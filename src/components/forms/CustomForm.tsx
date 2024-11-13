@@ -1,57 +1,97 @@
-import { Button, Box } from '@mui/material'
-import type { FieldValues, SubmitHandler, DefaultValues } from 'react-hook-form'
+import { useEffect } from 'react'
+
+import { Button, Grid } from '@mui/material'
+import type { DefaultValues, FieldValues, SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 
+import type { IKeyValueData } from './FormInput'
 import { FormInput } from './FormInput'
 
-interface FieldConfig {
+export interface FieldConfig {
   name: string
   label: string
   type?: string | undefined
   placeholder?: string
   rules?: any
+  width?: number
+  isRequired?: boolean
+  listValues?: IKeyValueData[]
+  rows?: number
 }
-
 interface CustomFormProps<T extends FieldValues> {
   fields: FieldConfig[]
   defaultValues?: DefaultValues<T>
   onSubmit: SubmitHandler<T>
+  onCancel?: () => void
   submitButtonName?: string
+  useDirty?: boolean
+  resetForm?: boolean
 }
 
 const CustomForm = <T extends FieldValues>({
   fields,
   defaultValues,
   onSubmit,
-  submitButtonName = 'Enviar'
+  onCancel,
+  resetForm,
+  submitButtonName = 'Enviar',
+  useDirty = true
 }: CustomFormProps<T>) => {
   const {
     control,
     handleSubmit,
-    formState: { errors }
+    reset,
+    formState: { errors, isDirty }
   } = useForm<T>({ defaultValues })
+
+  const handleCancel = () => {
+    reset()
+
+    if (onCancel) {
+      onCancel()
+    }
+  }
+
+  useEffect(() => {
+    if (resetForm) {
+      reset()
+    }
+  }, [reset, resetForm])
 
   return (
     <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
-      {fields.map((field, index) => {
-        const { name, type, placeholder, rules, label } = field
+      <Grid container spacing={5}>
+        {fields.map((field, index) => {
+          const { name, isRequired = false, type, placeholder, rules, label, rows, listValues = [], width = 6 } = field
 
-        return (
-          <Box key={`${label}${index}`}>
-            <FormInput
-              control={control}
-              errors={errors}
-              rules={rules}
-              placeholder={placeholder ?? label}
-              name={name}
-              type={type}
-            />
-          </Box>
-        )
-      })}
-      <Button fullWidth variant='contained' type='submit'>
-        {submitButtonName}
-      </Button>
+          return (
+            <Grid key={`${label}${index}`} item xs={12} sm={width} alignItems={'center'}>
+              <FormInput
+                control={control}
+                errors={errors}
+                rules={rules}
+                placeholder={placeholder ?? label}
+                name={name}
+                type={type}
+                label={label}
+                isRequired={isRequired}
+                listValues={listValues}
+                rows={rows}
+              />
+            </Grid>
+          )
+        })}
+      </Grid>
+      <Grid container gap={2}>
+        <Button fullWidth variant='contained' type='submit' disabled={useDirty && !isDirty}>
+          {submitButtonName}
+        </Button>
+        {onCancel && (
+          <Button type='reset' fullWidth variant='outlined' onClick={handleCancel}>
+            Cancelar
+          </Button>
+        )}
+      </Grid>
     </form>
   )
 }

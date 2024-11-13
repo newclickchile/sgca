@@ -28,7 +28,7 @@ import { useSettings } from '@core/hooks/useSettings'
 import './styles.css'
 
 // Data Imports
-import data from '@/data/searchData'
+import data from '@/data/searchData-delete'
 
 type Item = {
   id: string

@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 // Next Imports
 import Link from 'next/link'
@@ -10,18 +10,24 @@ import Link from 'next/link'
 import { styled, useColorScheme, useTheme } from '@mui/material/styles'
 
 // Type Imports
+import { signOut, useSession } from 'next-auth/react'
+import { toast } from 'react-toastify'
+
 import type { Mode, SystemMode } from '@core/types'
 
 // Component Imports
-import VerticalNav, { NavHeader, NavCollapseIcons } from '@menu/vertical-menu'
-import VerticalMenu from './VerticalMenu'
 import Logo from '@components/layout/shared/Logo'
+import VerticalNav, { NavCollapseIcons, NavHeader } from '@menu/vertical-menu'
+import VerticalMenu from './VerticalMenu'
 
 // Hook Imports
-import useVerticalNav from '@menu/hooks/useVerticalNav'
 import { useSettings } from '@core/hooks/useSettings'
+import useVerticalNav from '@menu/hooks/useVerticalNav'
 
 // Style Imports
+import verticalMenuData from '@/data/navigation/verticalMenuData'
+import type { VerticalMenuDataType } from '@/types/menuTypes'
+import { filterMenu } from '@/utils/menu'
 import navigationCustomStyles from '@core/styles/vertical/navigationCustomStyles'
 
 type Props = {
@@ -48,13 +54,15 @@ const StyledBoxForShadow = styled('div')(({ theme }) => ({
 }))
 
 const Navigation = (props: Props) => {
+  const { data } = useSession()
+  const [menuData, setMenuData] = useState<VerticalMenuDataType[]>()
+
   // Props
   const { mode, systemMode } = props
 
   // Hooks
   const verticalNavOptions = useVerticalNav()
   const { updateSettings, settings } = useSettings()
-
   const { mode: muiMode, systemMode: muiSystemMode } = useColorScheme()
   const theme = useTheme()
 
@@ -96,6 +104,29 @@ const Navigation = (props: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.layout])
+  useEffect(() => {
+    if (data && !data?.user.menu_left) {
+      toast.error('Ha ocurrido un error al cargar tu usuario', {
+        autoClose: 2000,
+        onClose: async () => {
+          try {
+            await signOut({ callbackUrl: process.env.NEXT_PUBLIC_APP_URL })
+          } catch (error) {
+            console.error(error)
+          }
+        }
+      })
+    }
+
+    const sessionUserPages = data?.user.menu_left
+
+    if (sessionUserPages?.length) {
+      const originalMenu = verticalMenuData()
+      const filteredMenu = filterMenu(originalMenu, sessionUserPages!)
+
+      setMenuData(filteredMenu)
+    }
+  }, [data])
 
   return (
     // eslint-disable-next-line lines-around-comment
@@ -128,7 +159,7 @@ const Navigation = (props: Props) => {
         )}
       </NavHeader>
       <StyledBoxForShadow ref={shadowRef} />
-      <VerticalMenu scrollMenu={scrollMenu} />
+      <VerticalMenu scrollMenu={scrollMenu} menuData={menuData} />
     </VerticalNav>
   )
 }

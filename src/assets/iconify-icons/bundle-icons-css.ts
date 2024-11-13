@@ -59,13 +59,29 @@ interface BundleScriptConfig {
 const sources: BundleScriptConfig = {
   json: [
     // Iconify JSON file (@iconify/json is a package name, /json/ is directory where files are, then filename)
-    require.resolve('@iconify/json/json/ri.json')
+    require.resolve('@iconify/json/json/ri.json'),
 
     // Custom file with only few icons
-    /* {
-      filename: require.resolve('@iconify/json/json/line-md.json'),
-      icons: ['home-twotone-alt', 'github', 'document-list', 'document-code', 'image-twotone']
-    } */
+    {
+      filename: require.resolve('@iconify/json/json/eos-icons.json'),
+      icons: ['admin-outlined']
+    },
+    {
+      filename: require.resolve('@iconify/json/json/mage.json'),
+      icons: ['preview-circle-fill', 'heart-health']
+    },
+    {
+      filename: require.resolve('@iconify/json/json/fluent-mdl2.json'),
+      icons: ['family', 'education']
+    },
+    {
+      filename: require.resolve('@iconify/json/json/octicon.json'),
+      icons: ['law-24']
+    },
+    {
+      filename: require.resolve('@iconify/json/json/healthicons.json'),
+      icons: ['doctor-male-outline']
+    }
 
     // Custom JSON file
     // 'json/gg.json'

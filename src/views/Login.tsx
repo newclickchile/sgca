@@ -26,13 +26,15 @@ const fields = [
   {
     name: 'username',
     label: 'Usuario',
-    rules: { required: 'Usuario es requerido' }
+    isRequired: true,
+    width: 12
   },
   {
     name: 'password',
     label: 'Contraseña',
     type: 'password',
-    rules: { required: 'Contraseña es requerida' }
+    isRequired: true,
+    width: 12
   }
 ]
 
@@ -48,6 +50,12 @@ const Login = () => {
         password: data.password,
         redirect: false
       })
+
+      if (res?.error) {
+        console.error('Error during sign in:', res.error)
+      } else {
+        console.log('User signed in successfully:', res)
+      }
 
       if (res && res.ok && res.error === null) {
         const redirectURL = searchParams.get('redirectTo') ?? '/'
@@ -68,6 +76,7 @@ const Login = () => {
   return (
     <AuthWrapper title={<>¡Bienvenido! 👋🏻</>} subtitle={<>Inicia sesión con tus credenciales</>}>
       <CustomForm<FormData>
+        useDirty={false}
         fields={fields}
         defaultValues={{ username: 'admin@sgca.cl', password: 'Stiplus.2023' }}
         onSubmit={onSubmit}

@@ -1,6 +1,3 @@
-import { getServerSession } from 'next-auth'
-
-import { authOptions } from '@/libs/auth'
 import { fetchData } from '@/utils/fetch'
 import ResidentDetails from '@/views/residents/details'
 

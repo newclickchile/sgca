@@ -15,13 +15,10 @@
  *
  * Another way is to clear the cookie from the browser's Application/Storage tab and then reload the page.
  */
-
 // Third-party Imports
 import type { ToastPosition } from 'react-toastify'
-
 // Type Imports
 import type { Mode, Skin, Layout, LayoutComponentPosition, LayoutComponentWidth } from '@core/types'
-
 type Navbar = {
   type: LayoutComponentPosition
   contentWidth: LayoutComponentWidth
@@ -29,13 +26,11 @@ type Navbar = {
   detached: boolean
   blur: boolean
 }
-
 type Footer = {
   type: LayoutComponentPosition
   contentWidth: LayoutComponentWidth
   detached: boolean
 }
-
 export type Config = {
   templateName: string
   homePageUrl: string
@@ -52,25 +47,24 @@ export type Config = {
   disableRipple: boolean
   toastPosition: ToastPosition
 }
-
 const themeConfig: Config = {
   templateName: 'SGCA',
-  homePageUrl: '/home',
+  homePageUrl: '/informes',
   settingsCookieName: 'sgca',
   mode: 'light', // 'system', 'light', 'dark'
-  skin: 'bordered', // 'default', 'bordered'
+  skin: 'default', // 'default', 'bordered'
   semiDark: false, // true, false
   layout: 'vertical', // 'vertical', 'collapsed', 'horizontal'
   layoutPadding: 24, // Common padding for header, content, footer layout components (in px)
   compactContentWidth: 1440, // in px
   navbar: {
     type: 'fixed', // 'fixed', 'static'
-    contentWidth: 'compact', // 'compact', 'wide'
+    contentWidth: 'wide', // 'compact', 'wide'
     floating: false, //! true, false (This will not work in the Horizontal Layout)
     detached: true, //! true, false (This will not work in the Horizontal Layout or floating navbar is enabled)
     blur: true // true, false
   },
-  contentWidth: 'wide', // 'compact', 'wide'
+  contentWidth: 'compact', // 'compact', 'wide'
   footer: {
     type: 'static', // 'fixed', 'static'
     contentWidth: 'compact', // 'compact', 'wide'
@@ -79,5 +73,4 @@ const themeConfig: Config = {
   disableRipple: false, // true, false
   toastPosition: 'top-right' // 'top-right', 'top-center', 'top-left', 'bottom-right', 'bottom-center', 'bottom-left'
 }
-
 export default themeConfig

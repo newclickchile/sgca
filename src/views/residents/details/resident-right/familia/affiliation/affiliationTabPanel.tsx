@@ -56,7 +56,6 @@ const AffiliationTabPanel = () => {
 
       const response = await fetchData({
         endpoint: `${URL_RESIDENTS}/padres/actualizar?idResidente=${resident.id}&${queryParams}`,
-        session,
         method: 'POST'
       })
 

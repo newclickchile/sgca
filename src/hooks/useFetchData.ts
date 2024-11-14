@@ -21,7 +21,7 @@ const useFetchData = <T>({
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!session?.user || !endpoint || !shouldFetch) return
+      if (!session?.user || !endpoint || !shouldFetch || !session.user.token) return
       setLoading(true)
       setError(null)
 

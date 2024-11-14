@@ -1,7 +1,7 @@
 import HealthTab from './healthTabClient'
 import MedicalHistoryTabPanelServer from './medicalHistory/medicalHistoryTabPanelServer'
 
-const HealthTabServer = async ({ residentId }: { residentId: string }) => {
+const HealthTabServer = async ({ residentId }: { residentId: number }) => {
   return (
     <HealthTab
       tabContentComponents={{

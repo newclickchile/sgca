@@ -22,7 +22,6 @@ const SignificantAdultTabPanel = ({ significantAdultData }: { significantAdultDa
 
       const response = await fetchData({
         endpoint,
-        session,
         method: 'POST'
       })
 

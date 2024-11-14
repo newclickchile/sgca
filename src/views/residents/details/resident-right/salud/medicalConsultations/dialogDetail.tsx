@@ -36,7 +36,6 @@ const DialogConsultationDetail: React.FC<{
 
       const response = await fetchData({
         endpoint: `${URL_MEDICAL_CONSULTATION}?idResidente=${resident.id}&${queryParams}`,
-        session,
         method: 'POST'
       })
 

@@ -7,13 +7,7 @@ import ResidentDetails from '@/views/residents/details'
 const URL_RESIDENT = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/obtener?idResidente`
 
 const ResidentsDetailsPage = async ({ params }: { params: { id: string } }) => {
-  const session = await getServerSession(authOptions)
-
-  if (!session) {
-    throw new Error('User is not authenticated')
-  }
-
-  const { data: residentData } = await fetchData({ session, endpoint: `${URL_RESIDENT}=${params.id}` })
+  const { data: residentData } = await fetchData({ endpoint: `${URL_RESIDENT}=${params.id}` })
 
   return <ResidentDetails residentData={residentData} />
 }

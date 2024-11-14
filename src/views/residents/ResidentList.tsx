@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-import './Residents.css'
+import './ResidentList.css'
 import {
   Alert,
   Button,
@@ -114,6 +114,15 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
   const router = useRouter()
   const [selectedHouse, setSelectedHouse] = useLocalStorage('homeId', '')
 
+  const {
+    data: residentData,
+    error,
+    loading
+  } = useFetchData<IResident[]>({
+    endpoint: `${URL_RESIDENTS}?idCasa=${selectedHouse}`,
+    shouldFetch: selectedHouse !== ''
+  })
+
   const columns = useMemo<ColumnDef<ResidentTypeWithAction, any>[]>(
     () => [
       columnHelper.accessor('codsis', {
@@ -203,16 +212,6 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
     getFacetedMinMaxValues: getFacetedMinMaxValues()
   })
 
-  const {
-    data: residentData,
-    error,
-    loading
-  } = useFetchData<IResident[]>({
-    endpoint: `${URL_RESIDENTS}?idCasa=${selectedHouse}`,
-    method: 'GET',
-    shouldFetch: selectedHouse !== ''
-  })
-
   useEffect(() => {
     if (selectedHouse === '') {
       setResidents([])
@@ -254,7 +253,6 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
 
       const response = await fetchData({
         endpoint: `${URL_RESIDENTS}/crear?${queryParams}`,
-        session,
         method: 'POST'
       })
 

@@ -1,6 +1,8 @@
+'use client'
+
 import { useEffect } from 'react'
 
-import { Button, Grid } from '@mui/material'
+import { Button, ButtonProps, Grid } from '@mui/material'
 import type { DefaultValues, FieldValues, SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 
@@ -24,8 +26,10 @@ interface CustomFormProps<T extends FieldValues> {
   onSubmit: SubmitHandler<T>
   onCancel?: () => void
   submitButtonName?: string
+  submitSize?: number
   useDirty?: boolean
   resetForm?: boolean
+  buttonProps?: ButtonProps
 }
 
 const CustomForm = <T extends FieldValues>({
@@ -35,7 +39,8 @@ const CustomForm = <T extends FieldValues>({
   onCancel,
   resetForm,
   submitButtonName = 'Enviar',
-  useDirty = true
+  useDirty = true,
+  buttonProps
 }: CustomFormProps<T>) => {
   const {
     control,
@@ -57,6 +62,11 @@ const CustomForm = <T extends FieldValues>({
       reset()
     }
   }, [reset, resetForm])
+
+  const finalButtonProps = {
+    fullWidth: true,
+    ...buttonProps
+  }
 
   return (
     <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
@@ -83,7 +93,7 @@ const CustomForm = <T extends FieldValues>({
         })}
       </Grid>
       <Grid container gap={2}>
-        <Button fullWidth variant='contained' type='submit' disabled={useDirty && !isDirty}>
+        <Button variant='contained' type='submit' disabled={useDirty && !isDirty} {...finalButtonProps}>
           {submitButtonName}
         </Button>
         {onCancel && (

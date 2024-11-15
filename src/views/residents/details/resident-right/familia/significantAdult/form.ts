@@ -14,6 +14,7 @@ export const fields: FieldConfig[] = [
   },
   {
     name: 'direccion',
+    type: 'autocomplete',
     label: 'Dirección',
     width: 9
   },

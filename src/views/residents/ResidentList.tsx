@@ -249,8 +249,6 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
 
       const queryParams = new URLSearchParams(newResident as unknown as Record<string, string>).toString()
 
-      console.log('queryParams :', queryParams)
-
       const response = await fetchData({
         endpoint: `${URL_RESIDENTS}/crear?${queryParams}`,
         method: 'POST'
@@ -263,16 +261,6 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
     }
   }
 
-  // const onSubmit: SubmitHandler<INewResident> = async (data: INewResident) => {
-  //   try {
-  //     console.log('data :', data)
-  //     handleCancel()
-  //     setResetDrawerForm(true)
-  //     toast.success('Se ha creado el nuevo residente')
-  //   } catch (error) {
-  //     toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
-  //   }
-  // }
   const handleNavigation = (id: string) => {
     router.push(`/residentes/${id}`)
   }

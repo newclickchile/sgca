@@ -1,18 +1,19 @@
 'use server'
 
 import { authOptions } from '@/libs/auth'
-import { IUpdateResident } from '@/types/residents/service'
+import { ISignificantAdult } from '@/types/residents/familyGroup/significantAdultTab'
 import { getServerSession } from 'next-auth'
 import { revalidatePath } from 'next/cache'
 
-const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente`
+const URL_SIGNIFICANT_ADULT = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/adulto`
 
-export async function updatePersonalData(residentId: number, residentData: IUpdateResident) {
+export async function updateSignificantAdult(updateData: ISignificantAdult) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user || !session.user.token) throw new Error('No session available')
 
-    const queryParams = new URLSearchParams(residentData as unknown as Record<string, string>).toString()
+    const queryParams = new URLSearchParams(updateData as unknown as Record<string, string>).toString()
+    console.log('queryParams :', queryParams)
 
     const headers = {
       'Content-Type': 'application/json',
@@ -20,8 +21,12 @@ export async function updatePersonalData(residentId: number, residentData: IUpda
       CSRFC0d160j2vt: session.user.token
     }
 
-    const response = await fetch(`${URL_RESIDENTS}/editar?idResidente=${residentId}&${queryParams}`, {
-      method: 'PUT',
+    const urlBase = updateData.id
+      ? `${URL_SIGNIFICANT_ADULT}/editar?idAdulto=${updateData.id}`
+      : `${URL_SIGNIFICANT_ADULT}/crear`
+
+    const response = await fetch(`${urlBase}&${queryParams}`, {
+      method: 'POST',
       headers
     })
 
@@ -29,7 +34,7 @@ export async function updatePersonalData(residentId: number, residentData: IUpda
       throw new Error('Error al guardar los datos')
     }
 
-    revalidatePath(`/residentes/${residentId}`)
+    revalidatePath(`/residentes/${updateData.idResidente}`)
   } catch (error) {
     console.error('Error en la acción del servidor:', error)
     throw new Error('Error en la operación. Inténtalo nuevamente.')

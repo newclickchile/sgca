@@ -2,17 +2,14 @@
 import type { MouseEvent, SyntheticEvent } from 'react'
 import { useState } from 'react'
 
+import { TabContext, TabList, TabPanel } from '@mui/lab'
+import { Box, Tab } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import { TabContext, TabList, TabPanel } from '@mui/lab'
-import { Tab } from '@mui/material'
+import { ReactElement } from 'react'
 
-import type { AuxParentsType } from '@/types/aux'
-import AffiliationTabPanel from './affiliation/affiliationTabPanel'
-import BrothersTabPanel from './brothers/brothersTabPanel'
-
-const FamilyTab: React.FC<{ parents: AuxParentsType[] }> = ({}) => {
-  const [value, setValue] = useState<string>('1')
+const FamilyTab = ({ tabContentComponents }: { tabContentComponents: { [key: string]: ReactElement } }) => {
+  const [value, setValue] = useState<string>('affiliation')
 
   const handleChange = (_: SyntheticEvent, newValue: string) => {
     setValue(newValue)
@@ -24,38 +21,41 @@ const FamilyTab: React.FC<{ parents: AuxParentsType[] }> = ({}) => {
         <TabContext value={value}>
           <TabList onChange={handleChange} aria-label='nav tabs example'>
             <Tab
-              value='1'
+              value='affiliation'
               component='a'
               label='Madre / Padre'
               onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
             />
             <Tab
-              value='2'
+              value='brothers'
               component='a'
               label='Hermanos'
               onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
             />
             <Tab
-              value='3'
+              value='extendedFamily'
               component='a'
               label='Familia extensa'
               onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
             />
             <Tab
-              value='4'
+              value='significantAdult'
               component='a'
               label='Adulto significativo'
               onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
             />
           </TabList>
-          <TabPanel value='1'>
+          <TabPanel value={value}>
+            <Box my={4}>{tabContentComponents[value]}</Box>
+          </TabPanel>
+          {/* <TabPanel value='1'>
             <AffiliationTabPanel />
           </TabPanel>
           <TabPanel value='2'>
             <BrothersTabPanel />
           </TabPanel>
           <TabPanel value='3'></TabPanel>
-          <TabPanel value='4'></TabPanel>
+          <TabPanel value='4'></TabPanel> */}
         </TabContext>
       </CardContent>
     </Card>

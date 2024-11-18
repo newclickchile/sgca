@@ -28,12 +28,6 @@ import {
 import type { IMedicalHistory } from '@/types/residents/health/medicalHistory'
 import type { IMedicalFaq } from '@/types/residents/health/medicalFAQ'
 
-function capitalizeFirstLetter(sentence: string) {
-  const [firstLetter, ...rest] = sentence
-
-  return firstLetter.toUpperCase() + rest.join('')
-}
-
 const MedicalHistoryTabPanel: React.FC<{
   residentMedicalHistory: IMedicalHistory[]
   medicalFaq: IMedicalFaq[]
@@ -63,15 +57,12 @@ const MedicalHistoryTabPanel: React.FC<{
 
   return (
     <>
-      {JSON.stringify(medicalFaq)}
-      ------------
-      {JSON.stringify(residentMedicalHistory)}
-      {/* {medicalFaq.map(question => {
+      {medicalFaq.map(question => {
         return (
           <Box key={question.id} sx={{ m: 2 }}>
-            {JSON.stringify(expanded === residentMedicalHistory[0].faq.casa.toUpperCase())}
-            {JSON.stringify(residentMedicalHistory[0].faq.id.toString())}
-            <form onSubmit={handleSubmit(onSubmit)}>
+            {JSON.stringify(residentMedicalHistory)}
+            {JSON.stringify(medicalFaq)}
+            {/* <form onSubmit={handleSubmit(onSubmit)}>
               {question.isForm ? (
                 <Accordion
                   expanded={
@@ -103,6 +94,7 @@ const MedicalHistoryTabPanel: React.FC<{
                       onFocus={event => event.stopPropagation()}
                     />
                   </AccordionSummary>
+
                   <AccordionDetails>
                     <Grid container spacing={5}>
                       {question.extraForm && (
@@ -179,10 +171,10 @@ const MedicalHistoryTabPanel: React.FC<{
                   </AccordionSummary>
                 </Accordion>
               )}
-            </form>
+            </form> */}
           </Box>
         )
-      })} */}
+      })}
     </>
   )
 }

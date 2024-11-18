@@ -1,18 +1,19 @@
 'use client'
 
+import CustomDrawer from '@/components/CustomDrawer'
 import CustomForm from '@/components/forms/CustomForm'
 import { updateBrother } from '@/server-actions/residentTabs/familyGroup/updateBrother'
 import { IBrother } from '@/types/residents/familyGroup/brothersTab'
-import { Button, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material'
+import { Button, Card, CardContent, CardHeader, Grid } from '@mui/material'
 import { useState } from 'react'
 import { SubmitHandler } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import NewBrotherDrawer from './drawer'
 import { fields } from './form'
 
-const BrothersTabPanel = ({ brothers }: { brothers: IBrother[] }) => {
+const BrothersTabPanel = ({ brothers, residentId }: { brothers: IBrother[]; residentId: number }) => {
   const [addUserOpen, setAddUserOpen] = useState(false)
-  const [resetDrawerForm, setResetDrawerForm] = useState<boolean>(false)
+
+  const disableCreateNewItem = brothers?.length >= 40
 
   const onSubmit: SubmitHandler<IBrother> = async updateBrothersData => {
     console.log('updateBrothersData :', updateBrothersData)
@@ -26,9 +27,8 @@ const BrothersTabPanel = ({ brothers }: { brothers: IBrother[] }) => {
   }
 
   const handleDrawerOpen = () => {
-    if (brothers.length >= 40) return
+    if (disableCreateNewItem) return
 
-    setResetDrawerForm(false)
     setAddUserOpen(true)
   }
 
@@ -36,14 +36,28 @@ const BrothersTabPanel = ({ brothers }: { brothers: IBrother[] }) => {
     setAddUserOpen(false)
   }
 
-  const handleCancel = () => {
-    handleDrawerClose()
+  const getForm = (brother?: IBrother, isDrawer?: boolean) => {
+    return (
+      <CustomForm<IBrother>
+        buttonProps={{ fullWidth: false }}
+        fields={fields(isDrawer)}
+        defaultValues={{
+          fechaNacimiento: brother?.fechaNacimiento,
+          nombre: brother?.nombre,
+          comentario: brother?.comentario,
+          id: brother?.id,
+          ingresadoAlaRed: brother?.inred,
+          idResidente: residentId
+        }}
+        onSubmit={onSubmit}
+      />
+    )
   }
 
   return (
     <>
       <Grid container justifyContent='flex-end' mb={4}>
-        <Button variant='outlined' onClick={handleDrawerOpen} disabled={brothers.length >= 40}>
+        <Button variant='outlined' onClick={handleDrawerOpen} disabled={disableCreateNewItem}>
           Agregar nuevo Hermano
         </Button>
       </Grid>
@@ -51,35 +65,17 @@ const BrothersTabPanel = ({ brothers }: { brothers: IBrother[] }) => {
       {brothers.map((brother, index) => {
         return (
           <Grid container my={4} item key={brother.id}>
-            <Card variant='outlined'>
+            <Card variant='elevation'>
               <CardHeader title={`Hermano ${index + 1}`} />
-              <CardContent>
-                <CustomForm<IBrother>
-                  buttonProps={{ fullWidth: false }}
-                  fields={fields}
-                  defaultValues={{
-                    fechaNacimiento: brother?.fechaNacimiento,
-                    nombre: brother?.nombre,
-                    comentario: brother?.comentario,
-                    id: brother?.id,
-                    ingresadoAlaRed: brother?.inred,
-                    idResidente: brother?.idResidente
-                  }}
-                  onSubmit={onSubmit}
-                />
-              </CardContent>
+              <CardContent>{getForm(brother, false)}</CardContent>
             </Card>
           </Grid>
         )
       })}
-      <NewBrotherDrawer
-        residentId={brothers[0].idResidente}
-        handleCancel={handleCancel}
-        open={addUserOpen}
-        handleClose={handleDrawerClose}
-        onSubmit={onSubmit}
-        resetForm={resetDrawerForm}
-      />
+
+      <CustomDrawer open={addUserOpen} handleClose={handleDrawerClose} title='Agregar nuevo Hermano'>
+        {getForm()}
+      </CustomDrawer>
     </>
   )
 }

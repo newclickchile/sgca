@@ -24,7 +24,7 @@ const FamilyTabServer = async ({ residentId, resident }: { residentId: number; r
     <FamilyTab
       tabContentComponents={{
         affiliation: <AffiliationTabPanel resident={resident} />,
-        brothers: <BrothersTabPanel brothers={brothers} />,
+        brothers: <BrothersTabPanel brothers={brothers} residentId={residentId} />,
         extendedFamily: <ExtendedFamilyTabPanel extendedFamily={extendedFamily[0]} parents={parents} />,
         significantAdult: <SignificantAdultTabPanel significantAdultData={significantAdult[0]} />
       }}

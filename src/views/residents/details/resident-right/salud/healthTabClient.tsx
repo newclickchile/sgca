@@ -26,15 +26,15 @@ const HealthTab = ({ tabContentComponents }: { tabContentComponents: { [key: str
               href='/drafts'
               onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
             />
-            {/* <Tab
-              value='2'
+            <Tab
+              value='perinatalHistory'
               component='a'
               label='Historial perinatal'
               href='/trash'
               onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
             />
             <Tab
-              value='3'
+              value='familyHistory'
               component='a'
               label='Historial familiar'
               href='/spam'
@@ -46,23 +46,9 @@ const HealthTab = ({ tabContentComponents }: { tabContentComponents: { [key: str
               label='Consultas médicas'
               href='/spam'
               onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
-            /> */}
+            />
           </TabList>
           <TabPanel value={value}>{tabContentComponents[value]}</TabPanel>
-          {/* <TabPanel value='2'>
-            <PerinatalHistoryTabPanel
-              medicalHistoryData={medicalHistoryData}
-              medicalPerinatalData={medicalPerinatalData}
-            />
-          </TabPanel>
-          <TabPanel value='3'>
-            <FamilyHistoryTabPanel familyHistoryData={[]} parents={parents}>
-              <FamilyHistoryServerComponent residentId={resident.id} parents={parents} />
-            </FamilyHistoryTabPanel>
-          </TabPanel>
-          <TabPanel value='4'>
-            <MedicalConsultationsTabPanel medicalConsultationsData={medicalConsultationsData} />
-          </TabPanel> */}
         </TabContext>
       </CardContent>
     </Card>

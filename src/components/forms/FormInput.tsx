@@ -28,6 +28,13 @@ export const PASSWORD_RULES = [
   { re: /[A-Z]/, label: 'Debe incluir letra mayúscula' },
   { re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: 'Debe incluir un caracter especial' }
 ]
+
+export const EMAIL_RULES = {
+  pattern: {
+    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+    message: 'Debe ingresar un email válido'
+  }
+}
 export interface IKeyValueData {
   id: string | number
   nombre: string
@@ -94,6 +101,18 @@ export const FormInput: React.FC<{
                       </InputAdornment>
                     )
                   }}
+                />
+              )
+            case 'email':
+              return (
+                <TextField
+                  fullWidth
+                  value={value}
+                  label={props.label}
+                  type='email'
+                  placeholder={props.placeholder}
+                  onChange={onChange}
+                  error={Boolean(props.errors[props.name])}
                 />
               )
             case 'hidden':
@@ -180,6 +199,7 @@ export const FormInput: React.FC<{
         rules={{
           ...props.rules,
           ...(props.type === 'number' ? numberValidation : {}),
+          ...(props.type === 'email' && EMAIL_RULES),
           ...(props.isRequired && { required: `Debe ingresar "${props.label}"` })
         }}
       />

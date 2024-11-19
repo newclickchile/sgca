@@ -5,6 +5,8 @@ import { useState } from 'react'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { Button, Dialog, DialogContent, DialogTitle, Divider, Grid, IconButton, Tab, Typography } from '@mui/material'
 
+import { toast } from 'react-toastify'
+
 import CustomForm from '@/components/forms/CustomForm'
 import { updateMedicalConsultation } from '@/server-actions/residentTabs/health/medicalConsultation'
 import type { IMedicalConsultation, IMedicalConsultationDocuments } from '@/types/residents/health/medicalConsultations'
@@ -34,12 +36,11 @@ const DialogConsultationDetail = ({
     try {
       await updateMedicalConsultation(data)
 
-      // if (response.status === 200) {
-      //   setShowDialog(false)
-      //   toast.success(`Consulta médica ${consultationsDetail ? 'actualizada' : 'creada'} correctamente`)
-      // }
+      setShowDialog(false)
+      toast.success(`Consulta médica ${consultationsDetail ? 'actualizada' : 'creada'} correctamente`)
     } catch (error) {
       console.log(error)
+      toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
     }
   }
 

@@ -5,11 +5,13 @@ import { revalidatePath } from 'next/cache'
 import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/libs/auth'
-import type { IUpdateResident } from '@/types/residents/service'
+import type { INewResident } from '@/types/residents/service'
 
-const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente`
+const URL_RESIDENT = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/crear`
 
-export async function updatePersonalData(residentId: number, residentData: IUpdateResident) {
+export async function newResident(residentData: INewResident) {
+  console.log('residentData :', residentData)
+
   try {
     const session = await getServerSession(authOptions)
 
@@ -23,8 +25,10 @@ export async function updatePersonalData(residentId: number, residentData: IUpda
       CSRFC0d160j2vt: session.user.token
     }
 
-    const response = await fetch(`${URL_RESIDENTS}/editar?idResidente=${residentId}&${queryParams}`, {
-      method: 'PUT',
+    console.log('`${URL_RESIDENT}&${queryParams}` :', `${URL_RESIDENT}&${queryParams}`)
+
+    const response = await fetch(`${URL_RESIDENT}&${queryParams}`, {
+      method: 'POST',
       headers
     })
 
@@ -32,7 +36,7 @@ export async function updatePersonalData(residentId: number, residentData: IUpda
       throw new Error('Error al guardar los datos')
     }
 
-    revalidatePath(`/residentes/${residentId}`)
+    revalidatePath('/residentes')
   } catch (error) {
     console.error('Error en la acción del servidor:', error)
     throw new Error('Error en la operación. Inténtalo nuevamente.')

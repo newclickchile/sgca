@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-import './ResidentList.css'
 import {
   Alert,
   Button,
@@ -40,15 +39,17 @@ import classnames from 'classnames'
 import type { SubmitHandler } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { useLocalStorage } from 'react-use'
-import { useSession } from 'next-auth/react'
+import './ResidentList.css'
 
+import CustomDrawer from '@/components/CustomDrawer'
+import CustomForm from '@/components/forms/CustomForm'
 import FilterSelect from '@/components/forms/FilterSelect'
-import ResidentDrawer from '@/components/residents/ResidentDrawer'
 import useFetchData from '@/hooks/useFetchData'
+import { newResident } from '@/server-actions/resident/newResident'
 import type { AuxHousesType, AuxProgramType } from '@/types/aux'
 import type { INewResident, IResident } from '@/types/residents/service'
 import tableStyles from '@core/styles/table.module.css'
-import { fetchData } from '@/utils/fetch'
+import { fields } from './form'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -105,12 +106,10 @@ const columnHelper = createColumnHelper<ResidentTypeWithAction>()
 const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/obtener/bycasa`
 
 const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: AuxProgramType[] }) => {
-  const { data: session } = useSession()
   const [addUserOpen, setAddUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [globalFilter, setGlobalFilter] = useState('')
   const [residents, setResidents] = useState<any[]>([])
-  const [resetDrawerForm, setResetDrawerForm] = useState<boolean>(false)
   const router = useRouter()
   const [selectedHouse, setSelectedHouse] = useLocalStorage('homeId', '')
 
@@ -225,7 +224,6 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
 
     // Al abrir el Drawer se setea el reset en false para que se pueda cerrar sin borrar la data
     // esto es porque al hacer Submit del form se deja setResetDrawerForm en true
-    setResetDrawerForm(false)
     setAddUserOpen(true)
   }
 
@@ -237,26 +235,14 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
     handleDrawerClose()
   }
 
-  const onSubmit: SubmitHandler<INewResident> = async (newResident: INewResident) => {
-    console.log('newResident :', newResident)
+  const onSubmit: SubmitHandler<INewResident> = async newResidentData => {
+    console.log('newResidentData :', newResidentData)
 
     try {
-      if (!session?.user) {
-        toast.error('¡Sesión no válida!')
-
-        return
-      }
-
-      const queryParams = new URLSearchParams(newResident as unknown as Record<string, string>).toString()
-
-      const response = await fetchData({
-        endpoint: `${URL_RESIDENTS}/crear?${queryParams}`,
-        method: 'POST'
-      })
-
-      console.log('response :', response)
+      await newResident(newResidentData)
       toast.success('Se han actualizado los datos correctamente')
     } catch (error) {
+      console.log('error :', error)
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
     }
   }
@@ -382,7 +368,11 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
           </table>
         </div>
       </Card>
-      <ResidentDrawer
+      <CustomDrawer open={addUserOpen} handleClose={handleDrawerClose} title='Agregar nuevo Familiar'>
+        <CustomForm<INewResident> fields={fields(houses, programs)} onSubmit={onSubmit} onCancel={handleCancel} />
+      </CustomDrawer>
+
+      {/* <ResidentDrawer
         houses={houses}
         programs={programs}
         handleCancel={handleCancel}
@@ -390,7 +380,7 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
         handleClose={handleDrawerClose}
         onSubmit={onSubmit}
         resetForm={resetDrawerForm}
-      />
+      /> */}
     </Grid>
   )
 }

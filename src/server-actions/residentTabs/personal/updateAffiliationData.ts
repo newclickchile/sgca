@@ -5,11 +5,13 @@ import { revalidatePath } from 'next/cache'
 import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/libs/auth'
-import type { IUpdateResident } from '@/types/residents/service'
+import type { IAffiliation } from '@/types/residents/familyGroup/affiliationTab'
 
-const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente`
+const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/padres/actualizar`
 
-export async function updatePersonalData(residentId: number, residentData: IUpdateResident) {
+export async function updateAffiliationData(residentId: number, residentData: IAffiliation) {
+  console.log('residentData :', residentData)
+
   try {
     const session = await getServerSession(authOptions)
 
@@ -17,14 +19,16 @@ export async function updatePersonalData(residentId: number, residentData: IUpda
 
     const queryParams = new URLSearchParams(residentData as unknown as Record<string, string>).toString()
 
+    console.log('queryParams :', queryParams)
+
     const headers = {
       'Content-Type': 'application/json',
       pus3rN4m3: session.user.userName,
       CSRFC0d160j2vt: session.user.token
     }
 
-    const response = await fetch(`${URL_RESIDENTS}/editar?idResidente=${residentId}&${queryParams}`, {
-      method: 'PUT',
+    const response = await fetch(`${URL_RESIDENTS}?idResidente=${residentId}&${queryParams}`, {
+      method: 'POST',
       headers
     })
 

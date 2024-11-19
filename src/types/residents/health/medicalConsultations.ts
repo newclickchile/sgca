@@ -1,4 +1,4 @@
-export interface IMedicalConsultations {
+export interface IMedicalConsultation {
   id: number
   idResidente: number
   centroAsistencial: string
@@ -10,13 +10,12 @@ export interface IMedicalConsultations {
   fechaRegistro: string
   responsable: string
 }
-export interface IMedicalConsultationsForm {
-  centroAsistencial: string
-  fechaConsulta: string
-  medico: string
-  especialidad: string
-  motivo: string
-  diagnostico: string
-  fechaRegistro: string
+
+export interface IMedicalConsultationDocuments {
+  id: number
+  idConsulta: number
+  nombreDocumento: string
+  fechaDocumento: string
   responsable: string
+  linkDocumento: string
 }

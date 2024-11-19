@@ -1,13 +1,18 @@
 'use client'
 
+import { useState } from 'react'
+
+import { Button, Card, CardContent, CardHeader, Grid } from '@mui/material'
+
+import type { SubmitHandler } from 'react-hook-form'
+
+import { toast } from 'react-toastify'
+
 import CustomDrawer from '@/components/CustomDrawer'
 import CustomForm from '@/components/forms/CustomForm'
 import { updateBrother } from '@/server-actions/residentTabs/familyGroup/updateBrother'
-import { IBrother } from '@/types/residents/familyGroup/brothersTab'
-import { Button, Card, CardContent, CardHeader, Grid } from '@mui/material'
-import { useState } from 'react'
-import { SubmitHandler } from 'react-hook-form'
-import { toast } from 'react-toastify'
+import type { IBrother } from '@/types/residents/familyGroup/brothersTab'
+
 import { fields } from './form'
 
 const BrothersTabPanel = ({ brothers, residentId }: { brothers: IBrother[]; residentId: number }) => {
@@ -17,6 +22,7 @@ const BrothersTabPanel = ({ brothers, residentId }: { brothers: IBrother[]; resi
 
   const onSubmit: SubmitHandler<IBrother> = async updateBrothersData => {
     console.log('updateBrothersData :', updateBrothersData)
+
     try {
       await updateBrother(updateBrothersData)
       handleDrawerClose()
@@ -39,7 +45,7 @@ const BrothersTabPanel = ({ brothers, residentId }: { brothers: IBrother[]; resi
   const getForm = (brother?: IBrother, isDrawer?: boolean) => {
     return (
       <CustomForm<IBrother>
-        buttonProps={{ fullWidth: false }}
+        buttonProps={{ fullWidth: false, size: 'small' }}
         fields={fields(isDrawer)}
         defaultValues={{
           fechaNacimiento: brother?.fechaNacimiento,
@@ -57,7 +63,13 @@ const BrothersTabPanel = ({ brothers, residentId }: { brothers: IBrother[]; resi
   return (
     <>
       <Grid container justifyContent='flex-end' mb={4}>
-        <Button variant='outlined' onClick={handleDrawerOpen} disabled={disableCreateNewItem}>
+        <Button
+          startIcon={<i className='ri-add-line' />}
+          variant='outlined'
+          onClick={handleDrawerOpen}
+          disabled={disableCreateNewItem}
+          size='small'
+        >
           Agregar nuevo Hermano
         </Button>
       </Grid>

@@ -1,16 +1,20 @@
 'use server'
 
-import { authOptions } from '@/libs/auth'
-import { IFamilyHistory } from '@/types/residents/health/familyHistory'
-import { getServerSession } from 'next-auth'
 import { revalidatePath } from 'next/cache'
+
+import { getServerSession } from 'next-auth'
+
+import { authOptions } from '@/libs/auth'
+import type { IFamilyHistory } from '@/types/residents/health/familyHistory'
 
 const URL_FAMILY_HISTORY = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/clinico/historial/familia`
 
 export async function updateFamilyHistory(updateFamilyData: IFamilyHistory) {
   console.log('updateFamilyData :: updateFamilyData :', updateFamilyData)
+
   try {
     const session = await getServerSession(authOptions)
+
     if (!session?.user || !session.user.token) throw new Error('No session available')
 
     const queryParams = new URLSearchParams(updateFamilyData as unknown as Record<string, string>).toString()
@@ -26,6 +30,7 @@ export async function updateFamilyHistory(updateFamilyData: IFamilyHistory) {
       : `${URL_FAMILY_HISTORY}/crear?`
 
     console.log('`${urlBase}&${queryParams}` :', `${urlBase}&${queryParams}`)
+
     const response = await fetch(`${urlBase}&${queryParams}`, {
       method: 'POST',
       headers

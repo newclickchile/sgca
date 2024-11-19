@@ -2,7 +2,8 @@
 
 import { useEffect } from 'react'
 
-import { Button, ButtonProps, Grid } from '@mui/material'
+import type { ButtonProps } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import type { DefaultValues, FieldValues, SubmitHandler } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 

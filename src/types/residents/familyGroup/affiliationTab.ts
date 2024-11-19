@@ -1,4 +1,4 @@
-export type IAffiliationForm = {
+export type IAffiliation = {
   nombrePadre?: string
   ocupacionPadre?: string
   fechaNacimientoPadre?: string

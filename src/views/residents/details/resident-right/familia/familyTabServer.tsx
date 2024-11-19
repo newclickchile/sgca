@@ -2,7 +2,7 @@ import { fetchData } from '@/utils/fetch'
 import AffiliationTabPanel from './affiliation/affiliationTabPanel'
 import BrothersTabPanel from './brothers'
 import FamilyTab from './familyTab'
-import { IResident } from '@/types/residents/service'
+import type { IResident } from '@/types/residents/service'
 import ExtendedFamilyTabPanel from './extendedFamilyTabPanel'
 import SignificantAdultTabPanel from './significantAdult'
 
@@ -23,7 +23,7 @@ const FamilyTabServer = async ({ residentId, resident }: { residentId: number; r
   return (
     <FamilyTab
       tabContentComponents={{
-        affiliation: <AffiliationTabPanel resident={resident} />,
+        affiliation: <AffiliationTabPanel residentId={residentId} resident={resident} />,
         brothers: <BrothersTabPanel brothers={brothers} residentId={residentId} />,
         extendedFamily: <ExtendedFamilyTabPanel extendedFamily={extendedFamily[0]} parents={parents} />,
         significantAdult: <SignificantAdultTabPanel significantAdultData={significantAdult[0]} />

@@ -1,20 +1,16 @@
 'use client'
 
-import { useState } from 'react'
 import { toast } from 'react-toastify'
+
 import CustomForm from '@/components/forms/CustomForm'
 import CardActionCollapse from '@/components/residents/CardActionCollapse'
-import type { IAffiliationForm } from '@/types/residents/familyGroup/affiliationTab'
-import { fetchData } from '@/utils/fetch'
+
+import { updateAffiliationData } from '@/server-actions/residentTabs/personal/updateAffiliationData'
+import type { IAffiliation } from '@/types/residents/familyGroup/affiliationTab'
 import { fieldsFather, fieldsMother } from './form'
-import { IResident } from '@/types/residents/service'
+import type { IResident } from '@/types/residents/service'
 
-const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente`
-
-const AffiliationTabPanel = ({ resident }: { resident: IResident }) => {
-  const [resetMotherForm, setResetMotherForm] = useState<boolean>(false)
-  const [resetFatherForm, setResetFatherForm] = useState<boolean>(false)
-
+const AffiliationTabPanel = ({ residentId, resident }: { residentId: number; resident: IResident }) => {
   const {
     nombreMadre,
     ocupacionMadre,
@@ -28,12 +24,25 @@ const AffiliationTabPanel = ({ resident }: { resident: IResident }) => {
     condicionPadre
   } = resident
 
-  const onSubmit = async (data: IAffiliationForm, type: 'madre' | 'padre') => {
+  const onSubmit = async (data: IAffiliation, type: 'madre' | 'padre') => {
     try {
-      const updatedData: Partial<IAffiliationForm> =
+      const affiliationData: IAffiliation = {
+        nombreMadre,
+        ocupacionMadre,
+        fechaNacimientoMadre,
+        direccionMadre,
+        condicionMadre,
+        nombrePadre,
+        ocupacionPadre,
+        fechaNacimientoPadre,
+        direccionPadre,
+        condicionPadre
+      }
+
+      const updatedData: Partial<IAffiliation> =
         type === 'madre'
           ? {
-              ...resident,
+              ...affiliationData,
               nombreMadre: data.nombreMadre,
               ocupacionMadre: data.ocupacionMadre,
               fechaNacimientoMadre: data.fechaNacimientoMadre,
@@ -41,7 +50,7 @@ const AffiliationTabPanel = ({ resident }: { resident: IResident }) => {
               condicionMadre: data.condicionMadre
             }
           : {
-              ...resident,
+              ...affiliationData,
               nombrePadre: data.nombrePadre,
               ocupacionPadre: data.ocupacionPadre,
               fechaNacimientoPadre: data.fechaNacimientoPadre,
@@ -49,20 +58,11 @@ const AffiliationTabPanel = ({ resident }: { resident: IResident }) => {
               condicionPadre: data.condicionPadre
             }
 
-      const queryParams = new URLSearchParams(updatedData as Record<string, string>).toString()
+      await updateAffiliationData(residentId, updatedData)
 
-      const response = await fetchData({
-        endpoint: `${URL_RESIDENTS}/padres/actualizar?idResidente=${resident.id}&${queryParams}`,
-        method: 'POST'
-      })
-
-      console.log('response :', response)
-
-      if (response.status === 200) {
-        toast.success('Datos actualizados correctamente')
-        type === 'madre' ? setResetMotherForm(true) : setResetFatherForm(true)
-      }
+      toast.success('Datos actualizados correctamente')
     } catch (error) {
+      console.log('error :', error)
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
     }
   }
@@ -70,7 +70,7 @@ const AffiliationTabPanel = ({ resident }: { resident: IResident }) => {
   return (
     <>
       <CardActionCollapse title='Filiación Madre'>
-        <CustomForm<IAffiliationForm>
+        <CustomForm<IAffiliation>
           fields={fieldsMother}
           defaultValues={{
             nombreMadre,
@@ -80,13 +80,11 @@ const AffiliationTabPanel = ({ resident }: { resident: IResident }) => {
             condicionMadre
           }}
           onSubmit={data => onSubmit(data, 'madre')}
-          resetForm={resetMotherForm}
         />
       </CardActionCollapse>
       <CardActionCollapse title='Filiación Padre'>
-        <CustomForm<IAffiliationForm>
+        <CustomForm<IAffiliation>
           fields={fieldsFather}
-          resetForm={resetFatherForm}
           defaultValues={{
             nombrePadre,
             ocupacionPadre,

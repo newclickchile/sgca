@@ -20,7 +20,7 @@ const FamilyTab = dynamic(() => import('@/views/residents/details/resident-right
 const generateTabContentComponents = (residentData: IResident) => ({
   personal: <PersonalTab resident={residentData} />,
   family: <FamilyTab residentId={residentData.id} resident={residentData} />,
-  health: <HealthTab residentId={6} />
+  health: <HealthTab residentId={residentData.id} />
 })
 
 const ResidentDetails = async ({ residentId }: { residentId: string }) => {

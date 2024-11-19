@@ -1,5 +1,5 @@
-import { FieldConfig } from '@/components/forms/CustomForm'
-import { AuxParentsType } from '@/types/aux'
+import type { FieldConfig } from '@/components/forms/CustomForm'
+import type { AuxParentsType } from '@/types/aux'
 
 export const fields = (parents: AuxParentsType[], isDrawer: boolean = true): FieldConfig[] => {
   const parentsOptions = parents.map(parent => ({
@@ -14,13 +14,13 @@ export const fields = (parents: AuxParentsType[], isDrawer: boolean = true): Fie
       isRequired: true,
       type: 'select',
       listValues: parentsOptions,
-      width: isDrawer ? 12 : 9
+      width: isDrawer ? 12 : 3
     },
     {
       name: 'antecedentes',
       label: 'Enfermedad relevante',
       type: 'multiline',
-      width: isDrawer ? 12 : 3,
+      width: isDrawer ? 12 : 9,
       rows: 3
     }
   ]

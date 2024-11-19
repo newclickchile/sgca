@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import AlertError from '@/components/AlertError'
 import { authOptions } from '@/libs/auth'
 import { fetchData } from '@/utils/fetch'
-import ResidentList from '@/views/residents/ResidentList'
+import ResidentList from '@/views/residents/list/ResidentList'
 
 const URL_HOUSES = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/casas/obtener?idInstitucion`
 const URL_PROGRAMS = `${process.env.NEXT_PUBLIC_API_URL_AUXILIARES}/programa`
@@ -24,6 +24,7 @@ const ResidentPage = async () => {
     return <ResidentList houses={houses} programs={programs} />
   } catch (error) {
     console.error('Error loading ResidentPage:', error)
+
     return <AlertError />
   }
 }

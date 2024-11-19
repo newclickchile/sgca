@@ -41,7 +41,7 @@ const HealthTab = ({ tabContentComponents }: { tabContentComponents: { [key: str
               onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
             />
             <Tab
-              value='4'
+              value='medicalConsultation'
               component='a'
               label='Consultas médicas'
               href='/spam'

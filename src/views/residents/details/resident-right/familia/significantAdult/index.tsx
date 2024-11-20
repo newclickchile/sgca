@@ -1,10 +1,13 @@
 'use client'
 
+import type { SubmitHandler } from 'react-hook-form'
+
+import { toast } from 'react-toastify'
+
 import CustomForm from '@/components/forms/CustomForm'
 import { updateSignificantAdult } from '@/server-actions/residentTabs/familyGroup/updateSignificantAdult'
-import { ISignificantAdult } from '@/types/residents/familyGroup/significantAdultTab'
-import { SubmitHandler } from 'react-hook-form'
-import { toast } from 'react-toastify'
+import type { ISignificantAdult } from '@/types/residents/familyGroup/significantAdultTab'
+
 import { fields } from './form'
 
 const SignificantAdultTabPanel = ({ significantAdultData }: { significantAdultData: ISignificantAdult }) => {

@@ -16,11 +16,13 @@ const URL_RESIDENT = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/ob
 const PersonalTab = dynamic(() => import('@/views/residents/details/resident-right/personal/personalTabServer'))
 const HealthTab = dynamic(() => import('@/views/residents/details/resident-right/salud/healthTabServer'))
 const FamilyTab = dynamic(() => import('@/views/residents/details/resident-right/familia/familyTabServer'))
+const JudicialTab = dynamic(() => import('@/views/residents/details/resident-right/judicial/judicialTabServer'))
 
 const generateTabContentComponents = (residentData: IResident) => ({
   personal: <PersonalTab resident={residentData} />,
   family: <FamilyTab residentId={residentData.id} resident={residentData} />,
-  health: <HealthTab residentId={residentData.id} />
+  health: <HealthTab residentId={residentData.id} />,
+  judicial: <JudicialTab residentId={residentData.id} />
 })
 
 const ResidentDetails = async ({ residentId }: { residentId: string }) => {

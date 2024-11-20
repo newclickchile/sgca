@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth'
 
 import { authOptions } from '@/libs/auth'
-import { IResident } from '@/types/residents/service'
+import type { IResident } from '@/types/residents/service'
 import { fetchData } from '@/utils/fetch'
 import PersonalTab from './personalTab'
 import AlertError from '@/components/AlertError'
@@ -25,6 +25,7 @@ const PersonalTabServer = async ({ resident }: { resident: IResident }) => {
     return <PersonalTab residentData={resident} houses={houses} programs={programs} />
   } catch (error) {
     console.log('error :', error)
+
     return <AlertError />
   }
 }

@@ -17,6 +17,7 @@ import CustomTabList from '@core/components/mui/TabList'
 
 const CustomTab = styled(Tab)(({}) => ({
   color: 'GrayText',
+  textTransform: 'uppercase',
   '& .MuiTab-wrapper': {
     color: 'GrayText'
   }
@@ -53,19 +54,12 @@ const ResidentRight = ({ tabContentComponents }: { tabContentComponents: { [key:
                 label='Salud'
                 iconPosition='start'
               />
-              {/* <Tab icon={<i className='ri-lock-line' />} value='security' label='Security' iconPosition='start' />
-              <Tab
-                icon={<i className='ri-map-pin-line' />}
-                value='addressBilling'
-                label='Address & Billing'
+              <CustomTab
+                icon={<i className='octicon-law-24 text-2xl' />}
+                value='judicial'
+                label='Judicial'
                 iconPosition='start'
               />
-              <Tab
-                icon={<i className='ri-notification-2-line' />}
-                value='notifications'
-                label='Notifications'
-                iconPosition='start'
-              /> */}
             </CustomTabList>
           </Grid>
           <Grid item xs={12}>

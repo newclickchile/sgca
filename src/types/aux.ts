@@ -14,3 +14,9 @@ export type AuxParentsType = {
   parentesco: string
   habilitado: boolean
 }
+
+export type AuxCausesAdmissionType = {
+  id: number
+  causa: string
+  habilitado: boolean
+}

@@ -27,10 +27,13 @@ interface CustomFormProps<T extends FieldValues> {
   onSubmit: SubmitHandler<T>
   onCancel?: () => void
   submitButtonName?: string
+  cancelButtonName?: string
   submitSize?: number
   useDirty?: boolean
   resetForm?: boolean
-  buttonProps?: ButtonProps
+  submitButtonProps?: ButtonProps
+  cancelButtonProps?: ButtonProps
+  isLoadingCancelAction?: boolean
 }
 
 const CustomForm = <T extends FieldValues>({
@@ -40,8 +43,11 @@ const CustomForm = <T extends FieldValues>({
   onCancel,
   resetForm,
   submitButtonName = 'Enviar',
+  cancelButtonName = 'Cancelar',
+  isLoadingCancelAction = false,
   useDirty = true,
-  buttonProps
+  submitButtonProps,
+  cancelButtonProps
 }: CustomFormProps<T>) => {
   const {
     control,
@@ -63,11 +69,6 @@ const CustomForm = <T extends FieldValues>({
       reset()
     }
   }, [reset, resetForm])
-
-  const finalButtonProps = {
-    fullWidth: true,
-    ...buttonProps
-  }
 
   return (
     <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
@@ -94,12 +95,29 @@ const CustomForm = <T extends FieldValues>({
         })}
       </Grid>
       <Grid container gap={2}>
-        <Button variant='contained' type='submit' disabled={useDirty && !isDirty} {...finalButtonProps}>
+        <Button
+          variant='contained'
+          type='submit'
+          disabled={useDirty && !isDirty}
+          {...{
+            fullWidth: true,
+            ...submitButtonProps
+          }}
+        >
           {submitButtonName}
         </Button>
         {onCancel && (
-          <Button type='reset' fullWidth variant='outlined' onClick={handleCancel}>
-            Cancelar
+          <Button
+            type='reset'
+            variant='outlined'
+            disabled={isLoadingCancelAction}
+            onClick={handleCancel}
+            {...{
+              fullWidth: true,
+              ...cancelButtonProps
+            }}
+          >
+            {isLoadingCancelAction ? 'Procesando ...' : cancelButtonName || 'Cancelar'}
           </Button>
         )}
       </Grid>

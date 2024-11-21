@@ -20,3 +20,10 @@ export type AuxCausesAdmissionType = {
   causa: string
   habilitado: boolean
 }
+
+export type AuxProsecutorsType = {
+  id: number
+  fiscalias: string
+  region: string
+  habilitado: boolean
+}

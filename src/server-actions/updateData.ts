@@ -11,6 +11,7 @@ interface UpdateData {
 }
 
 interface UpdateParams {
+  method?: string
   updateData: UpdateData
   urlBase: string
   revalidatePath: string
@@ -18,6 +19,7 @@ interface UpdateParams {
 }
 
 async function updateData({
+  method = 'POST',
   updateData,
   urlBase,
   revalidatePath: revalidatePathParam,
@@ -43,7 +45,7 @@ async function updateData({
     console.log('Request URL:', finalUrl)
 
     const response = await fetch(finalUrl, {
-      method: 'POST',
+      method,
       headers
     })
 

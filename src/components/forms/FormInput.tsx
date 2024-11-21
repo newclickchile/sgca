@@ -6,6 +6,7 @@ import {
   FormControl,
   FormControlLabel,
   InputLabel,
+  ListSubheader,
   MenuItem,
   Select,
   TextField,
@@ -148,12 +149,20 @@ export const FormInput: React.FC<{
                     id='select-outlined'
                     labelId='select-outlined-label'
                   >
-                    {props.listValues.map((data: IKeyValueData) => {
-                      return (
+                    {props.listValues.map((data: IKeyValueData, index: number) => {
+                      const isDescriptionChange =
+                        props.listValues[index].descripcion !== props.listValues[index - 1]?.descripcion
+
+                      return [
+                        isDescriptionChange && (
+                          <ListSubheader key={`subheader-${data.id}`}>
+                            <Typography variant='h6'>{data.descripcion}</Typography>
+                          </ListSubheader>
+                        ),
                         <MenuItem key={data.id} value={data.id}>
                           {data.nombre}
                         </MenuItem>
-                      )
+                      ]
                     })}
                   </Select>
                 </FormControl>

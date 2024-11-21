@@ -16,18 +16,17 @@ export interface IJudicialInformation {
   telefono: string
 }
 
-export interface IJudicialCurador {
+export interface IJudicialCurator {
   idResidente: number
-  rit: string
-  ruc: string
-  tribunal: string
-  calidadJuridica: string
-  causalIngreso: string
   nombreCurador: string
   fechaEntrevista: string
   institucion: string
   comentario: string
-  nombreAdultoResponsable: string
+}
+
+export interface IJudicialResponsibleAdult {
+  idResidente: number
+  nombreAdulto: string
   rut: string
   domicilio: string
   email: string

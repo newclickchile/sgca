@@ -1,25 +1,33 @@
 'use client'
 
-import { Box, Card, CardContent, Divider } from '@mui/material'
-import Grid from '@mui/material/Grid'
+import { Box, Divider } from '@mui/material'
 import type { SubmitHandler } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 import CustomForm from '@/components/forms/CustomForm'
+import CardActionCollapse from '@/components/residents/CardActionCollapse'
 import { updateJudicialInformation } from '@/server-actions/residentTabs/judicial/updateJudicialInformation'
 import type { AuxCausesAdmissionType } from '@/types/aux'
-import type { IJudicialInformation } from '@/types/residents/judicial/judicialInformation'
+import type {
+  IJudicialCurator,
+  IJudicialInformation,
+  IJudicialResponsibleAdult
+} from '@/types/residents/judicial/judicialInformation'
 import { fields } from './form'
-import CardActionCollapse from '@/components/residents/CardActionCollapse'
+import { fieldsCurator, fieldsResponsibleAdult } from '../../familia/extendedFamilyTabPanel/form'
 
 const JudicialInformationTabPanel = ({
   residentId,
   judicialData,
-  admissionCauses
+  admissionCauses,
+  curatorData,
+  responsibleAdultData
 }: {
   residentId: number
   judicialData: IJudicialInformation
   admissionCauses: AuxCausesAdmissionType[]
+  curatorData: IJudicialCurator | undefined
+  responsibleAdultData: IJudicialResponsibleAdult | undefined
 }) => {
   // residente/judicial/actualizar?&rit=rit&calidadJuridica=calidad&causalIngreso=causal&tribunal=tribunal&ruc=ruc&idResidente=2
 
@@ -28,6 +36,28 @@ const JudicialInformationTabPanel = ({
       console.log('updateData :', updateData)
 
       await updateJudicialInformation(residentId, updateData)
+      toast.success('Se han actualizado los datos correctamente')
+    } catch (_) {
+      toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
+    }
+  }
+
+  const onSubmitCurator: SubmitHandler<IJudicialCurator> = async updateData => {
+    try {
+      console.log('updateData :', updateData)
+
+      // await updateJudicialInformation(residentId, updateData)
+      toast.success('Se han actualizado los datos correctamente')
+    } catch (_) {
+      toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
+    }
+  }
+
+  const onSubmitResponsibleAdult: SubmitHandler<IJudicialResponsibleAdult> = async updateData => {
+    try {
+      console.log('updateData :', updateData)
+
+      // await updateJudicialInformation(residentId, updateData)
       toast.success('Se han actualizado los datos correctamente')
     } catch (_) {
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
@@ -52,30 +82,18 @@ const JudicialInformationTabPanel = ({
       <Box my={4}>
         <CardActionCollapse title='Curador'>
           <Box my={2}>
-            <CustomForm<IJudicialInformation>
+            <CustomForm<IJudicialCurator>
               buttonProps={{ fullWidth: false }}
-              fields={fields(admissionCauses)}
+              fields={fieldsCurator}
               defaultValues={{
-                rit: judicialData?.rit,
-                calidadJuridica: judicialData?.calidadJuridica,
-                causalIngreso: judicialData?.causalIngreso,
-                tribunal: judicialData?.tribunal,
-                ruc: judicialData?.ruc,
-                idResidente: residentId
+                comentario: curatorData?.comentario,
+                fechaEntrevista: curatorData?.fechaEntrevista,
+                idResidente: residentId,
+                institucion: curatorData?.institucion,
+                nombreCurador: curatorData?.nombreCurador
               }}
-              onSubmit={onSubmit}
+              onSubmit={onSubmitCurator}
             />
-            {/* <CustomForm<IAffiliation>
-          fields={fieldsMother}
-          defaultValues={{
-            nombreMadre,
-            ocupacionMadre,
-            fechaNacimientoMadre,
-            direccionMadre,
-            condicionMadre
-          }}
-          onSubmit={data => onSubmit(data, 'madre')}
-        /> */}
           </Box>
         </CardActionCollapse>
       </Box>
@@ -83,30 +101,19 @@ const JudicialInformationTabPanel = ({
       <Box my={2}>
         <CardActionCollapse title='Adulto responsable'>
           <Box my={4}>
-            <CustomForm<IJudicialInformation>
+            <CustomForm<IJudicialResponsibleAdult>
               buttonProps={{ fullWidth: false }}
-              fields={fields(admissionCauses)}
+              fields={fieldsResponsibleAdult}
               defaultValues={{
-                rit: judicialData?.rit,
-                calidadJuridica: judicialData?.calidadJuridica,
-                causalIngreso: judicialData?.causalIngreso,
-                tribunal: judicialData?.tribunal,
-                ruc: judicialData?.ruc,
-                idResidente: residentId
+                domicilio: responsibleAdultData?.domicilio,
+                email: responsibleAdultData?.email,
+                idResidente: residentId,
+                nombreAdulto: responsibleAdultData?.nombreAdulto,
+                rut: responsibleAdultData?.rut,
+                telefono: responsibleAdultData?.telefono
               }}
-              onSubmit={onSubmit}
+              onSubmit={onSubmitResponsibleAdult}
             />
-            {/* <CustomForm<IAffiliation>
-          fields={fieldsFather}
-          defaultValues={{
-            nombrePadre,
-            ocupacionPadre,
-            fechaNacimientoPadre,
-            direccionPadre,
-            condicionPadre
-          }}
-          onSubmit={data => onSubmit(data, 'padre')}
-        /> */}
           </Box>
         </CardActionCollapse>
       </Box>

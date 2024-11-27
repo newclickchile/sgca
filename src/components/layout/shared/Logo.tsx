@@ -2,20 +2,34 @@
 
 import { Box } from '@mui/material'
 
-import { useSettings } from '@core/hooks/useSettings'
+import useVerticalNav from '@/@menu/hooks/useVerticalNav'
 
 const Logo = () => {
-  const { settings } = useSettings()
+  const verticalNavOptions = useVerticalNav()
+  const { isCollapsed, isHovered } = verticalNavOptions
 
-  const { layout } = settings
+  const logoSrc = isHovered ? '/images/app/logo.jpg' : isCollapsed ? '/images/app/logo2.jpg' : '/images/app/logo.jpg'
 
   return (
-    <Box>
-      {layout === 'collapsed' ? (
-        <img alt={'logo'} width='100%' src={`/images/app/logo2.jpg`} />
-      ) : (
-        <img alt={'logo'} width='90%' src={`/images/app/logo.jpg`} />
-      )}
+    <Box
+      sx={{
+        width: isHovered ? '100%' : isCollapsed ? '40px' : '100%',
+        height: isHovered ? '80px' : isCollapsed ? '40px' : '80px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden'
+      }}
+    >
+      <img
+        alt='logo'
+        src={logoSrc}
+        style={{
+          width: 'auto',
+          height: '100%',
+          maxWidth: '100%'
+        }}
+      />
     </Box>
   )
 }

@@ -54,7 +54,7 @@ const FamilyHistoryTabPanel = ({
 
     return (
       <CustomForm<IFamilyHistory>
-        buttonProps={{ fullWidth: false }}
+        submitButtonProps={{ fullWidth: false }}
         fields={fieldsData}
         defaultValues={{
           antecedentes: relative?.antecedentes,
@@ -89,7 +89,7 @@ const FamilyHistoryTabPanel = ({
                 <CardHeader title={`Familiar ${index + 1}`} />
                 <CardContent>
                   <CustomForm<IFamilyHistory>
-                    buttonProps={{ fullWidth: false }}
+                    submitButtonProps={{ fullWidth: false }}
                     fields={fields(parents, false)}
                     defaultValues={{
                       antecedentes: relative?.antecedentes,

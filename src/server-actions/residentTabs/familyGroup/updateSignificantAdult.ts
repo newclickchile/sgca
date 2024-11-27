@@ -1,18 +1,22 @@
 'use server'
 
-import { authOptions } from '@/libs/auth'
-import { ISignificantAdult } from '@/types/residents/familyGroup/significantAdultTab'
-import { getServerSession } from 'next-auth'
 import { revalidatePath } from 'next/cache'
+
+import { getServerSession } from 'next-auth'
+
+import { authOptions } from '@/libs/auth'
+import type { ISignificantAdult } from '@/types/residents/familyGroup/significantAdultTab'
 
 const URL_SIGNIFICANT_ADULT = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/adulto`
 
 export async function updateSignificantAdult(updateData: ISignificantAdult) {
   try {
     const session = await getServerSession(authOptions)
+
     if (!session?.user || !session.user.token) throw new Error('No session available')
 
     const queryParams = new URLSearchParams(updateData as unknown as Record<string, string>).toString()
+
     console.log('queryParams :', queryParams)
 
     const headers = {

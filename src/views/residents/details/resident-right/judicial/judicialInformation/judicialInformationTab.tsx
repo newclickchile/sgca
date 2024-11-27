@@ -83,7 +83,7 @@ const JudicialInformationTabPanel = ({
         <CardActionCollapse title='Curador'>
           <Box my={2}>
             <CustomForm<IJudicialCurator>
-              buttonProps={{ fullWidth: false }}
+              submitButtonProps={{ fullWidth: false }}
               fields={fieldsCurator}
               defaultValues={{
                 comentario: curatorData?.comentario,
@@ -102,7 +102,7 @@ const JudicialInformationTabPanel = ({
         <CardActionCollapse title='Adulto responsable'>
           <Box my={4}>
             <CustomForm<IJudicialResponsibleAdult>
-              buttonProps={{ fullWidth: false }}
+              submitButtonProps={{ fullWidth: false }}
               fields={fieldsResponsibleAdult}
               defaultValues={{
                 domicilio: responsibleAdultData?.domicilio,

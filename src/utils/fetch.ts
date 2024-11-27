@@ -1,5 +1,6 @@
+import { getServerSession } from 'next-auth'
+
 import { authOptions } from '@/libs/auth'
-import { getServerSession, type Session } from 'next-auth'
 
 type method = 'GET' | 'POST' | 'PUT' | 'DELETE'
 interface FetchClientDataParams {

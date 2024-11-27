@@ -45,7 +45,7 @@ const BrothersTabPanel = ({ brothers, residentId }: { brothers: IBrother[]; resi
   const getForm = (brother?: IBrother, isDrawer?: boolean) => {
     return (
       <CustomForm<IBrother>
-        buttonProps={{ fullWidth: false, size: 'small' }}
+        submitButtonProps={{ fullWidth: false, size: 'small' }}
         fields={fields(isDrawer)}
         defaultValues={{
           fechaNacimiento: brother?.fechaNacimiento,

@@ -124,7 +124,7 @@ const ExtendedFamilyTabPanel = ({
   const getForm = (extendedFamily?: IExtendedFamily, isDrawer?: boolean) => {
     return (
       <CustomForm<IExtendedFamily>
-        buttonProps={{ fullWidth: false }}
+        submitButtonProps={{ fullWidth: false }}
         fields={fields(parents, isDrawer)}
         defaultValues={{
           comentario: extendedFamily?.comentario,

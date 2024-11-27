@@ -17,8 +17,10 @@
  */
 // Third-party Imports
 import type { ToastPosition } from 'react-toastify'
+
 // Type Imports
 import type { Mode, Skin, Layout, LayoutComponentPosition, LayoutComponentWidth } from '@core/types'
+
 type Navbar = {
   type: LayoutComponentPosition
   contentWidth: LayoutComponentWidth
@@ -47,6 +49,7 @@ export type Config = {
   disableRipple: boolean
   toastPosition: ToastPosition
 }
+
 const themeConfig: Config = {
   templateName: 'SGCA',
   homePageUrl: '/informes',
@@ -73,4 +76,5 @@ const themeConfig: Config = {
   disableRipple: false, // true, false
   toastPosition: 'top-right' // 'top-right', 'top-center', 'top-left', 'bottom-right', 'bottom-center', 'bottom-left'
 }
+
 export default themeConfig

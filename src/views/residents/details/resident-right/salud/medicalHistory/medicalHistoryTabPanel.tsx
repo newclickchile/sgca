@@ -1,59 +1,41 @@
 'use client'
 
 // ** MUI Imports
-import type { SyntheticEvent } from 'react'
-import { useState } from 'react'
-
-import Button from '@mui/material/Button'
-import Grid from '@mui/material/Grid'
 
 // ** Third Party Imports
-import { Controller, useForm } from 'react-hook-form'
 
 // ** Styles Import
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField
-} from '@mui/material'
+import { Box } from '@mui/material'
 
-import type { IMedicalHistory } from '@/types/residents/health/medicalHistory'
 import type { IMedicalFaq } from '@/types/residents/health/medicalFAQ'
+import type { IMedicalHistory } from '@/types/residents/health/medicalHistory'
 
 const MedicalHistoryTabPanel: React.FC<{
   residentMedicalHistory: IMedicalHistory[]
   medicalFaq: IMedicalFaq[]
 }> = ({ residentMedicalHistory, medicalFaq }) => {
-  const [expanded, setExpanded] = useState<string | false>(false)
+  // const [expanded, setExpanded] = useState<string | false>(false)
 
-  const handleChange = (panel: string) => (_: SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel.toUpperCase() : false)
-  }
+  // const handleChange = (panel: string) => (_: SyntheticEvent, isExpanded: boolean) => {
+  //   setExpanded(isExpanded ? panel.toUpperCase() : false)
+  // }
 
-  const handleClick = (panel: string) => {
-    const value = getValues(panel)
+  // const handleClick = (panel: string) => {
+  //   const value = getValues(panel)
 
-    setExpanded(value ? panel.toUpperCase() : false)
-  }
+  //   setExpanded(value ? panel.toUpperCase() : false)
+  // }
 
-  const { handleSubmit, control, getValues } = useForm()
+  // const { handleSubmit, control, getValues } = useForm()
 
-  const onSubmit = (values: any) => {
-    console.log('values :', values)
+  // const onSubmit = (values: any) => {
+  //   console.log('values :', values)
 
-    // console.log("values :", values);
-    return
+  //   // console.log("values :", values);
+  //   return
 
-    // setExpanded(values[] ? panel : false);
-  }
+  //   // setExpanded(values[] ? panel : false);
+  // }
 
   return (
     <>

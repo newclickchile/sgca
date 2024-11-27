@@ -13,6 +13,8 @@ import { styled, useColorScheme, useTheme } from '@mui/material/styles'
 import { signOut, useSession } from 'next-auth/react'
 import { toast } from 'react-toastify'
 
+import { Box } from '@mui/material'
+
 import type { Mode, SystemMode } from '@core/types'
 
 // Component Imports
@@ -146,7 +148,9 @@ const Navigation = (props: Props) => {
       {/* Nav Header including Logo & nav toggle icons  */}
       <NavHeader>
         <Link href={'/'}>
-          <Logo />
+          <Box maxWidth={isCollapsed && isHovered ? 100 : undefined}>
+            <Logo />
+          </Box>
         </Link>
         {!(isCollapsed && !isHovered) && (
           <NavCollapseIcons

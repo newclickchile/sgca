@@ -29,8 +29,6 @@ const JudicialTabServer = async ({ residentId }: { residentId: number }) => {
       tabContentComponents={{
         judicialInformation: (
           <JudicialInformationTabPanel
-            curatorData={undefined}
-            responsibleAdultData={undefined}
             residentId={residentId}
             judicialData={judicialData}
             admissionCauses={admissionCauses}

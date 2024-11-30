@@ -6,7 +6,11 @@ import { toast } from 'react-toastify'
 
 import CustomForm from '@/components/forms/CustomForm'
 import CardActionCollapse from '@/components/residents/CardActionCollapse'
-import { updateJudicialInformation } from '@/server-actions/residentTabs/judicial/updateJudicialInformation'
+import {
+  updateCurator,
+  updateJudicialInformation,
+  updateResponsibleAdult
+} from '@/server-actions/residentTabs/judicial/updateJudicialInformation'
 import type { AuxCausesAdmissionType } from '@/types/aux'
 import type {
   IJudicialCurator,
@@ -19,18 +23,12 @@ import { fieldsCurator, fieldsResponsibleAdult } from '../../familia/extendedFam
 const JudicialInformationTabPanel = ({
   residentId,
   judicialData,
-  admissionCauses,
-  curatorData,
-  responsibleAdultData
+  admissionCauses
 }: {
   residentId: number
   judicialData: IJudicialInformation
   admissionCauses: AuxCausesAdmissionType[]
-  curatorData: IJudicialCurator | undefined
-  responsibleAdultData: IJudicialResponsibleAdult | undefined
 }) => {
-  // residente/judicial/actualizar?&rit=rit&calidadJuridica=calidad&causalIngreso=causal&tribunal=tribunal&ruc=ruc&idResidente=2
-
   const onSubmit: SubmitHandler<IJudicialInformation> = async updateData => {
     try {
       console.log('updateData :', updateData)
@@ -46,7 +44,7 @@ const JudicialInformationTabPanel = ({
     try {
       console.log('updateData :', updateData)
 
-      // await updateJudicialInformation(residentId, updateData)
+      await updateCurator(residentId, updateData)
       toast.success('Se han actualizado los datos correctamente')
     } catch (_) {
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
@@ -57,7 +55,7 @@ const JudicialInformationTabPanel = ({
     try {
       console.log('updateData :', updateData)
 
-      // await updateJudicialInformation(residentId, updateData)
+      await updateResponsibleAdult(residentId, updateData)
       toast.success('Se han actualizado los datos correctamente')
     } catch (_) {
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
@@ -86,11 +84,11 @@ const JudicialInformationTabPanel = ({
               submitButtonProps={{ fullWidth: false }}
               fields={fieldsCurator}
               defaultValues={{
-                comentario: curatorData?.comentario,
-                fechaEntrevista: curatorData?.fechaEntrevista,
+                comentario: judicialData?.comentario,
+                fechaEntrevista: judicialData?.fechaEntrevista,
                 idResidente: residentId,
-                institucion: curatorData?.institucion,
-                nombreCurador: curatorData?.nombreCurador
+                institucion: judicialData?.institucion,
+                nombreCurador: judicialData?.nombreCurador
               }}
               onSubmit={onSubmitCurator}
             />
@@ -105,12 +103,12 @@ const JudicialInformationTabPanel = ({
               submitButtonProps={{ fullWidth: false }}
               fields={fieldsResponsibleAdult}
               defaultValues={{
-                domicilio: responsibleAdultData?.domicilio,
-                email: responsibleAdultData?.email,
+                domicilio: judicialData?.domicilio,
+                email: judicialData?.email,
                 idResidente: residentId,
-                nombreAdulto: responsibleAdultData?.nombreAdulto,
-                rut: responsibleAdultData?.rut,
-                telefono: responsibleAdultData?.telefono
+                nombreAdulto: judicialData?.nombreAdultoResponsable,
+                rut: judicialData?.rut,
+                telefono: judicialData?.telefono
               }}
               onSubmit={onSubmitResponsibleAdult}
             />

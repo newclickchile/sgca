@@ -15,7 +15,7 @@ export async function updateJudicialInformation(residentId: number, data: IJudic
 
     await updateData({
       updateData: data,
-      urlBase: `${URL_JUDICIAL_INFORMATION}/agregar`,
+      urlBase: `${URL_JUDICIAL_INFORMATION}/actualizar`,
       revalidatePath: revalidatePathParam
     })
   } catch (error) {
@@ -30,7 +30,7 @@ export async function updateCurator(residentId: number, data: IJudicialCurator) 
 
     await updateData({
       updateData: data,
-      urlBase: `${URL_JUDICIAL_INFORMATION}/agregar`,
+      urlBase: `${URL_JUDICIAL_INFORMATION}/curador/actualizar`,
       revalidatePath: revalidatePathParam
     })
   } catch (error) {
@@ -45,7 +45,7 @@ export async function updateResponsibleAdult(residentId: number, data: IJudicial
 
     await updateData({
       updateData: data,
-      urlBase: `${URL_JUDICIAL_INFORMATION}/agregar`,
+      urlBase: `${URL_JUDICIAL_INFORMATION}/adulto/responsable/actualizar`,
       revalidatePath: revalidatePathParam
     })
   } catch (error) {

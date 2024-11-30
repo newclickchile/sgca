@@ -127,7 +127,6 @@ const CriminalCausesTabPanel = ({
                   <GetForm
                     isLoadingCancelAction={deletingCauseId === cause.id}
                     onCancel={() => {
-                      console.log(cause.id)
                       onDelete(cause.id)
                     }}
                     criminalCause={cause}

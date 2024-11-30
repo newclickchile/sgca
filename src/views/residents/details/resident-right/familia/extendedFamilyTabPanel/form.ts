@@ -2,8 +2,6 @@ import type { FieldConfig } from '@/components/forms/CustomForm'
 import type { AuxParentsType } from '@/types/aux'
 
 export const fields = (parents: AuxParentsType[], isDrawer: boolean = true): FieldConfig[] => {
-  console.log('parents :', parents)
-
   const parentsOptions = parents?.map(parent => ({
     id: parent.id.toString(),
     nombre: parent.parentesco

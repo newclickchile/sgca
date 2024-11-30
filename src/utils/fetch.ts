@@ -50,8 +50,6 @@ export const fetchData = async ({ endpoint, method = 'GET' }: FetchClientDataPar
       return null
     }
 
-    console.log('jsonResponse.data :', jsonResponse.data)
-
     return jsonResponse.data
   } catch (error) {
     console.error(`Failed to fetch data from ${endpoint}:`, error)

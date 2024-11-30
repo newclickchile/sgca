@@ -236,13 +236,10 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
   }
 
   const onSubmit: SubmitHandler<INewResident> = async newResidentData => {
-    console.log('newResidentData :', newResidentData)
-
     try {
       await newResident(newResidentData)
       toast.success('Se han actualizado los datos correctamente')
-    } catch (error) {
-      console.log('error :', error)
+    } catch (_) {
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
     }
   }

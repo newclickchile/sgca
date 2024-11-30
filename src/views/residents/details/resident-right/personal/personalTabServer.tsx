@@ -24,7 +24,7 @@ const PersonalTabServer = async ({ resident }: { resident: IResident }) => {
 
     return <PersonalTab residentData={resident} houses={houses} programs={programs} />
   } catch (error) {
-    console.log('error :', error)
+    console.log('error on PersonalTabServer:', error)
 
     return <AlertError />
   }

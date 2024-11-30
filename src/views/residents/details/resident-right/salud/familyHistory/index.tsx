@@ -29,8 +29,6 @@ const FamilyHistoryTabPanel = ({
   const disableCreateNewItem = familyHistory?.length >= 40
 
   const onSubmit: SubmitHandler<IFamilyHistory> = async updateData => {
-    console.log('updateData :', updateData)
-
     try {
       await updateFamilyHistory(updateData)
       handleDrawerClose()

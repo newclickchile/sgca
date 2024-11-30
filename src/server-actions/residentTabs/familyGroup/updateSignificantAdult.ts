@@ -1,46 +1,24 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
-import { getServerSession } from 'next-auth'
-
-import { authOptions } from '@/libs/auth'
+import updateData from '@/server-actions/updateData'
 import type { ISignificantAdult } from '@/types/residents/familyGroup/significantAdultTab'
 
 const URL_SIGNIFICANT_ADULT = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/adulto`
 
-export async function updateSignificantAdult(updateData: ISignificantAdult) {
+export async function updateSignificantAdult(data: ISignificantAdult) {
   try {
-    const session = await getServerSession(authOptions)
+    const urlBase = `${URL_SIGNIFICANT_ADULT}/${data.id ? 'editar' : 'crear'}`
+    const aditionalParam = data.id ? `idAdulto=${data.id}&` : ''
+    const revalidatePathParam = `/residentes/${data.idResidente}`
 
-    if (!session?.user || !session.user.token) throw new Error('No session available')
-
-    const queryParams = new URLSearchParams(updateData as unknown as Record<string, string>).toString()
-
-    console.log('queryParams :', queryParams)
-
-    const headers = {
-      'Content-Type': 'application/json',
-      pus3rN4m3: session.user.userName,
-      CSRFC0d160j2vt: session.user.token
-    }
-
-    const urlBase = updateData.id
-      ? `${URL_SIGNIFICANT_ADULT}/editar?idAdulto=${updateData.id}`
-      : `${URL_SIGNIFICANT_ADULT}/crear`
-
-    const response = await fetch(`${urlBase}&${queryParams}`, {
-      method: 'POST',
-      headers
+    await updateData({
+      updateData: data,
+      urlBase,
+      revalidatePath: revalidatePathParam,
+      aditionalParam
     })
-
-    if (!response.ok) {
-      throw new Error('Error al guardar los datos')
-    }
-
-    revalidatePath(`/residentes/${updateData.idResidente}`)
   } catch (error) {
-    console.error('Error en la acción del servidor:', error)
+    console.error('Error en updateExtendedFamily:', error)
     throw new Error('Error en la operación. Inténtalo nuevamente.')
   }
 }

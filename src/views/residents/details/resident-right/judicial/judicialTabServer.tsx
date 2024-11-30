@@ -3,6 +3,7 @@ import JudicialInformationTabPanel from './judicialInformation/judicialInformati
 import JudicialTab from './judicialTabClient'
 import PreviousCausesTabPanel from './previousCauses'
 import CriminalCausesTabPanel from './criminalCauses'
+import AlertError from '@/components/AlertError'
 
 const URL_JUDICIAL_INFORMATION = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/judicial?idResidente`
 const URL_ADMISSION_CAUSES = `${process.env.NEXT_PUBLIC_API_URL_AUXILIARES}/parentesco`
@@ -11,9 +12,6 @@ const URL_JUDICIAL_PREVIOUS_CAUSES = `${process.env.NEXT_PUBLIC_API_URL_RESIDENT
 const URL_JUDICIAL_CRIMINAL_CAUSES = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/causa/penal?idResidente`
 
 const URL_PROSECUTORS = `${process.env.NEXT_PUBLIC_API_URL_AUXILIARES}/fiscalia`
-
-// const URL_JUDICIAL_CURATOR = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/judicial?idResidente`
-// const URL_JUDICIAL_RESPONSIBLE_ADULT = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/judicial?idResidente`
 
 const JudicialTabServer = async ({ residentId }: { residentId: number }) => {
   const [judicialData, admissionCauses, previousCauses, criminalCauses, prosecutors] = await Promise.all([
@@ -27,16 +25,24 @@ const JudicialTabServer = async ({ residentId }: { residentId: number }) => {
   return (
     <JudicialTab
       tabContentComponents={{
-        judicialInformation: (
+        judicialInformation: judicialData ? (
           <JudicialInformationTabPanel
             residentId={residentId}
             judicialData={judicialData}
             admissionCauses={admissionCauses}
           />
+        ) : (
+          <AlertError />
         ),
-        previousCauses: <PreviousCausesTabPanel previousCauses={previousCauses} residentId={residentId} />,
-        criminalCauses: (
+        previousCauses: previousCauses ? (
+          <PreviousCausesTabPanel previousCauses={previousCauses} residentId={residentId} />
+        ) : (
+          <AlertError />
+        ),
+        criminalCauses: criminalCauses ? (
           <CriminalCausesTabPanel prosecutors={prosecutors} criminalCauses={criminalCauses} residentId={residentId} />
+        ) : (
+          <AlertError />
         )
       }}
     />

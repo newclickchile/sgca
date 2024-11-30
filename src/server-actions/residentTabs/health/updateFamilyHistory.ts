@@ -6,8 +6,6 @@ import type { IFamilyHistory } from '@/types/residents/health/familyHistory'
 const URL_FAMILY_HISTORY = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/clinico/historial/familia`
 
 export async function updateFamilyHistory(data: IFamilyHistory) {
-  console.log('data :', data)
-
   try {
     const urlBase = `${URL_FAMILY_HISTORY}/${data.id ? 'actualizar' : 'agregar'}`
     const aditionalParam = data.id ? `id=${data.id}&` : ''

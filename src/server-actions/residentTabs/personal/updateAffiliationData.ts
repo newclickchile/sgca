@@ -10,16 +10,12 @@ import type { IAffiliation } from '@/types/residents/familyGroup/affiliationTab'
 const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/padres/actualizar`
 
 export async function updateAffiliationData(residentId: number, residentData: IAffiliation) {
-  console.log('residentData :', residentData)
-
   try {
     const session = await getServerSession(authOptions)
 
     if (!session?.user || !session.user.token) throw new Error('No session available')
 
     const queryParams = new URLSearchParams(residentData as unknown as Record<string, string>).toString()
-
-    console.log('queryParams :', queryParams)
 
     const headers = {
       'Content-Type': 'application/json',

@@ -21,8 +21,6 @@ const BrothersTabPanel = ({ brothers, residentId }: { brothers: IBrother[]; resi
   const disableCreateNewItem = brothers?.length >= 40
 
   const onSubmit: SubmitHandler<IBrother> = async updateBrothersData => {
-    console.log('updateBrothersData :', updateBrothersData)
-
     try {
       await updateBrother(updateBrothersData)
       handleDrawerClose()

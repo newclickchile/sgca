@@ -48,12 +48,6 @@ const ForgotPassword = () => {
         redirect: false
       })
 
-      if (res?.error) {
-        console.error('Error during sign in:', res.error)
-      } else {
-        console.log('User signed in successfully:', res)
-      }
-
       if (res && res.ok && res.error === null) {
         const redirectURL = searchParams.get('redirectTo') ?? '/'
 

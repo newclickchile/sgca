@@ -31,8 +31,6 @@ const JudicialInformationTabPanel = ({
 }) => {
   const onSubmit: SubmitHandler<IJudicialInformation> = async updateData => {
     try {
-      console.log('updateData :', updateData)
-
       await updateJudicialInformation(residentId, updateData)
       toast.success('Se han actualizado los datos correctamente')
     } catch (_) {
@@ -42,8 +40,6 @@ const JudicialInformationTabPanel = ({
 
   const onSubmitCurator: SubmitHandler<IJudicialCurator> = async updateData => {
     try {
-      console.log('updateData :', updateData)
-
       await updateCurator(residentId, updateData)
       toast.success('Se han actualizado los datos correctamente')
     } catch (_) {
@@ -53,8 +49,6 @@ const JudicialInformationTabPanel = ({
 
   const onSubmitResponsibleAdult: SubmitHandler<IJudicialResponsibleAdult> = async updateData => {
     try {
-      console.log('updateData :', updateData)
-
       await updateResponsibleAdult(residentId, updateData)
       toast.success('Se han actualizado los datos correctamente')
     } catch (_) {

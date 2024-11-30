@@ -36,14 +36,11 @@ const DialogConsultationDetail = ({
 
   const onSubmit = async (data: IMedicalConsultation) => {
     try {
-      console.log('data :', data)
-
       await updateMedicalConsultation(data)
 
       setShowDialog(false)
       toast.success(`Consulta médica ${consultationsDetail ? 'actualizada' : 'creada'} correctamente`)
-    } catch (error) {
-      console.log(error)
+    } catch (_) {
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
     }
   }

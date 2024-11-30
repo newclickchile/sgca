@@ -61,8 +61,7 @@ const AffiliationTabPanel = ({ residentId, resident }: { residentId: number; res
       await updateAffiliationData(residentId, updatedData)
 
       toast.success('Datos actualizados correctamente')
-    } catch (error) {
-      console.log('error :', error)
+    } catch (_) {
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
     }
   }

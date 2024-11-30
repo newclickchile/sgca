@@ -22,7 +22,7 @@ export const fields = (isDrawer: boolean = true): FieldConfig[] => {
       rows: 3
     },
     {
-      name: 'ingresadoAlaRed',
+      name: 'inred',
       label: 'Ingresado en la red',
       width: isDrawer ? 12 : 3,
       type: 'checkbox'

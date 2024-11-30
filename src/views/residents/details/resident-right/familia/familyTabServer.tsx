@@ -5,6 +5,7 @@ import FamilyTab from './familyTab'
 import type { IResident } from '@/types/residents/service'
 import ExtendedFamilyTabPanel from './extendedFamilyTabPanel'
 import SignificantAdultTabPanel from './significantAdult'
+import AlertError from '@/components/AlertError'
 
 const URL_SIGNIFICANT_ADULT = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/adulto?idResidente`
 const URL_BROTHERS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/hermano?idResidente`
@@ -12,23 +13,28 @@ const URL_EXTENDED_FAMILY = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/resid
 const URL_PARENTS = `${process.env.NEXT_PUBLIC_API_URL_AUXILIARES}/parentesco`
 
 const FamilyTabServer = async ({ residentId, resident }: { residentId: number; resident: IResident }) => {
-  const [{ data: significantAdult }, { data: brothers }, { data: extendedFamily }, { data: parents }] =
-    await Promise.all([
-      fetchData({ endpoint: `${URL_SIGNIFICANT_ADULT}=${residentId}` }),
-      fetchData({ endpoint: `${URL_BROTHERS}=${residentId}` }),
-      fetchData({ endpoint: `${URL_EXTENDED_FAMILY}=${residentId}` }),
-      fetchData({ endpoint: URL_PARENTS })
-    ])
+  const [significantAdult, brothers, extendedFamily, parents] = await Promise.all([
+    fetchData({ endpoint: `${URL_SIGNIFICANT_ADULT}=${residentId}` }),
+    fetchData({ endpoint: `${URL_BROTHERS}=${residentId}` }),
+    fetchData({ endpoint: `${URL_EXTENDED_FAMILY}=${residentId}` }),
+    fetchData({ endpoint: URL_PARENTS })
+  ])
 
   return (
     <FamilyTab
       tabContentComponents={{
         affiliation: <AffiliationTabPanel residentId={residentId} resident={resident} />,
-        brothers: <BrothersTabPanel brothers={brothers} residentId={residentId} />,
-        extendedFamily: (
+        brothers: brothers ? <BrothersTabPanel brothers={brothers} residentId={residentId} /> : <AlertError />,
+        extendedFamily: extendedFamily ? (
           <ExtendedFamilyTabPanel residentId={residentId} extendedFamily={extendedFamily} parents={parents} />
+        ) : (
+          <AlertError />
         ),
-        significantAdult: <SignificantAdultTabPanel significantAdultData={significantAdult[0]} />
+        significantAdult: significantAdult ? (
+          <SignificantAdultTabPanel residentId={residentId} significantAdultData={significantAdult[0]} />
+        ) : (
+          <AlertError />
+        )
       }}
     />
   )

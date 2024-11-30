@@ -1,15 +1,14 @@
 'use server'
 
 import updateData from '@/server-actions/updateData'
-import type { IFamilyHistory } from '@/types/residents/health/familyHistory'
+import type { IMedicalConsultation } from '@/types/residents/health/medicalConsultations'
 
-const URL_FAMILY_HISTORY = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/clinico/historial/familia`
+const URL_MEDICAL_CONSULTATION = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/consulta-medica`
 
-export async function updateFamilyHistory(data: IFamilyHistory) {
-  console.log('data :', data)
-
+export async function updateMedicalConsultation(data: IMedicalConsultation) {
   try {
-    const urlBase = `${URL_FAMILY_HISTORY}/${data.id ? 'actualizar' : 'agregar'}`
+    const urlBase = `${URL_MEDICAL_CONSULTATION}/${data.id ? 'crear' : 'crear'}`
+
     const aditionalParam = data.id ? `id=${data.id}&` : ''
     const revalidatePathParam = `/residentes/${data.idResidente}`
 
@@ -20,7 +19,7 @@ export async function updateFamilyHistory(data: IFamilyHistory) {
       aditionalParam
     })
   } catch (error) {
-    console.error('Error en updateFamilyHistory:')
+    console.error('Error en updateExtendedFamily:', error)
     throw new Error('Error en la operación. Inténtalo nuevamente.')
   }
 }

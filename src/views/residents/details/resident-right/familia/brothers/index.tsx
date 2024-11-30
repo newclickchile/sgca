@@ -52,7 +52,7 @@ const BrothersTabPanel = ({ brothers, residentId }: { brothers: IBrother[]; resi
           nombre: brother?.nombre,
           comentario: brother?.comentario,
           id: brother?.id,
-          ingresadoAlaRed: brother?.inred,
+          inred: brother?.inred,
           idResidente: residentId
         }}
         onSubmit={onSubmit}
@@ -74,7 +74,7 @@ const BrothersTabPanel = ({ brothers, residentId }: { brothers: IBrother[]; resi
         </Button>
       </Grid>
 
-      {brothers.map((brother, index) => {
+      {brothers?.map((brother, index) => {
         return (
           <Grid container my={4} item key={brother.id}>
             <Card variant='elevation'>

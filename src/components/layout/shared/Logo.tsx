@@ -8,7 +8,7 @@ const Logo = () => {
   const verticalNavOptions = useVerticalNav()
   const { isCollapsed, isHovered } = verticalNavOptions
 
-  const logoSrc = isHovered ? '/images/app/logo.jpg' : isCollapsed ? '/images/app/logo2.jpg' : '/images/app/logo.jpg'
+  const logoSrc = isHovered ? '/images/app/logo.jpg' : isCollapsed ? '/images/app/logo2.svg' : '/images/app/logo.svg'
 
   return (
     <Box

@@ -10,7 +10,13 @@ import type { ISignificantAdult } from '@/types/residents/familyGroup/significan
 
 import { fields } from './form'
 
-const SignificantAdultTabPanel = ({ significantAdultData }: { significantAdultData: ISignificantAdult }) => {
+const SignificantAdultTabPanel = ({
+  residentId,
+  significantAdultData
+}: {
+  residentId: number
+  significantAdultData: ISignificantAdult
+}) => {
   const onSubmit: SubmitHandler<ISignificantAdult> = async updateSignificantAdultData => {
     try {
       await updateSignificantAdult(updateSignificantAdultData)
@@ -30,8 +36,8 @@ const SignificantAdultTabPanel = ({ significantAdultData }: { significantAdultDa
           direccion: significantAdultData?.direccion,
           email: significantAdultData?.email,
           telefono: significantAdultData?.telefono,
-          id: significantAdultData.id,
-          idResidente: significantAdultData.idResidente
+          id: significantAdultData?.id,
+          idResidente: residentId
         }}
         onSubmit={onSubmit}
       />

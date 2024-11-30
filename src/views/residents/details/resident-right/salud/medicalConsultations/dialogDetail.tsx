@@ -8,10 +8,12 @@ import { Button, Dialog, DialogContent, DialogTitle, Divider, Grid, IconButton, 
 import { toast } from 'react-toastify'
 
 import CustomForm from '@/components/forms/CustomForm'
-import { updateMedicalConsultation } from '@/server-actions/residentTabs/health/medicalConsultation'
+
+// import { updateMedicalConsultation } from '@/server-actions/residentTabs/health/medicalConsultation'
 import type { IMedicalConsultation, IMedicalConsultationDocuments } from '@/types/residents/health/medicalConsultations'
 import { formatDate } from '@/utils/date'
 import { formFields } from './form'
+import { updateMedicalConsultation } from '@/server-actions/residentTabs/health/updateMedicalConsultation'
 
 const DialogConsultationDetail = ({
   consultationsDetail,
@@ -34,6 +36,8 @@ const DialogConsultationDetail = ({
 
   const onSubmit = async (data: IMedicalConsultation) => {
     try {
+      console.log('data :', data)
+
       await updateMedicalConsultation(data)
 
       setShowDialog(false)

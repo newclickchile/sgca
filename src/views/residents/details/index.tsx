@@ -27,7 +27,7 @@ const generateTabContentComponents = (residentData: IResident) => ({
 
 const ResidentDetails = async ({ residentId }: { residentId: string }) => {
   try {
-    const { data: residentData } = await fetchData({ endpoint: `${URL_RESIDENT}=${residentId}` })
+    const residentData = await fetchData({ endpoint: `${URL_RESIDENT}=${residentId}` })
 
     const tabContentComponents = generateTabContentComponents(residentData)
 

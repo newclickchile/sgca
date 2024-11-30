@@ -16,13 +16,7 @@ const URL_PROSECUTORS = `${process.env.NEXT_PUBLIC_API_URL_AUXILIARES}/fiscalia`
 // const URL_JUDICIAL_RESPONSIBLE_ADULT = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/judicial?idResidente`
 
 const JudicialTabServer = async ({ residentId }: { residentId: number }) => {
-  const [
-    { data: judicialData },
-    { data: admissionCauses },
-    { data: previousCauses },
-    { data: criminalCauses },
-    { data: prosecutors }
-  ] = await Promise.all([
+  const [judicialData, admissionCauses, previousCauses, criminalCauses, prosecutors] = await Promise.all([
     fetchData({ endpoint: `${URL_JUDICIAL_INFORMATION}=${residentId}` }),
     fetchData({ endpoint: URL_ADMISSION_CAUSES }),
     fetchData({ endpoint: `${URL_JUDICIAL_PREVIOUS_CAUSES}=${residentId}` }),

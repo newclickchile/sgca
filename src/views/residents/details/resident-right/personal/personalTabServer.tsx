@@ -17,7 +17,7 @@ const PersonalTabServer = async ({ resident }: { resident: IResident }) => {
       throw new Error('User is not authenticated')
     }
 
-    const [{ data: houses }, { data: programs }] = await Promise.all([
+    const [houses, programs] = await Promise.all([
       fetchData({ endpoint: `${URL_HOUSES}=${session?.user.institutionId}` }),
       fetchData({ endpoint: URL_PROGRAMS })
     ])

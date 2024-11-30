@@ -1,6 +1,6 @@
 export interface IMedicalFaq {
   id: number
-  casa: string
+  faqClinica: string
   habilitado: boolean
   tipo: number
 }

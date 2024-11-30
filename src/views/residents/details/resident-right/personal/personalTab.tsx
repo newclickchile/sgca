@@ -16,7 +16,7 @@ const PersonalTab: React.FC<{
   houses: AuxHousesType[]
   programs: AuxProgramType[]
 }> = ({ residentData: resident, programs, houses }) => {
-  const houseOptions = houses.map(house => ({
+  const houseOptions = houses?.map(house => ({
     id: house.id.toString(),
     nombre: house.casa
   }))

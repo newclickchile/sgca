@@ -9,45 +9,13 @@ interface FetchClientDataParams {
   method?: method
 }
 
-// export const fetchDataOld = async ({ endpoint, session, method = 'GET' }: FetchClientDataParams): Promise<any> => {
-//   try {
-//     const session2 = await getServerSession(authOptions)
-//     console.log('session2 :', session2)
-
-//     if (!session?.user || !session.user.token) throw new Error('No session available')
-
-//     const headers = {
-//       'Content-Type': 'application/json',
-//       pus3rN4m3: session.user.userName,
-//       CSRFC0d160j2vt: session.user.token
-//     }
-
-//     const res = await fetch(endpoint, {
-//       method,
-//       headers
-//     })
-
-//     if (!res.ok) throw new Error(`Failed to fetch data: ${res.statusText}`)
-//     const contentType = res.headers.get('content-type')
-
-//     if (!contentType || !contentType.includes('application/json')) {
-//       throw new Error('Response is not JSON')
-//     }
-
-//     const response = await res.json()
-
-//     return response
-//   } catch (error) {
-//     console.error('Error fetching data:', error)
-//     throw new Error(`Failed to fetch data from ${endpoint}: ${error}`)
-//   }
-// }
-
 export const fetchData = async ({ endpoint, method = 'GET' }: FetchClientDataParams): Promise<any> => {
   try {
     const session = await getServerSession(authOptions)
 
-    if (!session?.user || !session.user.token) throw new Error('No session available')
+    if (!session?.user || !session.user.token) {
+      throw new Error('No session available')
+    }
 
     const headers = {
       'Content-Type': 'application/json',
@@ -60,13 +28,34 @@ export const fetchData = async ({ endpoint, method = 'GET' }: FetchClientDataPar
       headers
     })
 
-    if (!res.ok) throw new Error(`Failed to fetch data: ${res.statusText}`)
+    if (!res.ok) {
+      console.error(`Error fetching data:${endpoint}: ${res.status} - ${res.statusText}`)
 
-    const response = await res.json()
+      return null
+    }
 
-    return response
+    const contentType = res.headers.get('content-type')
+
+    if (!contentType || !contentType.includes('application/json')) {
+      console.error('Error: Response is not JSON')
+
+      return null
+    }
+
+    const jsonResponse = await res.json()
+
+    if (!jsonResponse || !jsonResponse.data) {
+      console.error('Error: Response data is not present')
+
+      return null
+    }
+
+    console.log('jsonResponse.data :', jsonResponse.data)
+
+    return jsonResponse.data
   } catch (error) {
-    console.error('Error fetching data:', error)
-    throw new Error(`Failed to fetch data from ${endpoint}: ${error}`)
+    console.error(`Failed to fetch data from ${endpoint}:`, error)
+
+    return null
   }
 }

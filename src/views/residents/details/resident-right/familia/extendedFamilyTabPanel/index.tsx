@@ -100,8 +100,6 @@ const ExtendedFamilyTabPanel = ({
   const disableCreateNewItem = extendedFamily?.length >= 40
 
   const onSubmit: SubmitHandler<IExtendedFamily> = async updateData => {
-    console.log('updateData :', updateData)
-
     try {
       await updateExtendedFamily(updateData)
       handleDrawerClose()
@@ -154,17 +152,17 @@ const ExtendedFamilyTabPanel = ({
           Agregar nuevo Pariente
         </Button>
       </Grid>
-
-      {extendedFamily.map((brother, index) => {
-        return (
-          <Grid container my={4} item key={brother.id}>
-            <Card variant='elevation'>
-              <CardHeader title={`Pariente ${index + 1}`} />
-              <CardContent>{getForm(brother, false)}</CardContent>
-            </Card>
-          </Grid>
-        )
-      })}
+      {extendedFamily &&
+        extendedFamily?.map((brother, index) => {
+          return (
+            <Grid container my={4} item key={brother.id}>
+              <Card variant='elevation'>
+                <CardHeader title={`Pariente ${index + 1}`} />
+                <CardContent>{getForm(brother, false)}</CardContent>
+              </Card>
+            </Grid>
+          )
+        })}
 
       <CustomDrawer open={addUserOpen} handleClose={handleDrawerClose} title='Agregar nuevo Pariente'>
         {getForm()}

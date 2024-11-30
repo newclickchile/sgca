@@ -8,7 +8,7 @@ const URL_BROTHERS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/he
 export async function updateBrother(data: IBrother) {
   try {
     const urlBase = `${URL_BROTHERS}/${data.id ? 'editar' : 'crear'}`
-    const aditionalParam = data.id ? `idHermano=${data.id}` : ''
+    const aditionalParam = data.id ? `idHermano=${data.id}&` : ''
     const revalidatePathParam = `/residentes/${data.idResidente}`
 
     await updateData({

@@ -25,8 +25,6 @@ async function updateData({
   revalidatePath: revalidatePathParam,
   aditionalParam = ''
 }: UpdateParams) {
-  console.log('updateData :: updateData :', updateData)
-
   try {
     const session = await getServerSession(authOptions)
 

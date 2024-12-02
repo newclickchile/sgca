@@ -161,7 +161,7 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
               variant='tonal'
               label={row.original.habilitado ? 'Activo' : 'Inactivo'}
               size='small'
-              color={row.original.habilitado ? 'success' : 'secondary'}
+              color={row.original.habilitado ? 'primary' : 'secondary'}
               className='capitalize'
             />
           </div>

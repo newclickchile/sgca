@@ -41,7 +41,7 @@ const CustomForm = <T extends FieldValues>({
   defaultValues,
   onSubmit,
   onCancel,
-  resetForm,
+  resetForm = undefined,
   submitButtonName = 'Enviar',
   cancelButtonName = 'Cancelar',
   isLoadingCancelAction = false,

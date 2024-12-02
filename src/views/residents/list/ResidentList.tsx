@@ -13,6 +13,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  TablePagination,
   Typography
 } from '@mui/material'
 import Card from '@mui/material/Card'
@@ -108,6 +109,7 @@ const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/o
 const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: AuxProgramType[] }) => {
   const [addUserOpen, setAddUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
+  const [resetForm, setResetForm] = useState<boolean | undefined>(undefined)
   const [globalFilter, setGlobalFilter] = useState('')
   const [residents, setResidents] = useState<any[]>([])
   const router = useRouter()
@@ -194,11 +196,10 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
     },
     initialState: {
       pagination: {
-        pageSize: 10
+        pageSize: 5
       }
     },
     enableRowSelection: true, //enable row selection for all rows
-    // enableRowSelection: row => row.original.age > 18, // or enable row selection conditionally per row
     globalFilterFn: fuzzyFilter,
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
@@ -225,9 +226,11 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
     // Al abrir el Drawer se setea el reset en false para que se pueda cerrar sin borrar la data
     // esto es porque al hacer Submit del form se deja setResetDrawerForm en true
     setAddUserOpen(true)
+    setResetForm(undefined)
   }
 
   const handleDrawerClose = () => {
+    setResetForm(undefined)
     setAddUserOpen(false)
   }
 
@@ -238,7 +241,9 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
   const onSubmit: SubmitHandler<INewResident> = async newResidentData => {
     try {
       await newResident(newResidentData)
+      handleDrawerClose()
       toast.success('Se han actualizado los datos correctamente')
+      setResetForm(true)
     } catch (_) {
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
     }
@@ -364,20 +369,28 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
             )}
           </table>
         </div>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 20, { label: 'Todos', value: residentData ? residentData.length : 0 }]}
+          component='div'
+          className='border-bs'
+          count={table.getFilteredRowModel().rows.length}
+          rowsPerPage={table.getState().pagination.pageSize}
+          page={table.getState().pagination.pageIndex}
+          onPageChange={(_, page) => {
+            table.setPageIndex(page)
+          }}
+          onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
+        />
       </Card>
-      <CustomDrawer open={addUserOpen} handleClose={handleDrawerClose} title='Agregar nuevo Familiar'>
-        <CustomForm<INewResident> fields={fields(houses, programs)} onSubmit={onSubmit} onCancel={handleCancel} />
+      <CustomDrawer open={addUserOpen} handleClose={handleDrawerClose} title='Agregar nuevo Residente'>
+        <CustomForm<INewResident>
+          fields={fields(houses, programs)}
+          onSubmit={onSubmit}
+          onCancel={handleCancel}
+          defaultValues={{ idCasa: +selectedHouse! }}
+          resetForm={resetForm}
+        />
       </CustomDrawer>
-
-      {/* <ResidentDrawer
-        houses={houses}
-        programs={programs}
-        handleCancel={handleCancel}
-        open={addUserOpen}
-        handleClose={handleDrawerClose}
-        onSubmit={onSubmit}
-        resetForm={resetDrawerForm}
-      /> */}
     </Grid>
   )
 }

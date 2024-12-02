@@ -1,40 +1,24 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
-import { getServerSession } from 'next-auth'
-
-import { authOptions } from '@/libs/auth'
+import updateData from '@/server-actions/updateData'
 import type { IUpdateResident } from '@/types/residents/service'
 
-const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente`
+const URL_RESIDENTS = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/editar`
 
-export async function updatePersonalData(residentId: number, residentData: IUpdateResident) {
+export async function updatePersonalData(residentId: number, data: IUpdateResident) {
   try {
-    const session = await getServerSession(authOptions)
+    const aditionalParam = `idResidente=${residentId}&`
+    const revalidatePathParam = `/residentes/${residentId}`
 
-    if (!session?.user || !session.user.token) throw new Error('No session available')
-
-    const queryParams = new URLSearchParams(residentData as unknown as Record<string, string>).toString()
-
-    const headers = {
-      'Content-Type': 'application/json',
-      pus3rN4m3: session.user.userName,
-      CSRFC0d160j2vt: session.user.token
-    }
-
-    const response = await fetch(`${URL_RESIDENTS}/editar?idResidente=${residentId}&${queryParams}`, {
+    await updateData({
+      updateData: data,
       method: 'PUT',
-      headers
+      urlBase: URL_RESIDENTS,
+      revalidatePath: revalidatePathParam,
+      aditionalParam
     })
-
-    if (!response.ok) {
-      throw new Error('Error al guardar los datos')
-    }
-
-    revalidatePath(`/residentes/${residentId}`)
   } catch (error) {
-    console.error('Error en la acción del servidor:', error)
+    console.error('Error en updatePersonalData:')
     throw new Error('Error en la operación. Inténtalo nuevamente.')
   }
 }

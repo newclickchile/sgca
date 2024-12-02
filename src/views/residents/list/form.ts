@@ -15,9 +15,17 @@ export const fields = (houses: AuxHousesType[], programs: AuxProgramType[]): Fie
 
   return [
     {
-      name: 'rut',
-      label: 'Rut',
+      name: 'codsis',
+      label: 'Código SIS',
       width: 12
+    },
+    {
+      name: 'idCasa',
+      label: 'Casa/Residencia',
+      type: 'select',
+      width: 12,
+      listValues: houseOptions,
+      isRequired: true
     },
     {
       name: 'nombre',
@@ -34,34 +42,30 @@ export const fields = (houses: AuxHousesType[], programs: AuxProgramType[]): Fie
       type: 'datepicker'
     },
     {
+      name: 'rut',
+      label: 'Rut',
+      width: 12
+    },
+    {
       name: 'idGenero',
       label: 'Género',
       type: 'select',
       listValues: genderOptions,
-      width: 12,
-      isRequired: true
+      width: 12
     },
     {
-      name: 'idCasa',
-      label: 'Casa/Residencia',
-      type: 'select',
-      width: 12,
-      listValues: houseOptions,
-      isRequired: true
-    },
-    {
-      name: 'programa',
+      name: 'idPrograma',
       label: 'Programa',
       type: 'select',
       width: 12,
-      listValues: programOptions,
-      isRequired: true
+      listValues: programOptions
     },
     {
       name: 'flagRsh',
       label: 'Registro Social de Hogares',
       width: 12,
-      type: 'checkbox'
+      type: 'checkbox',
+      isRequired: true
     }
   ]
 }

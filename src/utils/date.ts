@@ -10,6 +10,6 @@ export const toZonedDate = (date: Date): Date => {
   return toZonedTime(date, DEFAULT_TIME_ZONE)
 }
 
-export const formatDate = (date: string | Date, formatValue: string = 'dd-MM-yyyy'): string => {
-  return formatInTimeZone(date, DEFAULT_TIME_ZONE, formatValue)
+export const formatDate = (date?: string | Date, formatValue: string = 'dd-MM-yyyy') => {
+  return date && formatInTimeZone(date, DEFAULT_TIME_ZONE, formatValue)
 }

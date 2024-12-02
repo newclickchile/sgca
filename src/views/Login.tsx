@@ -1,6 +1,8 @@
 'use client'
 
 // Next Imports
+import { useState } from 'react'
+
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 
@@ -13,6 +15,8 @@ import type { SubmitHandler } from 'react-hook-form'
 
 // Hook Imports
 import { toast } from 'react-toastify'
+
+import { GoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
 
 import CustomForm from '@/components/forms/CustomForm'
 import AuthWrapper from './AuthWrapper'
@@ -42,12 +46,15 @@ const Login = () => {
   // Hooks
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [token, setToken] = useState('')
+  const [refreshReCaptcha, setRefreshReCaptcha] = useState(false)
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
     try {
       const res = await signIn('credentials', {
         username: data.username,
         password: data.password,
+        token,
         redirect: false
       })
 
@@ -67,6 +74,7 @@ const Login = () => {
         }
       }
     } catch (error) {
+      setRefreshReCaptcha(!refreshReCaptcha)
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
     }
   }
@@ -84,6 +92,11 @@ const Login = () => {
           ¿Olvidaste tu contraseña?
         </Typography>
       </div>
+      {process.env.NEXT_PUBLIC_CAPTCHA_KEY && (
+        <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_CAPTCHA_KEY}>
+          <GoogleReCaptcha action='STIPLUS' onVerify={setToken} refreshReCaptcha={refreshReCaptcha} />
+        </GoogleReCaptchaProvider>
+      )}
     </AuthWrapper>
   )
 }

@@ -25,12 +25,18 @@ export const authOptions: NextAuthOptions = {
          * For e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
          * You can also use the `req` object to obtain additional parameters (i.e., the request IP address)
          */
-        const { username, password } = credentials as { username: string; password: string }
+        const { username, password, captchaToken } = credentials as {
+          username: string
+          password: string
+          captchaToken: string
+        }
 
         try {
           const url = `${process.env.NEXT_PUBLIC_API_URL_USUARIO}/usuario/login?pus3rN4m3=${username}`
           const encryptText = await encryptData(password)
           const jwtData = await createJWT(username, encryptText.encryptedData)
+
+          console.log('captchaToken :', captchaToken)
 
           const headers = {
             CSRFP466: encryptText.encryptedData,

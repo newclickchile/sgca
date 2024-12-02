@@ -54,8 +54,7 @@ const Login = () => {
       const res = await signIn('credentials', {
         username: data.username,
         password: data.password,
-        token,
-        redirect: false
+        captchaToken: token
       })
 
       if (res?.error) {
@@ -94,7 +93,11 @@ const Login = () => {
       </div>
       {process.env.NEXT_PUBLIC_CAPTCHA_KEY && (
         <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_CAPTCHA_KEY}>
-          <GoogleReCaptcha action='STIPLUS' onVerify={setToken} refreshReCaptcha={refreshReCaptcha} />
+          <GoogleReCaptcha
+            action='HOMECARESYSTEM'
+            onVerify={token => setToken(token)}
+            refreshReCaptcha={refreshReCaptcha}
+          />
         </GoogleReCaptchaProvider>
       )}
     </AuthWrapper>

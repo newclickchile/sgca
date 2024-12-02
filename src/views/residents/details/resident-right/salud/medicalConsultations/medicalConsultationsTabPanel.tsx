@@ -73,7 +73,7 @@ const MedicalConsultationsTabPanel: React.FC<{
             </Typography>
             <Grid container item>
               <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                {item.diagnostico.slice(0, 100)}
+                {item.motivo.slice(0, 100)}
               </Typography>
             </Grid>
             <Grid container item gap={1}>

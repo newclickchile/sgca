@@ -7,7 +7,7 @@ const URL_MEDICAL_CONSULTATION = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/
 
 export async function updateMedicalConsultation(data: IMedicalConsultation) {
   try {
-    const urlBase = `${URL_MEDICAL_CONSULTATION}/${data.id ? 'crear' : 'crear'}`
+    const urlBase = `${URL_MEDICAL_CONSULTATION}/${data.id ? 'actualizar' : 'crear'}`
 
     const aditionalParam = data.id ? `id=${data.id}&` : ''
     const revalidatePathParam = `/residentes/${data.idResidente}`

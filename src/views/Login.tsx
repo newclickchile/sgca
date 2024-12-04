@@ -80,12 +80,7 @@ const Login = () => {
 
   return (
     <AuthWrapper title={<>¡Bienvenido! 👋🏻</>} subtitle={<>Inicia sesión con tus credenciales</>}>
-      <CustomForm<FormData>
-        useDirty={false}
-        fields={fields}
-        defaultValues={{ username: 'admin@sgca.cl', password: 'Stiplus.2023' }}
-        onSubmit={onSubmit}
-      />
+      <CustomForm<FormData> useDirty={false} fields={fields} onSubmit={onSubmit} />
       <div className='flex justify-end '>
         <Typography color='primary' component={Link} href={'/forgot-password'}>
           ¿Olvidaste tu contraseña?

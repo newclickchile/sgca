@@ -123,8 +123,8 @@ const UserDropdown = () => {
                   </div>
                   <Divider className='mlb-1' />
                   <MenuItem className='gap-3' onClick={e => handleDropdownClose(e, '/pages/user-profile')}>
-                    <i className='ri-user-3-line' />
-                    <Typography color='text.primary'>Configuración</Typography>
+                    <i className='iconoir-password-cursor text-2xl' />
+                    <Typography color='text.primary'>Cambiar contraseña</Typography>
                   </MenuItem>
                   <div className='flex items-center plb-2 pli-4'>
                     <Button

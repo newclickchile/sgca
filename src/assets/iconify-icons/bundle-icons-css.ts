@@ -76,11 +76,15 @@ const sources: BundleScriptConfig = {
     },
     {
       filename: require.resolve('@iconify/json/json/octicon.json'),
-      icons: ['law-24']
+      icons: ['law-24', 'passkey-fill-24']
     },
     {
       filename: require.resolve('@iconify/json/json/healthicons.json'),
       icons: ['doctor-male-outline']
+    },
+    {
+      filename: require.resolve('@iconify/json/json/iconoir.json'),
+      icons: ['password-cursor']
     }
 
     // Custom JSON file

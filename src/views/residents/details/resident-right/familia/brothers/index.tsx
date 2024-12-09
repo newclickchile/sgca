@@ -50,7 +50,7 @@ const BrothersTabPanel = ({ brothers, residentId }: { brothers: IBrother[]; resi
           nombre: brother?.nombre,
           comentario: brother?.comentario,
           id: brother?.id,
-          inred: brother?.inred,
+          inred: brother?.inred || false,
           idResidente: residentId
         }}
         onSubmit={onSubmit}

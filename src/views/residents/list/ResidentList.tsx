@@ -387,7 +387,7 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
           fields={fields(houses, programs)}
           onSubmit={onSubmit}
           onCancel={handleCancel}
-          defaultValues={{ idCasa: +selectedHouse! }}
+          defaultValues={{ idCasa: +selectedHouse!, flagRsh: false }}
           resetForm={resetForm}
         />
       </CustomDrawer>

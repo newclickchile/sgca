@@ -15,11 +15,6 @@ export const fields = (houses: AuxHousesType[], programs: AuxProgramType[]): Fie
 
   return [
     {
-      name: 'codsis',
-      label: 'Código SIS',
-      width: 12
-    },
-    {
       name: 'idCasa',
       label: 'Casa/Residencia',
       type: 'select',
@@ -51,21 +46,28 @@ export const fields = (houses: AuxHousesType[], programs: AuxProgramType[]): Fie
       label: 'Género',
       type: 'select',
       listValues: genderOptions,
-      width: 12
+      width: 12,
+      isRequired: true
     },
     {
       name: 'idPrograma',
       label: 'Programa',
       type: 'select',
       width: 12,
-      listValues: programOptions
+      listValues: programOptions,
+      isRequired: true
+    },
+    {
+      name: 'codsis',
+      label: 'Código SIS',
+      width: 12,
+      isRequired: true
     },
     {
       name: 'flagRsh',
       label: 'Registro Social de Hogares',
       width: 12,
-      type: 'checkbox',
-      isRequired: true
+      type: 'checkbox'
     }
   ]
 }

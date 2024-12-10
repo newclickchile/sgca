@@ -12,10 +12,10 @@ export interface IMedicalConsultation {
 }
 
 export interface IMedicalConsultationDocuments {
-  id: number
+  id?: number
   idConsulta: number
   nombreDocumento: string
-  fechaDocumento: string
+  fechaDocumento?: string
   responsable: string
-  linkDocumento: string
+  linkDocumento?: string
 }

@@ -1,23 +1,40 @@
 'use client'
+
 import type { MouseEvent, SyntheticEvent } from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { TabContext, TabList, TabPanel } from '@mui/lab'
-import { Button, Dialog, DialogContent, DialogTitle, Divider, Grid, IconButton, Tab, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Grid,
+  IconButton,
+  Tab,
+  Typography
+} from '@mui/material'
 
 import { toast } from 'react-toastify'
 
+import { useSession } from 'next-auth/react'
+
 import CustomForm from '@/components/forms/CustomForm'
 
-// import { updateMedicalConsultation } from '@/server-actions/residentTabs/health/medicalConsultation'
+import FileUploader from '@/components/forms/FileUploader'
+import { updateMedicalConsultation } from '@/server-actions/residentTabs/health/updateMedicalConsultation'
 import type { IMedicalConsultation, IMedicalConsultationDocuments } from '@/types/residents/health/medicalConsultations'
 import { formatDate } from '@/utils/date'
 import { formFields } from './form'
-import { updateMedicalConsultation } from '@/server-actions/residentTabs/health/updateMedicalConsultation'
+import useFetchData from '@/hooks/useFetchData'
+import AppReactDropzone from '@/libs/styles/AppReactDropzone'
+
+const URL_MEDICAL_CONSULTATION_FILES = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/consulta-medica`
 
 const DialogConsultationDetail = ({
   consultationsDetail,
-  documentsInfo,
   showDialog,
   setShowDialog,
   residentId
@@ -26,9 +43,30 @@ const DialogConsultationDetail = ({
   showDialog: boolean
   setShowDialog: (show: boolean) => void
   residentId: number
-  documentsInfo: IMedicalConsultationDocuments[]
 }) => {
   const [value, setValue] = useState<string>('1')
+  const { data: session } = useSession()
+  const [documents, setDocuments] = useState<IMedicalConsultationDocuments[]>([])
+  const [shouldFetch, setShouldFetch] = useState<boolean>(consultationsDetail?.id !== undefined)
+  const [removeFiles, setRemoveFiles] = useState<boolean>(false)
+
+  const { data: fetchedDocuments } = useFetchData<IMedicalConsultationDocuments[]>({
+    endpoint: `${URL_MEDICAL_CONSULTATION_FILES}/documentos?idConsulta=${consultationsDetail?.id}`,
+    shouldFetch
+  })
+
+  useEffect(() => {
+    if (!consultationsDetail) {
+      setValue('1')
+    }
+  }, [consultationsDetail])
+
+  useEffect(() => {
+    if (fetchedDocuments) {
+      setDocuments(fetchedDocuments)
+      setRemoveFiles(false)
+    }
+  }, [fetchedDocuments])
 
   const handleChange = (_: SyntheticEvent, newValue: string) => {
     setValue(newValue)
@@ -44,6 +82,94 @@ const DialogConsultationDetail = ({
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
     }
   }
+
+  const handleUploadProcess = async (file: File) => {
+    try {
+      setShouldFetch(false)
+
+      const uploadFile = async () => {
+        if (!session?.user || !session.user.token) return
+
+        const headers = {
+          pus3rN4m3: session.user.userName,
+          CSRFC0d160j2vt: session.user.token
+        }
+
+        const formdata = new FormData()
+
+        formdata.append('file', file, file.name)
+
+        const requestOptions = {
+          method: 'POST',
+          headers,
+          body: formdata
+        }
+
+        const response = await fetch(
+          `${URL_MEDICAL_CONSULTATION_FILES}/documento/crear?idConsulta=${consultationsDetail!.id}&nombreDocumento=${file.name}&responsable=${consultationsDetail?.responsable}`,
+          requestOptions
+        )
+
+        if (!response.ok) {
+          throw new Error('Error uploading the file')
+        }
+
+        setShouldFetch(true)
+        setRemoveFiles(true)
+      }
+
+      await toast.promise(uploadFile, {
+        pending: 'Cargando archivo...',
+        success: 'Archivo se ha cargado correctamente',
+        error: 'Ha ocurrido un error, favor intentar nuevamente'
+      })
+    } catch (error) {
+      console.log('errorhandleProcess :', error)
+    }
+  }
+
+  const handleDownloadFile = (fileUrl: string) => {
+    if (!fileUrl) {
+      toast.error('No se pudo encontrar el enlace del archivo.')
+
+      return
+    }
+
+    // Abrir el archivo en una nueva ventana
+    window.open(fileUrl, '_blank') // Esto abrirá el archivo en una nueva pestaña
+  }
+
+  // const handleDownloadFileNew = async (fileUrl: string) => {
+  //   if (!fileUrl) {
+  //     toast.error('No se pudo encontrar el enlace del archivo.')
+
+  //     return
+  //   }
+
+  //   try {
+  //     const response = await fetch(fileUrl)
+
+  //     // Verificar si la respuesta es correcta
+  //     if (!response.ok) {
+  //       throw new Error('No se pudo descargar el archivo')
+  //     }
+
+  //     // Obtener el nombre del archivo desde la URL (o un nombre fijo)
+  //     const filename = fileUrl.split('/').pop()
+
+  //     // Crear un Blob para el archivo descargado
+  //     const blob = await response.blob()
+
+  //     // Crear un enlace y forzar la descarga
+  //     const link = document.createElement('a')
+
+  //     link.href = URL.createObjectURL(blob)
+  //     link.download = filename || 'archivo'
+  //     link.click()
+  //   } catch (error) {
+  //     toast.error('Error al descargar el archivo.')
+  //   }
+  // }
 
   return (
     <Dialog maxWidth='md' fullWidth open={showDialog} onClose={() => setShowDialog(false)}>
@@ -68,6 +194,7 @@ const DialogConsultationDetail = ({
             <Tab
               value='2'
               component='a'
+              disabled={!consultationsDetail?.id}
               label='Documentos'
               href='/trash'
               onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
@@ -94,38 +221,44 @@ const DialogConsultationDetail = ({
             </Grid>
           </TabPanel>
           <TabPanel value='2'>
-            <Grid container justifyContent={'flex-end'}>
-              <Button startIcon={<i className='ri-add-line' />} variant='outlined' onClick={() => {}} size='small'>
-                Agregar documento
-              </Button>
-            </Grid>
-            {documentsInfo.map(item => {
+            {consultationsDetail?.id && (
+              <AppReactDropzone>
+                <FileUploader handleUpload={handleUploadProcess} removeFiles={removeFiles} />
+              </AppReactDropzone>
+            )}
+            {documents.map(item => {
               return (
-                <Grid container key={item.id} my={8} justifyContent={'space-between'}>
-                  <Grid item>
-                    <Grid container item gap={2}>
-                      <i className='ri-calendar-line text-[1.2em]' />
-                      <Typography variant='body2'>{formatDate(item.fechaDocumento)}</Typography>
-                      <Divider flexItem orientation='vertical' />
-                      <i className='ri-user-3-line text-[1.2em]' />
-                      <Typography variant='body2'>{item.responsable}</Typography>
+                <Box key={item.id}>
+                  <Grid container my={4} justifyContent={'space-between'}>
+                    <Grid item>
+                      <Grid container item gap={2}>
+                        <i className='ri-calendar-line text-[1.2em]' />
+                        <Typography variant='body2'>{formatDate(item.fechaDocumento)}</Typography>
+                        <Divider flexItem orientation='vertical' />
+                        <i className='ri-user-3-line text-[1.2em]' />
+                        <Typography variant='body2'>{item.responsable}</Typography>
+                      </Grid>
+                      <Grid container item my={1}>
+                        <Typography
+                          variant='subtitle2'
+                          sx={{
+                            color: 'text.primary'
+                          }}
+                        >
+                          {item.nombreDocumento}
+                        </Typography>
+                      </Grid>
                     </Grid>
-                    <Grid container item my={1}>
-                      <Typography
-                        variant='subtitle2'
-                        sx={{
-                          color: 'text.primary',
-                          textTransform: 'uppercase'
-                        }}
-                      >
-                        {item.nombreDocumento}
-                      </Typography>
-                    </Grid>
+                    {item.linkDocumento ? (
+                      <Button variant='text' onClick={() => handleDownloadFile(item.linkDocumento!)}>
+                        <i className='ri-download-2-line text-[1.5em]' />
+                      </Button>
+                    ) : (
+                      'No existe link'
+                    )}
                   </Grid>
-                  <Button variant='text' onClick={() => {}}>
-                    <i className='ri-download-2-line text-[1.5em]' />
-                  </Button>
-                </Grid>
+                  <Divider flexItem />
+                </Box>
               )
             })}
           </TabPanel>

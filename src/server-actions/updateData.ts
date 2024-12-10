@@ -16,6 +16,7 @@ interface UpdateParams {
   urlBase: string
   revalidatePath: string
   aditionalParam?: string
+  body?: any
 }
 
 async function updateData({
@@ -23,7 +24,8 @@ async function updateData({
   updateData,
   urlBase,
   revalidatePath: revalidatePathParam,
-  aditionalParam = ''
+  aditionalParam = '',
+  body
 }: UpdateParams) {
   try {
     const session = await getServerSession(authOptions)
@@ -44,7 +46,8 @@ async function updateData({
 
     const response = await fetch(finalUrl, {
       method,
-      headers
+      headers,
+      ...(body && { body })
     })
 
     if (!response.ok) {

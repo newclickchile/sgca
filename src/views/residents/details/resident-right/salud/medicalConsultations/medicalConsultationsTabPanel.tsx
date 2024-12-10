@@ -1,14 +1,11 @@
 'use client'
 import { useState } from 'react'
 
-import { Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
+import { Button, Divider, Grid, Typography } from '@mui/material'
 
-import useFetchData from '@/hooks/useFetchData'
-import type { IMedicalConsultation, IMedicalConsultationDocuments } from '@/types/residents/health/medicalConsultations'
+import type { IMedicalConsultation } from '@/types/residents/health/medicalConsultations'
 import { formatDate } from '@/utils/date'
 import DialogConsultationDetail from './dialogDetail'
-
-const URL_MEDICAL_CONSULTATION = `${process.env.NEXT_PUBLIC_API_URL_RESIDENTES}/residente/consulta-medica/documentos`
 
 const MedicalConsultationsTabPanel: React.FC<{
   medicalConsultationsData: IMedicalConsultation[]
@@ -27,25 +24,16 @@ const MedicalConsultationsTabPanel: React.FC<{
     setShowDialog(true)
   }
 
-  const {
-    data: documents,
-
-    // error,
-    loading
-  } = useFetchData<IMedicalConsultationDocuments[]>({
-    endpoint: `${URL_MEDICAL_CONSULTATION}?idConsulta=${1}`,
-    shouldFetch: selectedItem !== undefined
-  })
-
   return (
     <>
-      <DialogConsultationDetail
-        showDialog={showDialog}
-        setShowDialog={setShowDialog}
-        consultationsDetail={selectedItem}
-        residentId={residentId}
-        documentsInfo={documents || []}
-      />
+      {showDialog && (
+        <DialogConsultationDetail
+          showDialog={showDialog}
+          setShowDialog={setShowDialog}
+          consultationsDetail={selectedItem}
+          residentId={residentId}
+        />
+      )}
       <Grid container justifyContent={'flex-end'}>
         <Button startIcon={<i className='ri-add-line' />} variant='outlined' onClick={handleAdd} size='small'>
           Agregar registro
@@ -89,7 +77,7 @@ const MedicalConsultationsTabPanel: React.FC<{
               onClick={() => handleShowDetail(item)}
               size='small'
             >
-              {loading ? <CircularProgress size={20} color='primary' /> : 'Ver detalle'}
+              Ver detalle
             </Button>
           </Grid>
         )

@@ -28,7 +28,7 @@ const FilterSelect: React.FC<GenericSelectProps> = ({ options, value, onChange, 
         inputProps={{ placeholder }}
       >
         <MenuItem value=''>{placeholder}</MenuItem>
-        {options.map(option => (
+        {options?.map(option => (
           <MenuItem key={option.id} value={option.id}>
             {option.label}
           </MenuItem>

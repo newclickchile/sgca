@@ -148,7 +148,7 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
         header: 'Casa',
         cell: ({ row }) => (
           <Typography className='capitalize' color='text.primary'>
-            {houses.find(house => house.id === row.original.idCasa)?.casa}
+            {houses?.find(house => house.id === row.original.idCasa)?.casa}
           </Typography>
         )
       }),
@@ -261,7 +261,7 @@ const Residents = ({ houses, programs }: { houses: AuxHousesType[]; programs: Au
           <Grid container spacing={5}>
             <Grid item xs={12} sm={4}>
               <FilterSelect
-                options={houses.map(house => ({
+                options={houses?.map(house => ({
                   id: house.id.toString(),
                   label: house.casa
                 }))}

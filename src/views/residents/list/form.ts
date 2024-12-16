@@ -3,12 +3,12 @@ import { genderOptions } from '@/constants/genderOptions'
 import type { AuxHousesType, AuxProgramType } from '@/types/aux'
 
 export const fields = (houses: AuxHousesType[], programs: AuxProgramType[]): FieldConfig[] => {
-  const houseOptions = houses.map(house => ({
+  const houseOptions = houses?.map(house => ({
     id: house.id.toString(),
     nombre: house.casa
   }))
 
-  const programOptions = programs.map(program => ({
+  const programOptions = programs?.map(program => ({
     id: program.id,
     nombre: program.programa
   }))

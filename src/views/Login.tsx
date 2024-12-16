@@ -48,39 +48,34 @@ const Login = () => {
   const searchParams = useSearchParams()
   const [token, setToken] = useState('')
   const [refreshReCaptcha, setRefreshReCaptcha] = useState(false)
+  const [resetForm, setResetForm] = useState<boolean | undefined>(undefined)
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
     try {
+      setResetForm(undefined)
+
       const res = await signIn('credentials', {
         username: data.username,
         password: data.password,
-        captchaToken: token
+        captchaToken: token,
+        redirect: false
       })
-
-      if (res?.error) {
-        console.error('Error during sign in:', res.error)
-      }
 
       if (res && res.ok && res.error === null) {
         const redirectURL = searchParams.get('redirectTo') ?? '/'
 
         router.replace(redirectURL)
-      } else {
-        if (res?.error) {
-          const error = JSON.parse(res.error)
-
-          console.log('error :', error)
-        }
-      }
+      } else throw new Error()
     } catch (error) {
       setRefreshReCaptcha(!refreshReCaptcha)
+      setResetForm(true)
       toast.error('¡Ha ocurrido un error, favor intenta nuevamente!')
     }
   }
 
   return (
     <AuthWrapper title={<>¡Bienvenido! 👋🏻</>} subtitle={<>Inicia sesión con tus credenciales</>}>
-      <CustomForm<FormData> useDirty={false} fields={fields} onSubmit={onSubmit} />
+      <CustomForm<FormData> resetForm={resetForm} useDirty={false} fields={fields} onSubmit={onSubmit} />
       <div className='flex justify-end '>
         <Typography color='primary' component={Link} href={'/forgot-password'}>
           ¿Olvidaste tu contraseña?

@@ -25,15 +25,16 @@ const JudicialTabServer = async ({ residentId }: { residentId: number }) => {
   return (
     <JudicialTab
       tabContentComponents={{
-        judicialInformation: judicialData ? (
-          <JudicialInformationTabPanel
-            residentId={residentId}
-            judicialData={judicialData}
-            admissionCauses={admissionCauses}
-          />
-        ) : (
-          <AlertError />
-        ),
+        judicialInformation:
+          judicialData === null ? (
+            <AlertError />
+          ) : (
+            <JudicialInformationTabPanel
+              residentId={residentId}
+              judicialData={judicialData}
+              admissionCauses={admissionCauses}
+            />
+          ),
         previousCauses: previousCauses ? (
           <PreviousCausesTabPanel previousCauses={previousCauses} residentId={residentId} />
         ) : (

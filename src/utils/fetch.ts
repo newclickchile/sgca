@@ -44,7 +44,7 @@ export const fetchData = async ({ endpoint, method = 'GET' }: FetchClientDataPar
 
     const jsonResponse = await res.json()
 
-    if (!jsonResponse || !jsonResponse.data) {
+    if (!jsonResponse || jsonResponse.message !== 'OK') {
       console.error('Error: Response data is not present')
 
       return null

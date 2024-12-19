@@ -54,6 +54,12 @@ const Login = () => {
     try {
       setResetForm(undefined)
 
+      if (!token) {
+        toast.error('¡Debe completar el reCAPTCHA!')
+
+        return
+      }
+
       const res = await signIn('credentials', {
         username: data.username,
         password: data.password,
@@ -83,11 +89,7 @@ const Login = () => {
       </div>
       {process.env.NEXT_PUBLIC_CAPTCHA_KEY && (
         <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_CAPTCHA_KEY}>
-          <GoogleReCaptcha
-            action='HOMECARESYSTEM'
-            onVerify={token => setToken(token)}
-            refreshReCaptcha={refreshReCaptcha}
-          />
+          <GoogleReCaptcha action='HOMECARESYSTEM' onVerify={setToken} refreshReCaptcha={refreshReCaptcha} />
         </GoogleReCaptchaProvider>
       )}
     </AuthWrapper>

@@ -36,8 +36,8 @@ const AuthWrapper = ({
 
           <div className='flex flex-col gap-5 pt-4'>
             <div>
-              <Typography variant='h4'>{title}</Typography>
-              <Typography className='mbs-2'>{subtitle}</Typography>
+              {title}
+              {subtitle}
             </div>
             {children}
             {urlBack && (

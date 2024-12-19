@@ -85,7 +85,7 @@ export const FormInput: React.FC<{
                   placeholder={props.placeholder}
                   label={props.label}
                   error={Boolean(props.errors[props.name])}
-                  type={!showPassword ? 'text' : 'password'}
+                  type={showPassword ? 'text' : 'password'}
                   onChange={onChange}
                   InputProps={{
                     endAdornment: (

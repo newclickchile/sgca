@@ -168,7 +168,6 @@ const ForgotPassword = () => {
       setUserName(username)
       toast.success('Se ha enviado un código a tu email, ingrésalo para continuar')
     } catch (error) {
-      console.log('error :', error)
       setRefreshReCaptcha(!refreshReCaptcha)
       toast.error('Ha ocurrido un error, favor intenta nuevamente')
     }

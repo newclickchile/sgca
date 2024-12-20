@@ -1,5 +1,6 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import { useEffect } from 'react'
 
 import type { ButtonProps } from '@mui/material'
@@ -21,6 +22,7 @@ export interface FieldConfig {
   listValues?: IKeyValueData[]
   rows?: number
   compareWith?: string
+  custom?: ReactNode
 }
 interface CustomFormProps<T extends FieldValues> {
   fields: FieldConfig[]
@@ -86,7 +88,8 @@ const CustomForm = <T extends FieldValues>({
             label,
             rows,
             listValues = [],
-            width = 6
+            width = 6,
+            custom
           } = field
 
           const compareValue = compareWith ? watch(compareWith as Path<T>) : undefined
@@ -100,18 +103,22 @@ const CustomForm = <T extends FieldValues>({
 
           return (
             <Grid key={`${label}${index}`} item xs={12} sm={width} alignItems={'center'}>
-              <FormInput
-                control={control}
-                errors={errors}
-                rules={updatedRules}
-                placeholder={placeholder ?? label}
-                name={name}
-                type={type}
-                label={label}
-                isRequired={isRequired}
-                listValues={listValues}
-                rows={rows}
-              />
+              {type === 'custom' ? (
+                <>{custom}</> // Esto renderiza el ReactNode pasado en 'custom'
+              ) : (
+                <FormInput
+                  control={control}
+                  errors={errors}
+                  rules={updatedRules}
+                  placeholder={placeholder ?? label}
+                  name={name}
+                  type={type}
+                  label={label}
+                  isRequired={isRequired}
+                  listValues={listValues}
+                  rows={rows}
+                />
+              )}
             </Grid>
           )
         })}

@@ -122,7 +122,7 @@ const UserDropdown = () => {
                     </div>
                   </div>
                   <Divider className='mlb-1' />
-                  <MenuItem className='gap-3' onClick={e => handleDropdownClose(e, '/pages/user-profile')}>
+                  <MenuItem className='gap-3' onClick={e => handleDropdownClose(e, '/update-password')}>
                     <i className='iconoir-password-cursor text-2xl' />
                     <Typography color='text.primary'>Cambiar contraseña</Typography>
                   </MenuItem>

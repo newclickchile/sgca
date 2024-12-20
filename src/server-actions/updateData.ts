@@ -42,8 +42,6 @@ async function updateData({
 
     const finalUrl = `${urlBase}?${aditionalParam}${queryParams}`
 
-    console.log('Request URL:', finalUrl)
-
     const response = await fetch(finalUrl, {
       method,
       headers,

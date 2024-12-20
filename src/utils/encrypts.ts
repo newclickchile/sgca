@@ -30,6 +30,39 @@ export type PasswordRules = {
 //   }
 // };
 
+export const decryptData = async (iv: string, encryptedData: string): Promise<string> => {
+  const key = Uint8Array.from(atob(process.env.NEXT_PUBLIC_ENCRYPT_SECRET_KEY!), c => c.charCodeAt(0))
+
+  // Decodificar el IV y los datos cifrados desde base64
+  const ivArray = new Uint8Array(
+    atob(decodeURIComponent(iv))
+      .split('')
+      .map(c => c.charCodeAt(0))
+  )
+
+  const encryptedArray = Uint8Array.from(atob(decodeURIComponent(encryptedData)), c => c.charCodeAt(0))
+
+  // Desencriptar
+  async function decrypt(): Promise<string> {
+    const encodedKey = await crypto.subtle.importKey('raw', key, { name: 'AES-CBC' }, false, ['decrypt'])
+
+    const decryptedData = await crypto.subtle.decrypt(
+      {
+        name: 'AES-CBC',
+        iv: ivArray
+      },
+      encodedKey,
+      encryptedArray.buffer
+    )
+
+    const decoder = new TextDecoder()
+
+    return decoder.decode(decryptedData)
+  }
+
+  return await decrypt()
+}
+
 export const encryptData = async (text: string) => {
   const key = Uint8Array.from(atob(process.env.NEXT_PUBLIC_ENCRYPT_SECRET_KEY!), c => c.charCodeAt(0))
 

@@ -18,8 +18,6 @@ export async function POST(req: Request) {
       CSRFTokenMail: code
     }
 
-    console.log('headers :', headers)
-
     const response = await fetch(backendUrl, {
       method: 'POST',
       headers

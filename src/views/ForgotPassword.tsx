@@ -73,7 +73,7 @@ const ForgotPassword = () => {
   const [emailValidated, setEmailValidated] = useState<string>()
   const [codeValidated, setCodeValidated] = useState<number>()
   const [userName, setUserName] = useState<string>('')
-  const [token, setToken] = useState('')
+  const [captchaToken, setCaptchaToken] = useState('')
   const [refreshReCaptcha, setRefreshReCaptcha] = useState(false)
 
   const {
@@ -150,15 +150,19 @@ const ForgotPassword = () => {
 
   const validateUsername: SubmitHandler<{ username: string }> = async ({ username }) => {
     try {
-      if (!token) {
+      if (!captchaToken) {
         toast.error('Debe completar el reCAPTCHA')
 
         return
       }
 
+      const headers = {
+        CSRFC4ptch4R3sp0ns3: captchaToken
+      }
+
       const url = `${process.env.NEXT_PUBLIC_API_URL_USUARIO}/usuario/correo/olvido/clave?pus3rN4m3=${username}`
 
-      const response = await fetch(url, { method: 'POST' })
+      const response = await fetch(url, { method: 'POST', headers })
 
       if (!response.ok) {
         throw new Error('Error send email')
@@ -192,7 +196,11 @@ const ForgotPassword = () => {
                 </Button>
                 {process.env.NEXT_PUBLIC_CAPTCHA_KEY && (
                   <GoogleReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_CAPTCHA_KEY}>
-                    <GoogleReCaptcha action='HOMECARESYSTEM' onVerify={setToken} refreshReCaptcha={refreshReCaptcha} />
+                    <GoogleReCaptcha
+                      action='HOMECARESYSTEM'
+                      onVerify={setCaptchaToken}
+                      refreshReCaptcha={refreshReCaptcha}
+                    />
                   </GoogleReCaptchaProvider>
                 )}
               </>

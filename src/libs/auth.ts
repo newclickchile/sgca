@@ -43,9 +43,6 @@ export const authOptions: NextAuthOptions = {
             CSRFC4ptch4R3sp0ns3: captchaToken
           }
 
-          console.log('headers :', headers)
-          console.log('url :', url)
-
           const res = await fetch(url, {
             method: 'POST',
             headers

@@ -4,11 +4,9 @@ import type { Metadata } from 'next'
 // Component Imports
 import Login from '@views/Login'
 
-// Server Action Imports
-
 export const metadata: Metadata = {
-  title: 'Login',
-  description: 'Login to your account'
+  title: 'Inicia sesión',
+  description: 'Inicia sesión a tu cuenta'
 }
 
 const LoginPage = () => {

@@ -7,8 +7,8 @@ import ForgotPassword from '@views/ForgotPassword'
 // Server Action Imports
 
 export const metadata: Metadata = {
-  title: 'Forgot Password',
-  description: 'Forgotten Password to your account'
+  title: '¿Olvidaste tu contraseña?',
+  description: 'Olvidaste la contraseña de tu cuenta'
 }
 
 const ForgotPasswordPage = () => {

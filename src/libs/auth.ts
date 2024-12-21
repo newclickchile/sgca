@@ -32,7 +32,6 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          console.log('captchaToken :', captchaToken)
           const url = `${process.env.NEXT_PUBLIC_API_URL_USUARIO}/usuario/login?pus3rN4m3=${username}`
           const encryptText = await encryptData(password)
           const jwtData = await createJWT(username, encryptText.encryptedData)
@@ -40,8 +39,12 @@ export const authOptions: NextAuthOptions = {
           const headers = {
             CSRFP466: encryptText.encryptedData,
             CSRFIv: encryptText.iv,
-            CSRFC0d160j2vt: jwtData
+            CSRFC0d160j2vt: jwtData,
+            CSRFC4ptch4R3sp0ns3: captchaToken
           }
+
+          console.log('headers :', headers)
+          console.log('url :', url)
 
           const res = await fetch(url, {
             method: 'POST',
